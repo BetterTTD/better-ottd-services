@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
-@inject NavigationManager _navigationManager
 @implements IAsyncDisposable
 
 <div class="form-group">
@@ -40,6 +39,7 @@
 
         _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
+            
             var encodedMsg = $"{user}: {message}";
             _messages.Add(encodedMsg);
             StateHasChanged();

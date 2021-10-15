@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Admin.Shared.Hubs;
+using Admin.Server.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -11,26 +11,17 @@ namespace Admin.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IConfiguration _configuration;
 
-        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration) => 
+            _configuration = configuration;
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder
-                            .AllowAnyOrigin() 
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
-            });
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
             services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -44,7 +35,7 @@ namespace Admin.Server
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
-            app.UseCors("AllowAll");
+            app.UseCors();
 
             if (env.IsDevelopment())
             {

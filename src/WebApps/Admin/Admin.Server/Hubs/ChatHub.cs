@@ -1,18 +1,14 @@
 ﻿using System.Threading.Tasks;
+using Admin.Shared;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Admin.Server.Hubs
 {
-    public interface IChatClient
+    public class ChatHub : Hub
     {
-        Task ReceiveMessage(string user, string message);
-    }
-    
-    public class ChatHub : Hub<IChatClient>
-    {
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.ReceiveMessage(user, message);
-        }
+        public async Task SendMessage(string user, string message) => 
+            await Clients.All.SendAsync(
+                nameof(ReceiveMessage), 
+                new ReceiveMessage(user, message));
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/chat"
 @using Microsoft.AspNetCore.SignalR.Client
+@using Admin.Shared
 @implements IAsyncDisposable
 
 <h1>Chat</h1>
@@ -23,15 +24,15 @@
 <ul id="messagesList">
     @foreach (var message in _messages)
     {
-        <li>@message</li>
+        <li>@message.Name: @message.Message</li>
     }
 </ul>
 
 @code {
-    private HubConnection _hubConnection;
-    private readonly List<string> _messages = new();
-    private string _userInput;
-    private string _messageInput;
+    private HubConnection? _hubConnection;
+    private readonly List<ReceiveMessage> _messages = new();
+    private string? _userInput;
+    private string? _messageInput;
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,11 +40,9 @@
             .WithUrl("https://localhost:7197/chathub")
             .Build();
 
-        _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        _hubConnection.On<ReceiveMessage>(nameof(ReceiveMessage), receiveMessage =>
         {
-            
-            var encodedMsg = $"{user}: {message}";
-            _messages.Add(encodedMsg);
+            _messages.Add(receiveMessage);
             StateHasChanged();
         });
 
@@ -54,13 +53,11 @@
         await _hubConnection.SendAsync("SendMessage", _userInput, _messageInput);
 
     private bool IsConnected =>
-        _hubConnection.State == HubConnectionState.Connected;
+        _hubConnection?.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
         if (_hubConnection is not null)
-        {
             await _hubConnection.DisposeAsync();
-        }
     }
 }

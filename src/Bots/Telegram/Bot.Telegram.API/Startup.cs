@@ -1,4 +1,5 @@
 using Bot.Telegram.API.HostedServices;
+using Bot.Telegram.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ namespace Bot.Telegram.API
                 .AddHostedService<ConfigureBotWebhook>()
                 .AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bot.Telegram.API", Version = "v1" }));
             
-            services.AddScoped<HandleUpdateService>();
+            services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services
                 .AddControllers()

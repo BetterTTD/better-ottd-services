@@ -11,9 +11,15 @@ using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Bot.Telegram.API
+namespace Bot.Telegram.API.Services
 {
-    public class HandleUpdateService
+    public interface IHandleUpdateService
+    {
+        Task EchoAsync(Update update);
+        Task HandleErrorAsync(Exception exception);
+    }
+    
+    public sealed class HandleUpdateService : IHandleUpdateService
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger<HandleUpdateService> _logger;
@@ -225,9 +231,9 @@ namespace Bot.Telegram.API
                 _ => exception.ToString()
             };
 
+            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             _logger.LogInformation(errorMessage);
             return Task.CompletedTask;
         }
-
     }
 }

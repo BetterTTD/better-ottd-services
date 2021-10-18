@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,16 +14,20 @@ namespace Bot.Telegram.API.HostedServices
     {
         private readonly ILogger<ConfigureBotWebhook> _logger;
         private readonly IServiceProvider _services;
+        private readonly IConfiguration _cfg;
+        
         private readonly BotConfiguration _botConfig;
 
         public ConfigureBotWebhook(
             ILogger<ConfigureBotWebhook> logger, 
             IServiceProvider services, 
-            BotConfiguration botConfig)
+            IConfiguration configuration)
         {
             _logger = logger;
             _services = services;
-            _botConfig = botConfig;
+            _cfg = configuration;
+            
+            _botConfig = _cfg.GetSection("BotConfiguration").Get<BotConfiguration>();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)

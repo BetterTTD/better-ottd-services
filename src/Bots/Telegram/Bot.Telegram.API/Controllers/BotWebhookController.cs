@@ -7,7 +7,8 @@ namespace Bot.Telegram.API.Controllers
     public class BotWebhookController : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> Post([FromServices] HandleUpdateService handleUpdateService,
+        public async Task<IActionResult> Post(
+            [FromServices] HandleUpdateService handleUpdateService,
             [FromBody] Update update)
         {
             await handleUpdateService.EchoAsync(update);

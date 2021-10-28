@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Admin.Server.Hubs
 {
-    public class ChatHub : Hub
+    public sealed class ChatHub : Hub
     {
         public async Task SendMessage(string user, string message) => 
             await Clients.All.SendAsync(

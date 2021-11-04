@@ -17,14 +17,14 @@ namespace Identity.API
                    };
 
         public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
+            new[]
             {
                 new ApiScope("scope1"),
                 new ApiScope("scope2"),
             };
 
         public static IEnumerable<Client> Clients =>
-            new Client[]
+            new[]
             {
                 // m2m client credentials flow client
                 new Client

@@ -14,8 +14,7 @@ namespace Bot.Telegram.API.HostedServices
     {
         private readonly ILogger<ConfigureBotWebhook> _logger;
         private readonly IServiceProvider _services;
-        private readonly IConfiguration _cfg;
-        
+
         private readonly BotConfiguration _botConfig;
 
         public ConfigureBotWebhook(
@@ -25,9 +24,10 @@ namespace Bot.Telegram.API.HostedServices
         {
             _logger = logger;
             _services = services;
-            _cfg = configuration;
-            
-            _botConfig = _cfg.GetSection("BotConfiguration").Get<BotConfiguration>();
+
+            _botConfig = configuration
+                .GetSection(BotConfiguration.Position)
+                .Get<BotConfiguration>();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ namespace Bot.Telegram.API.HostedServices
             var webhookAddress = @$"{_botConfig.HostAddress}/bot/{_botConfig.BotToken}";
             _logger.LogInformation("Setting webhook: {WebhookAddress}", webhookAddress);
             await botClient.SetWebhookAsync(
-                url: webhookAddress,
+                webhookAddress,
                 allowedUpdates: Array.Empty<UpdateType>(),
                 cancellationToken: cancellationToken);
         }
@@ -55,6 +55,7 @@ namespace Bot.Telegram.API.HostedServices
 
     public sealed class BotConfiguration
     {
+        public const string Position = nameof(BotConfiguration);
         public string HostAddress { get; set; } = string.Empty;
         public string BotToken { get; set; } = string.Empty;
     }

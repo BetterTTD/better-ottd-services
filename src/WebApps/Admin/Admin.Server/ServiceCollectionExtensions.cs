@@ -44,6 +44,7 @@ namespace Admin.Server
                 var factory = new ConnectionFactory()
                 {
                     HostName = configuration["EventBusConnection"],
+                    Port = 55011,
                     DispatchConsumersAsync = true
                 };
 

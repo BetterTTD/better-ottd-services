@@ -83,12 +83,10 @@ namespace EventBusRabbitMQ
 
                     return true;
                 }
-                else
-                {
-                    _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
 
-                    return false;
-                }
+                _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+
+                return false;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Admin.Server.Hubs;
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -27,6 +28,7 @@ namespace Admin.Server
             services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddEventBus(_configuration);
             
             services.AddResponseCompression(opts =>
             {
@@ -34,6 +36,9 @@ namespace Admin.Server
                     new[] { "application/octet-stream" });
             });
         }
+
+        public static void ConfigureContainer(ContainerBuilder builder) =>
+            builder.RegisterAssemblyModules(typeof(Startup).Assembly);
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

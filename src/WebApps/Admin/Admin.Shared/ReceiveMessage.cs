@@ -1,6 +1,8 @@
-﻿namespace Admin.Shared
+﻿using EventBus.Events;
+
+namespace Admin.Shared
 {
-    public sealed class ReceiveMessage
+    public record ReceiveMessage : IntegrationEvent
     {
         public ReceiveMessage(string name, string message)
         {

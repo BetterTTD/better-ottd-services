@@ -111,7 +111,7 @@ namespace EventBusRabbitMQ
                 properties.DeliveryMode = 2; // persistent
 
                 _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
-
+                
                 channel.BasicPublish(
                     exchange: BROKER_NAME,
                     routingKey: eventName,

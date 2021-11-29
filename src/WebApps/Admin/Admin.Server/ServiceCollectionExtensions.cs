@@ -41,10 +41,10 @@ namespace Admin.Server
             {
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                var factory = new ConnectionFactory()
+                var factory = new ConnectionFactory
                 {
                     HostName = configuration["EventBusConnection"],
-                    Port = 55011,
+                    Port = int.Parse(configuration["EventBusPort"]),
                     DispatchConsumersAsync = true
                 };
 

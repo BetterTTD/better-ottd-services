@@ -190,7 +190,7 @@ namespace Bot.Telegram.API.Services
         {
             _logger.LogInformation("Received inline query from: {Id}", inlineQuery.From.Id);
 
-            InlineQueryResultBase[] results =
+            InlineQueryResult[] results =
             {
                 // displayed result
                 new InlineQueryResultArticle(

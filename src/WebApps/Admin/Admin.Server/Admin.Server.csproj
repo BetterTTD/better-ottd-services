@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac" Version="6.1.0" />
-        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.11" />
+        <PackageReference Include="Autofac" Version="6.3.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -9,9 +9,9 @@ public class OttdDate
 
 	public OttdDate(byte day, byte month, uint year)
 	{
-		this.Day = day;
-		this.Month = month;
-		this.Year = year;
+		Day = day;
+		Month = month;
+		Year = year;
 	}
 
 	public OttdDate(uint date)
@@ -59,10 +59,10 @@ public class OttdDate
 		/* Skip the 29th of February in non-leap years */
 		if (!OttdDateHelper.IsLeapYear(year) && rem >= OttdDateHelper.DaysTillMonth[2] - 1) rem++;
 
-		this.Year = year;
+		Year = year;
 		x = OttdDateHelper.MonthDateFromYear[(int)rem];
-		this.Month = (byte)(x >> 5);
-		this.Day = (byte)(x & 0x1F);
+		Month = (byte)(x >> 5);
+		Day = (byte)(x & 0x1F);
 	}
 
 	public override string ToString() => $"{Year}-{Month}-{Day}";

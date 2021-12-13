@@ -1,7 +1,6 @@
-﻿using OpenTTD.Network.Enums;
-using OpenTTD.Network.Models;
+﻿using OpenTTD.Network.Models.Enums;
 
-namespace OpenTTD.Network.AdminPort.Events;
+namespace OpenTTD.Network.Models.Events;
 
 public interface IAdminEvent
 {

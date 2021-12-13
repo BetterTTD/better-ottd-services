@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using OpenTTD.Network.AdminMappers;
 using OpenTTD.Network.Models;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminClient;
 
 public class AdminPortClientFactory : IAdminPortClientFactory
 {

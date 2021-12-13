@@ -1,7 +1,7 @@
-﻿using OpenTTD.Network.AdminPort.Messages;
-using OpenTTD.Network.Models;
+﻿using OpenTTD.Network.Models;
+using OpenTTD.Network.Models.Messages;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminMappers;
 
 public interface IAdminPacketService
 {

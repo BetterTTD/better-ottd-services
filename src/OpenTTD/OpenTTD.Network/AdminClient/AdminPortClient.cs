@@ -1,17 +1,20 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using OpenTTD.Network.AdminPort.Events;
-using OpenTTD.Network.AdminPort.Messages;
-using OpenTTD.Network.Enums;
+using OpenTTD.Network.AdminMappers;
 using OpenTTD.Network.Exceptions;
+using OpenTTD.Network.Extensions;
 using OpenTTD.Network.Models;
+using OpenTTD.Network.Models.Enums;
+using OpenTTD.Network.Models.Events;
+using OpenTTD.Network.Models.Messages;
+using TaskExtensions = OpenTTD.Network.Extensions.TaskExtensions;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminClient;
 
 public class AdminPortClient : IAdminPortClient
 {
-    private TcpClient _tcpClient;
+    private TcpClient? _tcpClient;
     public AdminConnectionState ConnectionState { get; private set; }
 
     public ConcurrentDictionary<uint, Player> Players { get; } = new();
@@ -31,11 +34,11 @@ public class AdminPortClient : IAdminPortClient
     private DateTime _lastMessageSentTime = DateTime.Now;
     private DateTime _lastMessageReceivedTime = DateTime.Now;
 
-    private Mutex _startMutex = new();
+    private readonly Mutex _startMutex = new();
 
 
 
-    private CancellationTokenSource _cancellationTokenSource = null;
+    private CancellationTokenSource? _cancellationTokenSource = null;
 
     public ServerInfo ServerInfo { get; }
 
@@ -44,15 +47,18 @@ public class AdminPortClient : IAdminPortClient
 
     public AdminServerInfo AdminServerInfo { get; private set; } = new();
 
-    public AdminPortClient(ServerInfo serverInfo, IAdminPacketService adminPacketService,
-        IAdminMessageProcessor messageProcessor, ILogger<IAdminPortClient> logger)
+    public AdminPortClient(
+        ServerInfo serverInfo,
+        IAdminPacketService adminPacketService,
+        IAdminMessageProcessor messageProcessor,
+        ILogger<IAdminPortClient> logger)
     {
         ServerInfo = serverInfo;
         _logger = logger;
         _adminPacketService = adminPacketService;
         _messageProcessor = messageProcessor;
 
-        foreach (var type in Enumss.ToArray<AdminUpdateType>())
+        foreach (var type in Enums.ToArray<AdminUpdateType>())
         {
             AdminUpdateSettings.TryAdd(type,
                 new AdminUpdateSetting(false, type, UpdateFrequency.AdminFrequencyAutomatic));
@@ -78,7 +84,7 @@ public class AdminPortClient : IAdminPortClient
 
     private async void MainLoop(CancellationToken token)
     {
-        Task<int> sizeTask = null;
+        Task<int>? sizeTask = null;
         var sizeBuffer = new byte[2];
 
         while (token.IsCancellationRequested == false)
@@ -92,7 +98,7 @@ public class AdminPortClient : IAdminPortClient
                     _tcpClient.SendTimeout = 2000;
                     _lastMessageSentTime = DateTime.Now;
                     _lastMessageReceivedTime = DateTime.Now;
-                    _tcpClient.Connect(ServerInfo.ServerIp, ServerInfo.ServerPort);
+                    await _tcpClient.ConnectAsync(ServerInfo.ServerIp, ServerInfo.ServerPort, token);
                     SendMessage(new AdminJoinMessage(ServerInfo.Password, "OttdBot", "1.0.0"));
                     _logger.LogInformation($"{ServerInfo} Connecting");
 
@@ -118,7 +124,9 @@ public class AdminPortClient : IAdminPortClient
                     {
                         _logger.LogInformation($"{ServerInfo} sent {msg.MessageType}");
                         var packet = _adminPacketService.CreatePacket(msg);
-                        await _tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size)
+                        await _tcpClient
+                            .GetStream()
+                            .WriteAsync(packet.Buffer, 0, packet.Size, token)
                             .WaitMax(TimeSpan.FromSeconds(2));
                         _lastMessageSentTime = DateTime.Now;
                     }
@@ -126,14 +134,16 @@ public class AdminPortClient : IAdminPortClient
                         break;
                 }
 
-                while ((sizeTask ??= _tcpClient.GetStream().ReadAsync(sizeBuffer, 0, 2)).IsCompleted)
+                while ((sizeTask ??= _tcpClient.GetStream().ReadAsync(sizeBuffer, 0, 2, token)).IsCompleted)
                 {
                     var receivedBytes = sizeTask.Result;
 
                     if (receivedBytes != 2)
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(1));
-                        int bytes = await _tcpClient.GetStream().ReadAsync(sizeBuffer, 1, 1)
+                        await Task.Delay(TimeSpan.FromMilliseconds(1), token);
+                        var bytes = await _tcpClient
+                            .GetStream()
+                            .ReadAsync(sizeBuffer, 1, 1, token)
                             .WaitMax(TimeSpan.FromSeconds(2));
                         if (bytes == 0)
                         {
@@ -155,8 +165,10 @@ public class AdminPortClient : IAdminPortClient
 
                     do
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(1));
-                        Task<int> task = _tcpClient.GetStream().ReadAsync(content, contentSize, size - contentSize)
+                        await Task.Delay(TimeSpan.FromMilliseconds(1), token);
+                        var task = _tcpClient
+                            .GetStream()
+                            .ReadAsync(content, contentSize, size - contentSize, token)
                             .WaitMax(TimeSpan.FromSeconds(2), $"{ServerInfo} no data received");
                         await task;
                         contentSize += task.Result;
@@ -180,11 +192,12 @@ public class AdminPortClient : IAdminPortClient
                         {
                             var msg = message as AdminServerProtocolMessage;
 
-                            foreach (var s in msg.AdminUpdateSettings)
+                            foreach (var (updateType, updateFrequency) in msg.AdminUpdateSettings)
                             {
-                                _logger.LogInformation($"Update settings {s.Key} - {s.Value}");
-                                AdminUpdateSettings.TryUpdate(s.Key, new AdminUpdateSetting(true, s.Key, s.Value),
-                                    AdminUpdateSettings[s.Key]);
+                                _logger.LogInformation($"Update settings {updateType} - {updateFrequency}");
+                                AdminUpdateSettings.TryUpdate(updateType,
+                                    new AdminUpdateSetting(true, updateType, updateFrequency),
+                                    AdminUpdateSettings[updateType]);
                             }
 
                             break;
@@ -193,14 +206,13 @@ public class AdminPortClient : IAdminPortClient
                         {
                             var msg = message as AdminServerWelcomeMessage;
 
-                            AdminServerInfo = new AdminServerInfo()
+                            AdminServerInfo = new AdminServerInfo
                             {
                                 IsDedicated = msg.IsDedicated,
                                 MapName = msg.MapName,
                                 RevisionName = msg.NetworkRevision,
                                 ServerName = msg.ServerName
                             };
-
 
                             SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.AdminUpdateChat,
                                 UpdateFrequency.AdminFrequencyAutomatic));
@@ -235,16 +247,14 @@ public class AdminPortClient : IAdminPortClient
                         default:
                         {
                             var msg = message as AdminServerChatMessage;
-                            _receivedMessagesQueue.Enqueue(message);
+                            _receivedMessagesQueue.Enqueue(msg);
                             break;
                         }
                     }
 
                 }
 
-
-
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await Task.Delay(TimeSpan.FromSeconds(0.5), token);
             }
             catch (Exception e)
             {
@@ -257,7 +267,7 @@ public class AdminPortClient : IAdminPortClient
                 sizeTask = null;
                 ConnectionState = AdminConnectionState.NotConnected;
 
-                await Task.Delay(TimeSpan.FromSeconds(60));
+                await Task.Delay(TimeSpan.FromSeconds(60), token);
             }
 
         }
@@ -290,7 +300,7 @@ public class AdminPortClient : IAdminPortClient
             ThreadPool.QueueUserWorkItem(_ => MainLoop(_cancellationTokenSource.Token), null);
             ThreadPool.QueueUserWorkItem(_ => EventLoop(_cancellationTokenSource.Token), null);
 
-            if (!(await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Connected,
+            if (!(await TaskExtensions.WaitUntil(() => ConnectionState == AdminConnectionState.Connected,
                     delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))))
             {
                 _cancellationTokenSource.Cancel();
@@ -313,7 +323,7 @@ public class AdminPortClient : IAdminPortClient
         {
             _cancellationTokenSource.Cancel();
 
-            if (!(await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Idle,
+            if (!(await TaskExtensions.WaitUntil(() => ConnectionState == AdminConnectionState.Idle,
                     delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))))
             {
                 _cancellationTokenSource = new CancellationTokenSource();

@@ -1,4 +1,4 @@
-﻿namespace OpenTTD.Network.AdminPort;
+﻿namespace OpenTTD.Network.Models;
 
 public class AdminServerInfo
 {

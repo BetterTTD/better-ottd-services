@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
-using OpenTTD.Network.AdminPort.Events;
-using OpenTTD.Network.AdminPort.Messages;
-using OpenTTD.Network.Enums;
 using OpenTTD.Network.Models;
+using OpenTTD.Network.Models.Enums;
+using OpenTTD.Network.Models.Events;
+using OpenTTD.Network.Models.Messages;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminClient;
 
 public interface IAdminPortClient
 {

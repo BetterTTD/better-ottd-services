@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace OpenTTD.Network.Enums;
+namespace OpenTTD.Network.Models.Enums;
 
 public enum Landscape
 {

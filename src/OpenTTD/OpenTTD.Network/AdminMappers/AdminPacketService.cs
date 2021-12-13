@@ -1,8 +1,8 @@
-﻿using OpenTTD.Network.AdminPort.Messages;
-using OpenTTD.Network.Enums;
-using OpenTTD.Network.Models;
+﻿using OpenTTD.Network.Models;
+using OpenTTD.Network.Models.Enums;
+using OpenTTD.Network.Models.Messages;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminMappers;
 
 public class AdminPacketService : IAdminPacketService
 {
@@ -97,7 +97,7 @@ public class AdminPacketService : IAdminPacketService
             }
             case AdminMessageType.AdminPacketServerWelcome:
             {
-                return new AdminServerWelcomeMessage()
+                return new AdminServerWelcomeMessage
                 {
                     ServerName = packet.ReadString(),
                     NetworkRevision = packet.ReadString(),
@@ -120,7 +120,7 @@ public class AdminPacketService : IAdminPacketService
             }
             case AdminMessageType.AdminPacketServerClientInfo:
             {
-                return new AdminServerClientInfoMessage()
+                return new AdminServerClientInfoMessage
                 {
                     ClientId = packet.ReadU32(),
                     Hostname = packet.ReadString(),

@@ -1,6 +1,6 @@
 ﻿using OpenTTD.Network.Models;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network.AdminClient;
 
 public interface IAdminPortClientFactory
 {

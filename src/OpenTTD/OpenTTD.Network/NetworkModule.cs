@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using OpenTTD.Network.AdminClient;
+using OpenTTD.Network.AdminMappers;
 
-namespace OpenTTD.Network.AdminPort;
+namespace OpenTTD.Network;
 
-public class AdminPortModule
+public static class NetworkModule
 {
-    public void Register(in IServiceCollection services)
+    public static IServiceCollection AddNetworkModule(this IServiceCollection services)
     {
         services.AddSingleton<IAdminPacketService>(new AdminPacketService());
         services.AddSingleton<IAdminPortClientFactory, AdminPortClientFactory>();
         services.AddSingleton<IAdminMessageProcessor, AdminMessageProcessor>();
+        
+        return services;
     }
 }

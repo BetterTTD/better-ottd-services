@@ -11,7 +11,4 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0" />
     </ItemGroup>
     
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
-    </ItemGroup>
 </Project>

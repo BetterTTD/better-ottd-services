@@ -1,3 +1,4 @@
+using Admin.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Admin.Server.Controllers;

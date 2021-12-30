@@ -10,23 +10,17 @@
 
 @if (IsLoading)
 {
-    <p>
-        <em>Loading...</em>
-    </p>
+    <Loading />
 }
 
 @if (State == PageState.Error)
 {
-    <p>
-        <em>@Error</em>
-    </p>
+    <Error Message=@Error />
 } 
 
 @if (State == PageState.Empty)
 {
-    <p>
-        <em>No data.</em>
-    </p>
+    <Empty />
 } 
 
 @if (State == PageState.Data)

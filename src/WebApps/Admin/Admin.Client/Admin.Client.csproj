@@ -15,4 +15,10 @@
       <ProjectReference Include="..\Admin.Shared\Admin.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Pages\FetchDataViewModel.cs">
+        <DependentUpon>FetchData.razor</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

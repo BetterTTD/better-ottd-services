@@ -1,6 +1,6 @@
 ﻿namespace Admin.Shared;
 
-public record WeatherForecast
+public record WeatherForecastModel
 {
     public DateTime Date { get; init; }
 

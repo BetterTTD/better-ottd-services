@@ -16,8 +16,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Pages\FetchDataViewModel.cs">
+      <Compile Update="Pages\FetchDataPageModel.cs">
         <DependentUpon>FetchData.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Pages\ServersPageModel.cs">
+        <DependentUpon>Servers.razor</DependentUpon>
       </Compile>
     </ItemGroup>
 

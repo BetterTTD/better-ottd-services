@@ -5,7 +5,7 @@ import { clientService } from './clientService.js';
 
 // configure
 
-const port = 3001;
+const port = 80;
 const app = express();
 app.use(express.json());
 

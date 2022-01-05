@@ -28,7 +28,6 @@ export default class Server {
 
     Disconnect() {
         this.conn.close();
-        this.conn = new Connection();
     }
 
     _subscribe() {

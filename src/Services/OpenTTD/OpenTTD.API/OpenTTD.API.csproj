@@ -12,4 +12,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OpenTTD.Network\OpenTTD.Network.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -12,8 +12,8 @@ const logger = pinoms({
     streams: [
         { level: 'debug', stream: process.stdout },
         { level: 'error', stream: process.stderr },
-        //{level: 'debug', stream: pinoToSeq.createStream({ serverUrl: 'http://tg.seq:5341' })}
-        { level: 'debug', stream: pinoToSeq.createStream({ serverUrl: 'http://localhost:5341' }) }
+        { level: 'debug', stream: pinoToSeq.createStream({ serverUrl: 'http://tg.seq:5341' })}
+        //{ level: 'debug', stream: pinoToSeq.createStream({ serverUrl: 'http://localhost:5341' }) }
     ]
 });
 

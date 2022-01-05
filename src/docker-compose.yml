@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  openttd.api:
+    image: ${DOCKER_REGISTRY-}openttdapi
+    build:
+      context: .
+      dockerfile: Services/OpenTTD/OpenTTD.API/Dockerfile
+
+  admin.server:
+    image: ${DOCKER_REGISTRY-}adminserver
+    build:
+      context: .
+      dockerfile: WebApps/Admin/Admin.Server/Dockerfile
+
+
+  admin.client:
+    image: ${DOCKER_REGISTRY-}adminclient
+    build:
+      context: .
+      dockerfile: WebApps/Admin/Admin.Client/Dockerfile
+

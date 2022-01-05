@@ -7,15 +7,24 @@ services:
     networks:
       - tg
     environment:
-        SA_PASSWORD: "Your_password123"
-        ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
 
-  openttd.admin.port:
-    image: ${DOCKER_REGISTRY-}openttd.admin.port
+  seq:
+    image: datalust/seq:latest
+    container_name: ${DOCKER_REGISTRY-}tg.seq
+    networks:
+      - tg
+    environment:
+      ACCEPT_EULA: "Y"
+
+  openttd.admin.client:
+    image: ${DOCKER_REGISTRY-}openttd.admin.client
     networks:
       - tg
     depends_on:
       - db
+      - seq
     build: 
       context: .
       dockerfile: Services/OpenTTD/OpenTTD.AdminClient/Dockerfile
@@ -25,7 +34,7 @@ services:
     networks:
       - tg
     depends_on:
-      - db
+      - openttd.admin.client
     build:
       context: .
       dockerfile: Services/OpenTTD/OpenTTD.API/Dockerfile

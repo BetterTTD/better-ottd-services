@@ -27,7 +27,7 @@ function clientObserve(client) {
         console.log(`[WELCOME]: ${JSON.stringify(welcome)}`);
         client.send_update_frequency(UpdateTypes.CHAT, UpdateFrequencies.AUTOMATIC);
         client.send_update_frequency(UpdateTypes.CLIENT_INFO, UpdateFrequencies.AUTOMATIC);
-        client.send_update_frequency(UpdateTypes.CONSOLE, UpdateFrequencies.AUTOMATIC);
+        //client.send_update_frequency(UpdateTypes.CONSOLE, UpdateFrequencies.AUTOMATIC);
         client.send_poll(UpdateTypes.CLIENT_INFO, Number.MAX_SAFE_INTEGER);
     });
 

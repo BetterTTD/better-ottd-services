@@ -81,6 +81,10 @@ export default class Server {
                 sendRc(companyResetCmd);
                 break;
             case cmdStarts('!rename ') || cmdStarts('!name '):
+                if (chat.message.includes('admin')) {
+                    sayCli('Forbidden name! Admin isn\'t allowed.');
+                    break;
+                }
                 let clientNameCmd = `client_name ${chat.id} \"${chat.message.replace('!rename ', '').replace('!name ', '')}\"`;
                 sendRc(clientNameCmd);
                 break;
@@ -124,6 +128,10 @@ export default class Server {
         let cli = this.clients.find(c => c.id === clientUpdate.id);
         let updatedProps = { name: clientUpdate.name, company: clientUpdate.company + 1 };
         this.clients = [...this.clients.filter(c => c.id !== clientUpdate.id), { ...cli, ...updatedProps }];
+        if (clientUpdate.name.includes('admin')) {
+            sendRcon(this.conn, `say_client ${cli.id} \"Forbidden name! Admin isn\'t allowed.\"`);
+            sendRcon(this.conn, `client_name ${cli.id} \"${cli.name}\"`);
+        }
     }
 
     _clientQuit = (clientQuit) => {

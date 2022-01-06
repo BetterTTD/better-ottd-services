@@ -3,7 +3,7 @@ version: '3.4'
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
-    container_name: ${DOCKER_REGISTRY-}tg.db
+    container_name: tg.db
     networks:
       - tg
     environment:
@@ -12,14 +12,15 @@ services:
 
   seq:
     image: datalust/seq:latest
-    container_name: ${DOCKER_REGISTRY-}tg.seq
+    container_name: tg.seq
     networks:
       - tg
     environment:
       ACCEPT_EULA: "Y"
 
   openttd.admin.client:
-    image: ${DOCKER_REGISTRY-}openttd.admin.client
+    image: openttd.admin.client
+    container_name: tg.openttd.admin.client
     networks:
       - tg
     depends_on:
@@ -30,7 +31,8 @@ services:
       dockerfile: Services/OpenTTD/OpenTTD.AdminClient/Dockerfile
 
   openttd.api:
-    image: ${DOCKER_REGISTRY-}openttd.api
+    image: openttd.api
+    container_name: tg.openttd.api
     networks:
       - tg
     depends_on:
@@ -40,7 +42,8 @@ services:
       dockerfile: Services/OpenTTD/OpenTTD.API/Dockerfile
 
   admin.server:
-    image: ${DOCKER_REGISTRY-}admin.server
+    image: admin.server
+    container_name: tg.admin.server
     networks:
       - tg
     depends_on:
@@ -50,7 +53,8 @@ services:
       dockerfile: WebApps/Admin/Admin.Server/Dockerfile
 
   admin.client:
-    image: ${DOCKER_REGISTRY-}admin.client
+    image: admin.client
+    container_name: tg.admin.client
     networks:
       - tg
     depends_on:

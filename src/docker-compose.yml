@@ -30,6 +30,17 @@ services:
       context: .
       dockerfile: Services/OpenTTD/OpenTTD.AdminClient/Dockerfile
 
+  openttd.signalrhub:
+    image: openttd.signalrhub
+    container_name: tg.openttd.signalrhub
+    networks:
+      - tg
+    depends_on:
+      - openttd.admin.client
+    build:
+      context: .
+      dockerfile: Services/OpenTTD/OpenTTD.SignalrHub/Dockerfile
+
   openttd.api:
     image: openttd.api
     container_name: tg.openttd.api
@@ -62,7 +73,6 @@ services:
     build:
       context: .
       dockerfile: WebApps/Admin/Admin.Client/Dockerfile
-
 
 networks:
   tg:

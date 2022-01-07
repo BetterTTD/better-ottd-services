@@ -12,6 +12,13 @@ services:
   openttd.admin.client:
     ports:
       - "6001:80"
+  
+  openttd.signalrhub:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "6003:80"
 
   openttd.api:
     environment:
@@ -29,8 +36,7 @@ services:
 
   admin.client:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "6002:80"
-      

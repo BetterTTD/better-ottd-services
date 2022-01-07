@@ -4,8 +4,28 @@ import pinoToSeq from 'pino-seq';
 import { pinoHttp } from 'pino-http';
 import pinoms from 'pino-multi-stream';
 import Server from './server.js';
+import * as signalR from "@microsoft/signalr";
 
 // configure
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://openttd.signalrhub/server")
+    //.withUrl("http://localhost:6003/server")
+    .build();
+
+connection.on("AskServers", () => {
+    connection
+        .send('TellServers', servers.map(server => {
+            return {
+                id: server.id,
+                info: {
+                    ip: server.instance.info.ip,
+                    port: server.instance.info.port
+                }
+            };
+        }))
+        .catch((err) => console.log(err));
+});
 
 const logger = pinoms({
     name: 'OpenTTD.AdminClient',
@@ -61,7 +81,10 @@ app.post('/servers', (req, res) => {
     let server = new Server(logger, { ip, port, botName, pass });
     let id = uuidv4();
     servers = [...servers, { id: id, instance: server }];
-
+    let temp = { ip: ip, port: port, name: null, version: null, map: null };
+    connection
+        .send('TellServerInfoUpdated', id, temp)
+        .catch((err) => console.log(err));
     res.status(200).send(id);
 });
 
@@ -87,5 +110,5 @@ app.delete('/servers/:serverId/disconnect', (req, res) => {
     res.status(200).send();
 });
 
-
+connection.start().catch(err => console.log(err));
 app.listen(port);

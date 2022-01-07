@@ -1,7 +1,49 @@
 ﻿@page "/Servers"
+@using Microsoft.AspNetCore.SignalR.Client
+@using OpenTTD.SignalrHub.Messages.Models
+@using OpenTTD.SignalrHub.Messages.Servers
 
-@inherits ServersPageModel
+<h3>Servers</h3>
 
-<PageTitle>Servers</PageTitle>
+<ul>
+    @foreach (var server in _servers)
+    {
+        <li>ID: @server.Id; IP: @server.Info.Ip: PORT: @server.Info.Port</li>
+    }
+</ul>
 
-<h1>Servers</h1>
+@code {
+    private HubConnection? _hubConnection;
+
+    private List<Server> _servers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl("http://localhost:6003/server")
+            .Build();
+
+        _hubConnection.On<OnServers>(nameof(OnServers), @event =>
+        {
+            Console.WriteLine(@event);
+            _servers = @event.Servers.ToList();
+            StateHasChanged();
+        });
+
+        _hubConnection.On<OnServerInfoUpdated>(nameof(OnServerInfoUpdated), @event =>
+        {
+            Console.WriteLine(@event);
+            var server = _servers.FirstOrDefault(s => s.Id == @event.ServerId, new Server
+            {
+                Id = @event.ServerId,
+                Info = @event.Info,
+                Clients = Array.Empty<Client>()
+            });
+            _servers = _servers.Where(s => s.Id != server.Id).Append(server).ToList();
+            StateHasChanged();
+        });
+        
+        await _hubConnection.StartAsync();
+        await _hubConnection.SendAsync(nameof(AskServers));
+    }
+}

@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["WebApps/Admin/Admin.Client/Admin.Client.csproj", "WebApps/Admin/Admin.Client/"]
 COPY ["WebApps/Admin/Admin.Shared/Admin.Shared.csproj", "WebApps/Admin/Admin.Shared/"]
+COPY ["Services/OpenTTD/OpenTTD.SignalrHub.Messages/OpenTTD.SignalrHub.Messages.csproj", "Services/OpenTTD/OpenTTD.SignalrHub.Messages/"]
 RUN dotnet restore "WebApps/Admin/Admin.Client/Admin.Client.csproj"
 COPY . .
 WORKDIR "/src/WebApps/Admin/Admin.Client"

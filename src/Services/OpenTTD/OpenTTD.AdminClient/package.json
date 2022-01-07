@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@microsoft/signalr": "^6.0.1",
     "express": "^4.17.2",
     "node-openttd-admin": "^0.2.4",
     "pino": "^7.6.2",

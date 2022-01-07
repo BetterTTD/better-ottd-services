@@ -5,6 +5,7 @@ import { pinoHttp } from 'pino-http';
 import pinoms from 'pino-multi-stream';
 import Server from './server.js';
 import * as signalR from "@microsoft/signalr";
+import cors from 'cors';
 
 // configure
 
@@ -40,6 +41,7 @@ const logger = pinoms({
 const port = 80;
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(pinoHttp({
     logger: logger,

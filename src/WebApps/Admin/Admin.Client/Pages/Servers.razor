@@ -1,16 +1,34 @@
 ﻿@page "/Servers"
+
 @using Microsoft.AspNetCore.SignalR.Client
 @using OpenTTD.SignalrHub.Messages.Models
 @using OpenTTD.SignalrHub.Messages.Servers
 
 <h3>Servers</h3>
 
-<ul>
-    @foreach (var server in _servers)
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Address</th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var (id, server) in _servers.Select((server, id) => (id, server)))
     {
-        <li>ID: @server.Id; IP: @server.Info.Ip: PORT: @server.Info.Port</li>
+        <tr>
+            <th scope="row">@id</th>
+            <td>@server.Info.Ip:@server.Info.Port</td>
+            <td>@server.Info.Name</td>
+            <td><button class="btn btn-sm btn-info" @onclick="@(() => Connect(@server.Id))">Connect</button></td>
+        </tr>
     }
-</ul>
+    </tbody>
+</table>
+
+@inject HttpClient _http;
 
 @code {
     private HubConnection? _hubConnection;
@@ -45,5 +63,11 @@
         
         await _hubConnection.StartAsync();
         await _hubConnection.SendAsync(nameof(AskServers));
+    }
+
+    private async Task Connect(Guid serverId)
+    {
+        var url = $"http://localhost:6001/servers/{serverId.ToString()}/connect";
+        await _http.PutAsync(url, null);
     }
 }

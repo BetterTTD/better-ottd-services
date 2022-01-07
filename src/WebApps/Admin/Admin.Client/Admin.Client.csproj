@@ -22,9 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Pages\FetchDataPageModel.cs">
-        <DependentUpon>FetchData.razor</DependentUpon>
-      </Compile>
+      <Folder Include="Components" />
     </ItemGroup>
 
 </Project>

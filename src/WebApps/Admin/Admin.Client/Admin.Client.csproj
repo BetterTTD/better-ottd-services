@@ -21,8 +21,4 @@
       <ProjectReference Include="..\Admin.Shared\Admin.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Components" />
-    </ItemGroup>
-
 </Project>

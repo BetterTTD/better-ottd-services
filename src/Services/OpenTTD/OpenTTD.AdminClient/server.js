@@ -14,9 +14,11 @@ function sayClient(connection, clientId, text) {
 }
 
 export default class Server {
-    constructor(logger, info) {
-        this.logger = logger;
+    constructor(info, { Hub, Storage, Logger }) {
         this.info = info;
+        this.Hub = Hub;
+        this.Storage = Storage;
+        this.Logger = Logger;
         this.clients = [];
         this.conn = new Connection();
         this._subscribe();
@@ -44,21 +46,36 @@ export default class Server {
     }
 
     _connect = () => {
-        let { ip, port, name, pass } = this.info;
-        this.logger.info({ ip: ip, port: port }, '[CONNECT]');
+        const { ip, port, name, pass } = this.info;
+        this.Logger.info({ ip: ip, port: port }, '[CONNECT]');
         this.conn.authenticate(name, pass);
     };
 
     _welcome = (welcome) => {
-        this.logger.info(welcome, '[WELCOME]');
+        this.Logger.info(welcome, '[WELCOME]');
         this.conn.send_update_frequency(UpdateTypes.CHAT, UpdateFrequencies.AUTOMATIC);
         this.conn.send_update_frequency(UpdateTypes.CLIENT_INFO, UpdateFrequencies.AUTOMATIC);
         //client.send_update_frequency(UpdateTypes.CONSOLE, UpdateFrequencies.AUTOMATIC);
         this.conn.send_poll(UpdateTypes.CLIENT_INFO, Number.MAX_SAFE_INTEGER);
+        
+        const hubEvent = { 
+            ip: this.info.ip, 
+            port: this.info.port, 
+            name: welcome.name, 
+            version: welcome.version, 
+            map: {
+                seed: welcome.map.seed,
+                landscape: welcome.map.landscape,
+                height: welcome.map.height,
+                width: welcome.map.width
+            }
+        };
+        console.log(JSON.stringify(hubEvent));
+        this.Hub.send('TellServerInfoUpdated', this.info.id, hubEvent).catch((err) => console.log(err));
     };
 
     _chat = (chat) => {
-        this.logger.info(chat, '[CHAT]');
+        this.Logger.info(chat, '[CHAT]');
 
         let sayCli = (message) => sayClient(this.conn, chat.id, message);
         let sendRc = (command) => sendRcon(this.conn, command);
@@ -94,7 +111,7 @@ export default class Server {
     }
 
     _clientJoin = (clientJoin) => {
-        this.logger.info(clientJoin, '[CLIENTJOIN]');
+        this.Logger.info(clientJoin, '[CLIENTJOIN]');
 
         let sayCli = (message) => sayClient(this.conn, clientJoin, message);
         sayCli("Welcome to TG Vanilla server - reddit.com/r/openttd legacy.");
@@ -107,7 +124,7 @@ export default class Server {
     }
 
     _error = (error) => {
-        this.logger.info(error, '[ERROR]');
+        this.Logger.info(error, '[ERROR]');
         if (error === 'connectionerror') {
             this.Disconnect();
             setTimeout(() => this.Connect(), 5000);
@@ -115,16 +132,16 @@ export default class Server {
     }
 
     _console = (consol) => {
-        this.logger.info(consol, '[CONSOLE]');
+        this.Logger.info(consol, '[CONSOLE]');
     }
 
     _clientInfo = (clientInfo) => {
-        this.logger.info(clientInfo, '[CLIENT_INFO]');
+        this.Logger.info(clientInfo, '[CLIENT_INFO]');
         this.clients = [...this.clients.filter(c => c.id !== clientInfo.id), { ...clientInfo, company: clientInfo.company + 1 }];
     }
 
     _clientUpdate = (clientUpdate) => {
-        this.logger.info(clientUpdate, '[CLIENTUPDATE]');
+        this.Logger.info(clientUpdate, '[CLIENTUPDATE]');
         let cli = this.clients.find(c => c.id === clientUpdate.id);
         let updatedProps = { name: clientUpdate.name, company: clientUpdate.company + 1 };
         this.clients = [...this.clients.filter(c => c.id !== clientUpdate.id), { ...cli, ...updatedProps }];
@@ -135,12 +152,12 @@ export default class Server {
     }
 
     _clientQuit = (clientQuit) => {
-        this.logger.info(clientQuit, '[CLIENTQUIT]');
+        this.Logger.info(clientQuit, '[CLIENTQUIT]');
         this.clients = [...this.clients.filter(c => c.id !== clientQuit.id)];
     }
 
     _clientError = (clientError) => {
-        this.logger.info(clientError, '[CLIENTERROR]');
+        this.Logger.info(clientError, '[CLIENTERROR]');
         this.clients = [...this.clients.filter(c => c.id !== clientError.id)];
     }
 }

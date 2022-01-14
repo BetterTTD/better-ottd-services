@@ -4,7 +4,8 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import pinoToSeq from 'pino-seq';
 import { pinoHttp } from 'pino-http';
 import pinoms from 'pino-multi-stream';
-import { v4 as uuidv4 } from 'uuid';
+import configureAppRoutes from './appRoutes.js';
+import Storage from './storage.js';
 
 function configureHubEvents(hub, storage) {
     hub.on("AskServers", () => {
@@ -20,19 +21,8 @@ function configureHubEvents(hub, storage) {
     });
 }
 
-function configureServices(storage) {
-    let hubUrl = process.env.DOCKER
-        ? 'http://openttd.signalrhub/server'
-        : 'http://localhost:6003/server';
-
-    const hubConnection = new HubConnectionBuilder()
-        .withUrl(hubUrl)
-        .build();
-
-    configureHubEvents(hubConnection, storage);
-
+function configureServices() {
     const seqUrl = process.env.DOCKER ? 'http://tg.seq:5341' : 'http://localhost:5341';
-
     const logger = pinoms({
         name: 'OpenTTD.AdminClient',
         streams: [
@@ -41,66 +31,23 @@ function configureServices(storage) {
             { level: 'debug', stream: pinoToSeq.createStream({ serverUrl: seqUrl }) }
         ]
     });
+    const hubUrl = process.env.DOCKER
+    ? 'http://openttd.signalrhub/server'
+    : 'http://localhost:6003/server';
+
+    const hubConnection = new HubConnectionBuilder()
+        .withUrl(hubUrl)
+        .build();
+
+    const storage = new Storage(logger, hubConnection, []);
+
+    configureHubEvents(hubConnection, storage);
 
     return {
         Storage: storage,
         Hub: hubConnection,
         Logger: logger
     };
-}
-
-function configureAppRoutes(app, services) {
-    const { Hub, Storage, Logger } = services;
-
-    app.get('/ping', (_, res) => {
-        res.send('pong');
-    });
-
-    app.get('/servers', (_, res) => {
-        res.status(200).send(Storage.state.map(server => {
-            return {
-                id: server.id,
-                ip: server.instance.info.ip,
-                port: server.instance.info.port
-            };
-        }));
-    });
-
-    app.post('/servers', (req, res) => {
-        const { ip, port } = req.body;
-        const id = uuidv4();
-
-        if (Storage.state.some(server => server.instance.ip === ip && server.instance.port === port)) {
-            res.status(400).send('Server is already added.');
-            return;
-        }
-
-        Storage.dispatch('SERVER_CREATE', { id, services, ...req.body });
-        let hubEvent = { ip: ip, port: port, name: null, version: null, map: null };
-        Hub.send('TellServerInfoUpdated', id, hubEvent).catch((err) => console.log(err));
-        res.status(200).send(id);
-    });
-
-    app.put('/servers/:serverId/connect', (req, res) => {
-        let { serverId } = req.params;
-        if (!Storage.state.some(s => s.id === serverId)) {
-            res.status(404).send('Server not found.');
-            return;
-        }
-
-        Storage.dispatch('SERVER_CONNECT', { serverId });
-        res.status(200).send();
-    });
-
-    app.delete('/servers/:serverId/disconnect', (req, res) => {
-        let { serverId } = req.params;
-        if (!Storage.state.some(s => s.id === serverId)) {
-            res.status(404).send('Server not found.');
-            return;
-        }
-        Storage.dispatch('SERVER_DISCONNECT', { serverId });
-        res.status(200).send();
-    });
 }
 
 function configureApplication(services) {

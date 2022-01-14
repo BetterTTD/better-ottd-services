@@ -8,6 +8,10 @@ function serverCreate(storage, { id, services, ip, port, botName, pass }) {
     let instance = new Server({ id, ip, port, botName, pass }, services);
     let server = { id: id, instance: instance };
     storage.state = [...storage.state, server];
+
+    let hubEvent = { ip: ip, port: port, name: null, version: null, map: null };
+    Hub.send('TellServerInfoUpdated', id, hubEvent)
+       .catch((err) => console.log(err));
 }
 
 function serverConnect(storage, { serverId }) {
@@ -21,7 +25,9 @@ function serverDisconnect(storage, { serverId }) {
 }
 
 export default class Storage {
-    constructor(initial) {
+    constructor(logger, hub, initial) {
+        this.logger = logger;
+        this.hub = hub;
         this.state = initial;
     }
 

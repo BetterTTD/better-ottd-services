@@ -1,10 +1,8 @@
-import Storage from "./storage.js";
 import { default as Startup } from "./startup.js";
 
 // Initialize
 
-const storage = new Storage([]);
-const services = Startup.ConfigureServices(storage);
+const services = Startup.ConfigureServices();
 const app = Startup.ConfigureApplication(services);
 
 // Start

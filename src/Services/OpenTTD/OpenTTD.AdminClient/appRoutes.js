@@ -43,6 +43,7 @@ let onServerDisconnect = ({ Storage }) => (req, res) => {
     Storage.dispatch('SERVER_DISCONNECT', { serverId });
     res.status(200).send();
 };
+
 export default function configureAppRoutes(app, services) {
     app.get('/ping', (_, res) => res.send('pong'));
     app.get('/servers', onGetServers(services));

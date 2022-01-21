@@ -7,6 +7,7 @@ open System.Timers
 open Akka.Actor
 open Akka.Event
 open Akka.FSharp
+open Microsoft.Extensions.Logging
 
 
 type JobMessage = obj
@@ -16,9 +17,9 @@ type Message =
     | PauseJob
     | ResumeJob
     
-let init (mailbox : Actor<Message>) =
+let init (logger : ILogger) (mailbox : Actor<Message>) =
     
-    printfn "[Scheduler:init]"
+    logger.LogInformation "[Scheduler:init]"
     
     let timer = new Timer()
     timer.Start()
@@ -26,8 +27,8 @@ let init (mailbox : Actor<Message>) =
     
     let rec running () =
         actor {
-                    
-            printfn "[Scheduler:running]"
+
+            logger.LogInformation "[Scheduler:running]"
             
             match! mailbox.Receive () with
             | PauseJob ->
@@ -39,7 +40,7 @@ let init (mailbox : Actor<Message>) =
     and paused () =
         actor {
             
-            printfn "[Scheduler:paused]"
+            logger.LogInformation "[Scheduler:paused]"
             
             match! mailbox.Receive () with
             | ResumeJob ->
@@ -51,7 +52,7 @@ let init (mailbox : Actor<Message>) =
     and idle () =
         actor {
             
-            printfn "[Scheduler:idle]"
+            logger.LogInformation "[Scheduler:idle]"
             
             match! mailbox.Receive () with
             | AddJob (actor, msg, time) ->

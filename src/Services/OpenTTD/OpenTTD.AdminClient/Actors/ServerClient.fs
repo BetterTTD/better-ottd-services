@@ -8,6 +8,7 @@ open Akka.Event
 open Akka.Actor
 open Akka.FSharp
 
+open Microsoft.Extensions.Logging
 open OpenTTD.AdminClient.Models
 open OpenTTD.AdminClient.Models.ActorModels
 open OpenTTD.AdminClient.Models.Configurations
@@ -20,9 +21,9 @@ type private Actors =
       Receiver  : IActorRef
       Scheduler : IActorRef }
 
-let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
+let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
 
-    printfn $"[ServerClient:init] cfg: %A{cfg}"
+    logger.LogInformation $"[ServerClient:init] cfg: %A{cfg}"
     
     let stream =
         let tcpClient = new TcpClient ()
@@ -30,9 +31,9 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
         tcpClient.GetStream ()
         
     let actors =
-        {  Sender    = Sender.init    stream |> spawn mailbox "sender"
-           Receiver  = Receiver.init  stream |> spawn mailbox "receiver"
-           Scheduler = Scheduler.init        |> spawn mailbox "scheduler" }
+        {  Sender    = Sender.init    logger stream |> spawn mailbox "sender"
+           Receiver  = Receiver.init  logger stream |> spawn mailbox "receiver"
+           Scheduler = Scheduler.init logger        |> spawn mailbox "scheduler" }
     
     mailbox.Defer (fun () ->
         actors.Scheduler <! PoisonPill.Instance
@@ -43,8 +44,8 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
     
     let rec errored actors state =
         actor {
-            
-            printfn "[ServerClient:errored]"
+                    
+            logger.LogInformation "[ServerClient:errored]"
             
             actors.Scheduler <! Scheduler.PauseJob
             return! errored actors state
@@ -53,8 +54,8 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
     and connected actors state =
         actor {
             
-            printfn "[ServerClient:connected]"
-            
+            logger.LogInformation "[ServerClient:connected]"
+
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
@@ -65,8 +66,8 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
     and connecting actors state =
         actor {
             
-            printfn "[ServerClient:connecting]"
-            
+            logger.LogInformation "[ServerClient:connecting]"
+
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
@@ -84,12 +85,12 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
     and idle actors state =
         actor {
             
-            printfn "[ServerClient:idle]"
-            
+            logger.LogInformation "[ServerClient:idle]"
+
             match! mailbox.Receive () with
             | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
                 actors.Sender    <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
-                actors.Scheduler <! Scheduler.AddJob (actors.Receiver, "receive", TimeSpan.FromSeconds(1.0))
+                actors.Scheduler <! Scheduler.AddJob (actors.Receiver, "receive", TimeSpan.FromMilliseconds(10.0))
                 return! connecting actors state
             | _ -> return UnhandledMessage
         }

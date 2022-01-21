@@ -7,6 +7,7 @@ open System.IO
 open Akka.FSharp
 open FSharpx.Collections
 
+open Microsoft.Extensions.Logging
 open OpenTTD.AdminClient.Networking.Packet
 open OpenTTD.AdminClient.Networking.PacketTransformer
 open OpenTTD.AdminClient.Models.ActorModels
@@ -38,16 +39,16 @@ let private waitForPacket (stream : Stream) =
     let content = read stream (int size - 2)
     createPacket sizeBuf content
 
-let init (stream : Stream) (mailbox : Actor<_>) =
+let init (logger : ILogger) (stream : Stream) (mailbox : Actor<_>) =
     
-    printfn "[Receiver:init]"
+    logger.LogInformation "[Receiver:init]"
     
     let rec loop () =
         actor {
             let! _  = mailbox.Receive ()
             let msg = waitForPacket stream |> packetToMsg
-            
-            printfn $"[Receiver:receive] msg: %A{msg}"
+                    
+            logger.LogDebug $"[Receiver:receive] msg: %A{msg}"
             
             mailbox.Context.Parent <! Message.PacketReceivedMsg msg
             return! loop () 

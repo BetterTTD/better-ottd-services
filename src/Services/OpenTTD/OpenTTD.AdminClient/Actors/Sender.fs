@@ -5,19 +5,20 @@ open System.IO
 
 open Akka.FSharp
 
+open Microsoft.Extensions.Logging
 open OpenTTD.AdminClient.Networking.MessageTransformer
 open OpenTTD.AdminClient.Networking.Packet
  
  
-let init (stream : Stream) (mailbox : Actor<AdminMessage>) =
+let init (logger : ILogger) (stream : Stream) (mailbox : Actor<AdminMessage>) =
     
-    printfn "[Sender:init]"
+    logger.LogInformation "[Sender:init]"
     
     let rec loop () =
         actor {      
             let! msg = mailbox.Receive ()
-            
-            printfn $"[Sender:send] msg: %A{msg}"
+
+            logger.LogDebug $"[Sender:send] msg: %A{msg}"            
             
             let { Buffer = buf; Size = size; } = msg |> msgToPacket |> prepareToSend
             stream.Write (buf, 0, int size)

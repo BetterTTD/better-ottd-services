@@ -39,10 +39,16 @@ let private waitForPacket (stream : Stream) =
     createPacket sizeBuf content
 
 let init (stream : Stream) (mailbox : Actor<_>) =
+    
+    printfn "[Receiver:init]"
+    
     let rec loop () =
         actor {
             let! _  = mailbox.Receive ()
             let msg = waitForPacket stream |> packetToMsg
+            
+            printfn $"[Receiver:receive] msg: %A{msg}"
+            
             mailbox.Context.Parent <! Message.PacketReceivedMsg msg
             return! loop () 
         }

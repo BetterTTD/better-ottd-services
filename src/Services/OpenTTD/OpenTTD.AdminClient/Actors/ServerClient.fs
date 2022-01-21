@@ -22,6 +22,8 @@ type private Actors =
 
 let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
 
+    printfn $"[ServerClient:init] cfg: %A{cfg}"
+    
     let stream =
         let tcpClient = new TcpClient ()
         tcpClient.Connect (cfg.Host, cfg.Port |> int)
@@ -41,12 +43,18 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
     
     let rec errored actors state =
         actor {
+            
+            printfn "[ServerClient:errored]"
+            
             actors.Scheduler <! Scheduler.PauseJob
             return! errored actors state
         }
 
     and connected actors state =
         actor {
+            
+            printfn "[ServerClient:connected]"
+            
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
@@ -56,6 +64,9 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
         
     and connecting actors state =
         actor {
+            
+            printfn "[ServerClient:connecting]"
+            
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
@@ -72,6 +83,9 @@ let init (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
         
     and idle actors state =
         actor {
+            
+            printfn "[ServerClient:idle]"
+            
             match! mailbox.Receive () with
             | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
                 actors.Sender    <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }

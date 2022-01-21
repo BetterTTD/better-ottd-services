@@ -17,12 +17,18 @@ type Message =
     | ResumeJob
     
 let init (mailbox : Actor<Message>) =
+    
+    printfn "[Scheduler:init]"
+    
     let timer = new Timer()
     timer.Start()
     mailbox.Defer (fun _ -> timer.Dispose())
     
     let rec running () =
         actor {
+                    
+            printfn "[Scheduler:running]"
+            
             match! mailbox.Receive () with
             | PauseJob ->
                 timer.Stop ()
@@ -32,6 +38,9 @@ let init (mailbox : Actor<Message>) =
         
     and paused () =
         actor {
+            
+            printfn "[Scheduler:paused]"
+            
             match! mailbox.Receive () with
             | ResumeJob ->
                 timer.Start ()
@@ -41,6 +50,9 @@ let init (mailbox : Actor<Message>) =
         
     and idle () =
         actor {
+            
+            printfn "[Scheduler:idle]"
+            
             match! mailbox.Receive () with
             | AddJob (actor, msg, time) ->
                 timer.Interval <- time.TotalMilliseconds

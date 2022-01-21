@@ -17,6 +17,7 @@
       <Compile Include="Actors\Sender.fs" />
       <Compile Include="Actors\Receiver.fs" />
       <Compile Include="Actors\ServerClient.fs" />
+      <Compile Include="ClientsManager.fs" />
     </ItemGroup>
 
     <ItemGroup>

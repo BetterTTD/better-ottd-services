@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.SignalrHub", "Servi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.SignalrHub.Messages", "Services\OpenTTD\OpenTTD.SignalrHub.Messages\OpenTTD.SignalrHub.Messages.csproj", "{43CFC957-6973-4511-B1AF-DED141A9C3AF}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "OpenTTD.AdminClient", "Services\OpenTTD\OpenTTD.AdminClient\OpenTTD.AdminClient.fsproj", "{221369A1-86E9-4AD7-9B90-6171C2AEFA52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{43CFC957-6973-4511-B1AF-DED141A9C3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43CFC957-6973-4511-B1AF-DED141A9C3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43CFC957-6973-4511-B1AF-DED141A9C3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{221369A1-86E9-4AD7-9B90-6171C2AEFA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221369A1-86E9-4AD7-9B90-6171C2AEFA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221369A1-86E9-4AD7-9B90-6171C2AEFA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221369A1-86E9-4AD7-9B90-6171C2AEFA52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +141,7 @@ Global
 		{FEA68BE8-5218-46BB-8F3F-2FA7A0F18BEF} = {6C5F8AE3-D03D-4196-85F6-2336988DDB89}
 		{0B62E876-1833-4844-81E0-890B72759701} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 		{43CFC957-6973-4511-B1AF-DED141A9C3AF} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
+		{221369A1-86E9-4AD7-9B90-6171C2AEFA52} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B01EB61-45F2-4DF5-97A2-4101DA40ACF4}

@@ -5,6 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Repositories\IServerConfigurationRepository.fs" />
+        <Compile Include="IAdminClientProvider.fs" />
         <Compile Include="ApiRouter.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>

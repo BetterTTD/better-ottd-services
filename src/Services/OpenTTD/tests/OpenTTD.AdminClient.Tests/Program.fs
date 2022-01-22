@@ -11,7 +11,7 @@ open OpenTTD.AdminClient.Models.Configurations
 
 type TestService(
     cfg: ServerConfiguration,
-    manager: ClientsManager) =
+    manager: AdminClientManager) =
     interface IHostedService with
         member this.StartAsync _ =
             task {
@@ -40,7 +40,7 @@ let configureServices (services : IServiceCollection) =
         .AddLogging()
         .AddHostedService<TestService>()
         .AddSingleton<ServerConfiguration>(fun sp -> cfg)
-        .AddSingleton<ClientsManager>()
+        .AddSingleton<AdminClientManager>()
         .AddSingleton<IServerConfigurationRepository, InMemoryServerConfigurationRepository>()
     |> ignore
     

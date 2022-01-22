@@ -9,21 +9,22 @@ open OpenTTD.AdminClient.Networking.MessageTransformer
 open OpenTTD.AdminClient.Networking.Packet
  
  
-let init (logger : ILogger) (tcpClient : TcpClient) (mailbox : Actor<AdminMessage>) =
+let init (loggerFactory : ILoggerFactory) (tcpClient : TcpClient) (mailbox : Actor<AdminMessage>) =
     
-    logger.LogInformation "[Sender:init]"
+    let logger = loggerFactory.CreateLogger "Sender"
+    logger.LogInformation "Initializing"
     
     let stream = tcpClient.GetStream()
     
     mailbox.Defer (fun _ ->
-        logger.LogInformation "[Sender:stopping] Taking pill instance"
+        logger.LogInformation "Stopping"
         stream.Dispose())
 
     let rec loop () =
         actor {      
             let! msg = mailbox.Receive ()
 
-            logger.LogDebug $"[Sender:send] msg: %A{msg}"            
+            logger.LogDebug $"Sending message: %A{msg}"            
             
             let { Buffer = buf; Size = size; } = msg |> msgToPacket |> prepareToSend
             stream.Write (buf, 0, int size)

@@ -1,13 +1,14 @@
-open Microsoft.Extensions.DependencyInjection
-open OpenTTD.AdminClient
 open Saturn
 
 open Microsoft.FSharp.Core
 open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.DependencyInjection
 
+open OpenTTD.AdminClient
 open OpenTTD.API
+open OpenTTD.API.Repositories
 
 let topRouter = router {
     not_found_handler SiteMap.page
@@ -28,8 +29,9 @@ let configureLogging (builder : ILoggingBuilder) =
 
 let configureServices (services : IServiceCollection) =
     services
-        .AddSingleton<ClientsManager>()
+        .AddSingleton<IAdminClientManager, AdminClientManager>()
         .AddSingleton<IServerConfigurationRepository, InMemoryServerConfigurationRepository>()
+        .AddSingleton<IAdminClientProvider, AdminClientProvider>()
 
 let configureApplication (app : IApplicationBuilder) =
     let env = Environment.getWebHostEnvironment app

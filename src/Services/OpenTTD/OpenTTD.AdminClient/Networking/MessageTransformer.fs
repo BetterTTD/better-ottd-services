@@ -2,6 +2,7 @@
 
 
 open Enums
+open OpenTTD.AdminClient.Networking.Enums
 open Packet
 
 
@@ -17,11 +18,15 @@ type AdminUpdateFreqMessage =
 type AdminPollMessage =
     { UpdateType : AdminUpdateType
       Data       : uint32 }
+    
+type AdminRconMessage =
+    { Command    : string }
 
 type AdminMessage =
-    | AdminJoinMsg of AdminJoinMessage
+    | AdminJoinMsg       of AdminJoinMessage
     | AdminUpdateFreqMsg of AdminUpdateFreqMessage
-    | AdminPollMsg of AdminPollMessage
+    | AdminPollMsg       of AdminPollMessage
+    | AdminRconMsg       of AdminRconMessage
 
 
 let msgToPacket = function
@@ -30,12 +35,18 @@ let msgToPacket = function
         |> writeString pass
         |> writeString name
         |> writeString version
+        
     | AdminUpdateFreqMsg { UpdateType = update; Frequency = freq } ->
         createPacketForType PacketType.ADMIN_PACKET_ADMIN_UPDATE_FREQUENCY
         |> writeU16 (uint16 update)
         |> writeU16 (uint16 freq)
+        
     | AdminPollMsg { UpdateType = update; Data = data } ->
         createPacketForType PacketType.ADMIN_PACKET_ADMIN_POLL
         |> writeByte (byte update)
         |> writeU32 data
+        
+    | AdminRconMsg { Command = command } ->
+        createPacketForType PacketType.ADMIN_PACKET_ADMIN_RCON
+        |> writeString command
        

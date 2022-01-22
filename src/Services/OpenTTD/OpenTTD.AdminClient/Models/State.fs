@@ -40,14 +40,12 @@ let empty =
           ManagerName = ""
           Color       = Color.END
           HasPassword = false }
-    { Info    = None
+    { Info        = None
       Clients     = []
       Companies   = [ spectator ] }
 
 let dispatch (state : ServerState) (msg : PacketMessage) =
     match msg with
-    | ServerProtocolMsg _ -> state
-
     | ServerWelcomeMsg msg ->
         let info =
             { ServerName      = msg.ServerName
@@ -57,10 +55,6 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
               MapWidth        = msg.MapWidth
               MapHeight       = msg.MapHeight }
         { state with Info = Some info} 
-
-    | ServerChatMsg _ -> state
-
-    | ServerClientJoinMsg _ -> state
 
     | ServerClientInfoMsg msg ->
         match state.Companies |> List.tryFind (fun cmp -> cmp.Id = msg.CompanyId) with
@@ -125,3 +119,5 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
     | ServerCompanyRemoveMsg msg ->
         let companies = state.Companies |> List.filter (fun cmp -> cmp.Id <> msg.CompanyId)
         { state with Companies = companies }
+
+    | _ -> state

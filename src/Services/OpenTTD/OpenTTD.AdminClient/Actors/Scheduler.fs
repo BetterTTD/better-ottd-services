@@ -17,21 +17,22 @@ type Message =
     | PauseJob
     | ResumeJob
     
-let init (logger : ILogger) (mailbox : Actor<Message>) =
+let init (loggerFactory : ILoggerFactory) (mailbox : Actor<Message>) =
     
-    logger.LogInformation "[Scheduler:init]"
+    let logger = loggerFactory.CreateLogger "Scheduler"
+    logger.LogInformation "Initializing"
     
     let timer = new Timer()
     timer.Start()
     
     mailbox.Defer (fun _ ->
-        logger.LogInformation "[Scheduler:stopping] Taking pill instance"
+        logger.LogInformation "Stopping"
         timer.Dispose())
 
     let rec running () =
         actor {
 
-            logger.LogInformation "[Scheduler:running]"
+            logger.LogInformation "State: running"
             
             match! mailbox.Receive () with
             | PauseJob ->
@@ -43,7 +44,7 @@ let init (logger : ILogger) (mailbox : Actor<Message>) =
     and paused () =
         actor {
             
-            logger.LogInformation "[Scheduler:paused]"
+            logger.LogInformation "State: paused"
             
             match! mailbox.Receive () with
             | ResumeJob ->
@@ -55,7 +56,7 @@ let init (logger : ILogger) (mailbox : Actor<Message>) =
     and idle () =
         actor {
             
-            logger.LogInformation "[Scheduler:idle]"
+            logger.LogInformation "State: idle"
             
             match! mailbox.Receive () with
             | AddJob (actor, msg, time) ->

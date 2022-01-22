@@ -40,23 +40,27 @@ let private waitForPacket (stream : Stream) =
     let content = read stream (int size - 2)
     createPacket sizeBuf content
 
-let init (logger : ILogger) (tcpClient : TcpClient) (mailbox : Actor<_>) =
+let init (loggerFactory : ILoggerFactory) (tcpClient : TcpClient) (mailbox : Actor<_>) =
     
-    logger.LogInformation "[Receiver:init]"
+    let logger = loggerFactory.CreateLogger "Receiver"
+    logger.LogInformation "Initializing"
     
     let stream = tcpClient.GetStream()
     
     mailbox.Defer (fun _ ->
-        logger.LogInformation "[Receiver:stopping] Taking pill instance"
+        logger.LogInformation "Stopping"
         stream.Dispose())
 
     let rec loop () =
         actor {
             let! _  = mailbox.Receive ()
             try
-                let msg = waitForPacket stream |> packetToMsg
-                logger.LogDebug $"[Receiver:receive] msg: %A{msg}"
-                mailbox.Context.Parent <! Message.PacketReceivedMsg msg
+                match waitForPacket stream |> packetToMsg with
+                | Ok msg -> 
+                    logger.LogDebug $"Received message: %A{msg}"
+                    mailbox.Context.Parent <! Message.PacketReceivedMsg msg
+                | Error err ->
+                    logger.LogWarning $"Received unhandled packet with code: %d{err}"
                 return! loop () 
             with
             | :? SocketException as ex when ex.ErrorCode = 10053 -> 

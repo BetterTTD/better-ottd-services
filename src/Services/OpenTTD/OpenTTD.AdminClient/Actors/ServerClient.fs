@@ -21,9 +21,10 @@ type private Actors =
       Receiver  : IActorRef
       Scheduler : IActorRef }
 
-let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
+let init (loggerFactory : ILoggerFactory) (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
 
-    logger.LogInformation $"[ServerClient:init] cfg: %A{cfg}"
+    let logger = loggerFactory.CreateLogger "ServerClient"
+    logger.LogInformation $"Initializing with configuration: %A{cfg}"
     
     let tcpClient =
         let tcpClient = new TcpClient()
@@ -31,12 +32,12 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
         tcpClient
         
     let actors =
-        {  Sender    = Sender.init    logger tcpClient |> spawn mailbox "sender"
-           Receiver  = Receiver.init  logger tcpClient |> spawn mailbox "receiver"
-           Scheduler = Scheduler.init logger           |> spawn mailbox "scheduler" }
+        {  Sender    = Sender.init    loggerFactory tcpClient |> spawn mailbox "sender"
+           Receiver  = Receiver.init  loggerFactory tcpClient |> spawn mailbox "receiver"
+           Scheduler = Scheduler.init loggerFactory           |> spawn mailbox "scheduler" }
     
     mailbox.Defer (fun _ ->
-        logger.LogInformation $"[ServerClient:stopping] Taking pill instances for: %A{cfg}"
+        logger.LogInformation $"Stopping with configuration: %A{cfg}"
         actors.Scheduler <! PoisonPill.Instance
         actors.Sender    <! PoisonPill.Instance
         actors.Receiver  <! PoisonPill.Instance
@@ -46,7 +47,7 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
     let rec errored actors state =
         actor {
                     
-            logger.LogInformation "[ServerClient:errored]"
+            logger.LogInformation "State: errored"
             
             actors.Scheduler <! Scheduler.PauseJob
             return! errored actors state
@@ -55,10 +56,16 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
     and connected actors state =
         actor {
             
-            logger.LogInformation "[ServerClient:connected]"
+            logger.LogInformation "State: connected"
 
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
+                match msg with
+                | ServerChatMsg chatMsg when chatMsg.Message = "kek" ->
+                    let adminMsg = AdminRconMsg { Command = $"say_client {chatMsg.ClientId} \"cheburek!\"" }
+                    actors.Sender <! adminMsg
+                | _ -> ()
+                
                 let state = State.dispatch state msg
                 return! connected actors state
             | _ -> return UnhandledMessage
@@ -67,7 +74,7 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
     and connecting actors state =
         actor {
             
-            logger.LogInformation "[ServerClient:connecting]"
+            logger.LogInformation "State: connecting"
 
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
@@ -86,7 +93,7 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
     and idle actors state =
         actor {
             
-            logger.LogInformation "[ServerClient:idle]"
+            logger.LogInformation "State: idle"
 
             match! mailbox.Receive () with
             | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->

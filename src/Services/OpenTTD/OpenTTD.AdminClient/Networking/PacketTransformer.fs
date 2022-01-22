@@ -232,16 +232,16 @@ let private readServerClientError packet =
 let packetToMsg packet =
     let typeVal, pac = readByte packet
     match enum<PacketType>(int typeVal) with
-    | PacketType.ADMIN_PACKET_SERVER_PROTOCOL       -> readServerProtocol      pac
-    | PacketType.ADMIN_PACKET_SERVER_WELCOME        -> readServerWelcome       pac
-    | PacketType.ADMIN_PACKET_SERVER_CHAT           -> readServerChat          pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_JOIN    -> readServerClientJoin    pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_INFO    -> readServerClientInfo    pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_UPDATE  -> readServerClientUpdate  pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_QUIT    -> readServerClientQuit    pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_ERROR   -> readServerClientError   pac
-    | PacketType.ADMIN_PACKET_SERVER_COMPANY_NEW    -> readServerCompanyNew    pac
-    | PacketType.ADMIN_PACKET_SERVER_COMPANY_INFO   -> readServerCompanyInfo   pac
-    | PacketType.ADMIN_PACKET_SERVER_COMPANY_UPDATE -> readServerCompanyUpdate pac
-    | PacketType.ADMIN_PACKET_SERVER_COMPANY_REMOVE -> readServerCompanyRemove pac
-    | _ -> failwithf $"PACKET TRANSFORMER ERROR: UNSUPPORTED TYPE - %d{typeVal}"
+    | PacketType.ADMIN_PACKET_SERVER_PROTOCOL       -> Ok (readServerProtocol      pac)
+    | PacketType.ADMIN_PACKET_SERVER_WELCOME        -> Ok (readServerWelcome       pac)
+    | PacketType.ADMIN_PACKET_SERVER_CHAT           -> Ok (readServerChat          pac)
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_JOIN    -> Ok (readServerClientJoin    pac)
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_INFO    -> Ok (readServerClientInfo    pac)
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_UPDATE  -> Ok (readServerClientUpdate  pac)
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_QUIT    -> Ok (readServerClientQuit    pac)
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_ERROR   -> Ok (readServerClientError   pac)
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_NEW    -> Ok (readServerCompanyNew    pac)
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_INFO   -> Ok (readServerCompanyInfo   pac)
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_UPDATE -> Ok (readServerCompanyUpdate pac)
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_REMOVE -> Ok (readServerCompanyRemove pac)
+    | _ -> Error (int typeVal)

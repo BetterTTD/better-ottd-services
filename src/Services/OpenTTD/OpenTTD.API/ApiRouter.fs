@@ -72,7 +72,10 @@ let private updateClient (id : Guid) : HttpHandler =
 let private deleteClient (id : Guid) : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) ->
         task {
-            return! json id next ctx
+            let manager = ctx.GetService<ClientsManager>()
+            match! manager.RemoveClient id with
+            | Ok _ -> return! Successful.OK $"Client with id: {id} removed successfully" next ctx
+            | Error err -> return! RequestErrors.BAD_REQUEST err next ctx
         }
 
 let routes = router {

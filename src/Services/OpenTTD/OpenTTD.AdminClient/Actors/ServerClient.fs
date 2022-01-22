@@ -35,7 +35,8 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
            Receiver  = Receiver.init  logger stream |> spawn mailbox "receiver"
            Scheduler = Scheduler.init logger        |> spawn mailbox "scheduler" }
     
-    mailbox.Defer (fun () ->
+    mailbox.Defer (fun _ ->
+        logger.LogInformation $"[ServerClient:stopping] Taking pill instances for: %A{cfg}"
         actors.Scheduler <! PoisonPill.Instance
         actors.Sender    <! PoisonPill.Instance
         actors.Receiver  <! PoisonPill.Instance

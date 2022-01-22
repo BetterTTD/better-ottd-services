@@ -43,6 +43,9 @@ let init (logger : ILogger) (stream : Stream) (mailbox : Actor<_>) =
     
     logger.LogInformation "[Receiver:init]"
     
+    mailbox.Defer (fun _ ->
+        logger.LogInformation "[Receiver:stopping] Taking pill instance")
+
     let rec loop () =
         actor {
             let! _  = mailbox.Receive ()

@@ -23,8 +23,11 @@ let init (logger : ILogger) (mailbox : Actor<Message>) =
     
     let timer = new Timer()
     timer.Start()
-    mailbox.Defer (fun _ -> timer.Dispose())
     
+    mailbox.Defer (fun _ ->
+        logger.LogInformation "[Scheduler:stopping] Taking pill instance"
+        timer.Dispose())
+
     let rec running () =
         actor {
 

@@ -15,7 +15,12 @@ let topRouter = router {
 }
 
 let configureLogging (builder : ILoggingBuilder) =
-    let filter (l : LogLevel) = l.Equals LogLevel.Debug
+    let filter (l : LogLevel) =
+        l.Equals LogLevel.Critical ||
+        l.Equals LogLevel.Debug ||
+        l.Equals LogLevel.Error ||
+        l.Equals LogLevel.Information ||
+        l.Equals LogLevel.Warning
     builder.AddFilter(filter)
            .AddConsole()
            .AddDebug()

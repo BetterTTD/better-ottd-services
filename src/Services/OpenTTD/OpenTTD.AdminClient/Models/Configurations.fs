@@ -17,7 +17,7 @@ type BotConfiguration =
 
 type ServerConfiguration =
     { Host : IPAddress
-      Port : int<port>
+      Port : int
       Bot  : BotConfiguration }
     
 

@@ -31,7 +31,7 @@ type TestService(
 let configureServices (services : IServiceCollection) =
     let cfg =
         { Host = IPAddress.Parse("")
-          Port = 3977<port>
+          Port = 3977
           Bot = { Name = "TG Bot"
                   Pass = ""
                   Ver = "1.0.0" } }

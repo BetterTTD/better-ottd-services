@@ -27,7 +27,7 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
     
     let stream =
         let tcpClient = new TcpClient ()
-        tcpClient.Connect (cfg.Host, cfg.Port |> int)
+        tcpClient.Connect (cfg.Host, cfg.Port)
         tcpClient.GetStream ()
         
     let actors =

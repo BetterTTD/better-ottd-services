@@ -1,72 +1,17 @@
-open System
-open Microsoft.FSharp.Core
+open Microsoft.Extensions.DependencyInjection
+open OpenTTD.AdminClient
 open Saturn
-open Giraffe
 
+open Microsoft.FSharp.Core
 open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Logging
 
-[<CLIMutable>]
-type ClientCreateRequest =
-    { Ip      : string
-      Port    : int
-      Pass    : string
-      BotName : string 
-      BotVer  : string }
-    
-[<CLIMutable>]
-type ClientUpdateRequest =
-    { Ip      : string
-      Port    : int
-      Pass    : string
-      BotName : string 
-      BotVer  : string }
-    
-let getClients : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            return! json "" next ctx
-        }
-
-let getClient (id : Guid) : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            return! json id next ctx
-        }
-
-let createClient : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            let! request = ctx.BindJsonAsync<ClientCreateRequest>()
-            return! json request next ctx
-        }
-
-let updateClient (id : Guid) : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            let! request = ctx.BindJsonAsync<ClientUpdateRequest>()
-            return! json request next ctx
-        }
-
-let deleteClient (id : Guid) : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            return! json id next ctx
-        }
-
-let apiRouter = router {
-    get "/clients" getClients
-    getf "/clients/%O" getClient
-    put "/clients/create" createClient
-    putf "/clients/%O/update" updateClient
-    deletef "/clients/%O/delete" deleteClient
-}
+open OpenTTD.API
 
 let topRouter = router {
     not_found_handler SiteMap.page
-    forward "/api" apiRouter
+    forward "/api" ApiRouter.routes
 }
 
 let configureLogging (builder : ILoggingBuilder) =
@@ -76,10 +21,12 @@ let configureLogging (builder : ILoggingBuilder) =
            .AddDebug()
     |> ignore
 
-let configureServices services =
+let configureServices (services : IServiceCollection) =
     services
+        .AddSingleton<ClientsManager>()
+        .AddSingleton<IServerConfigurationRepository, InMemoryServerConfigurationRepository>()
 
-let configureApplication app =
+let configureApplication (app : IApplicationBuilder) =
     let env = Environment.getWebHostEnvironment app
     if (env.IsDevelopment()) then
         app.UseDeveloperExceptionPage()

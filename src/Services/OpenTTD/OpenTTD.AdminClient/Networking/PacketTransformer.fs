@@ -91,7 +91,7 @@ type PacketMessage =
 
 let private readServerCompanyNew packet =
     let id, _ = readByte   packet
-    ServerCompanyNewMsg { CompanyId = id }
+    ServerCompanyNewMsg { CompanyId = id + 1uy }
 
 let private readServerCompanyInfo packet =
     let id,      pac = readByte   packet
@@ -103,7 +103,7 @@ let private readServerCompanyInfo packet =
     let _      , _   = readBool   pac // is AI
     let color        = enum<Color>(int colorId)
     ServerCompanyInfoMsg
-        { CompanyId = id
+        { CompanyId = id + 1uy
           CompanyName = name
           ManagerName = manager
           Color = color
@@ -117,7 +117,7 @@ let private readServerCompanyUpdate packet =
     let hasPass, _   = readBool   pac
     let color        = enum<Color>(int colorId)
     ServerCompanyInfoMsg
-        { CompanyId = id
+        { CompanyId = id + 1uy
           CompanyName = name
           ManagerName = manager
           Color = color
@@ -128,7 +128,7 @@ let private readServerCompanyRemove packet =
     let reasonId, _   = readByte pac
     let reason        = enum<AdminCompanyRemoveReason>(int reasonId)
     ServerCompanyRemoveMsg
-        { CompanyId = id
+        { CompanyId = id + 1uy
           Reason    = reason }
 
 let private readServerProtocol packet =
@@ -209,7 +209,7 @@ let private readServerClientInfo packet =
           Name      = name
           Language  = enum<NetworkLanguage>(int lang)
           JoinDate  = joinDate
-          CompanyId = companyId }
+          CompanyId = companyId + 1uy }
 
 let private readServerClientUpdate packet =
     let clientId, pac = readU32 packet
@@ -218,7 +218,7 @@ let private readServerClientUpdate packet =
     ServerClientUpdateMsg
         { ClientId  = clientId
           Name      = name
-          CompanyId = companyId }
+          CompanyId = companyId + 1uy }
 
 let private readServerClientQuit packet =
     let clientId, _ = readU32 packet

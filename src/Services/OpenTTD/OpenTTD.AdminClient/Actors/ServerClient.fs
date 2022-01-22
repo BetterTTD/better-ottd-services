@@ -9,6 +9,7 @@ open Akka.Actor
 open Akka.FSharp
 
 open Microsoft.Extensions.Logging
+open OpenTTD.AdminClient
 open OpenTTD.AdminClient.Models
 open OpenTTD.AdminClient.Models.ActorModels
 open OpenTTD.AdminClient.Models.Configurations
@@ -60,14 +61,14 @@ let init (loggerFactory : ILoggerFactory) (cfg : ServerConfiguration) (mailbox :
 
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
+                let state = State.dispatch state msg
+                
                 match msg with
-                | ServerChatMsg chatMsg when chatMsg.Message = "kek" ->
-                    let adminMsg = AdminRconMsg { Command = $"say_client {chatMsg.ClientId} \"cheburek!\"" }
-                    actors.Sender <! adminMsg
+                | ServerChatMsg chatMsg -> ChatCommandHandler.handle (chatMsg, state, actors.Sender)
                 | _ -> ()
                 
-                let state = State.dispatch state msg
                 return! connected actors state
+                
             | _ -> return UnhandledMessage
         }
         

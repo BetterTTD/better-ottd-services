@@ -2,7 +2,6 @@
 
 
 open Enums
-open OpenTTD.AdminClient.Networking.Enums
 open Packet
 
 

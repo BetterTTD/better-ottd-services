@@ -25,22 +25,22 @@ let init (logger : ILogger) (cfg : ServerConfiguration) (mailbox : Actor<Message
 
     logger.LogInformation $"[ServerClient:init] cfg: %A{cfg}"
     
-    let stream =
-        let tcpClient = new TcpClient ()
+    let tcpClient =
+        let tcpClient = new TcpClient()
         tcpClient.Connect (cfg.Host, cfg.Port)
-        tcpClient.GetStream ()
+        tcpClient
         
     let actors =
-        {  Sender    = Sender.init    logger stream |> spawn mailbox "sender"
-           Receiver  = Receiver.init  logger stream |> spawn mailbox "receiver"
-           Scheduler = Scheduler.init logger        |> spawn mailbox "scheduler" }
+        {  Sender    = Sender.init    logger tcpClient |> spawn mailbox "sender"
+           Receiver  = Receiver.init  logger tcpClient |> spawn mailbox "receiver"
+           Scheduler = Scheduler.init logger           |> spawn mailbox "scheduler" }
     
     mailbox.Defer (fun _ ->
         logger.LogInformation $"[ServerClient:stopping] Taking pill instances for: %A{cfg}"
         actors.Scheduler <! PoisonPill.Instance
         actors.Sender    <! PoisonPill.Instance
         actors.Receiver  <! PoisonPill.Instance
-        stream.Dispose ())
+        tcpClient.Dispose ())
 
     
     let rec errored actors state =

@@ -4,6 +4,7 @@
 open System
 open System.IO
 
+open System.Net.Sockets
 open Akka.FSharp
 open FSharpx.Collections
 
@@ -39,22 +40,27 @@ let private waitForPacket (stream : Stream) =
     let content = read stream (int size - 2)
     createPacket sizeBuf content
 
-let init (logger : ILogger) (stream : Stream) (mailbox : Actor<_>) =
+let init (logger : ILogger) (tcpClient : TcpClient) (mailbox : Actor<_>) =
     
     logger.LogInformation "[Receiver:init]"
     
+    let stream = tcpClient.GetStream()
+    
     mailbox.Defer (fun _ ->
-        logger.LogInformation "[Receiver:stopping] Taking pill instance")
+        logger.LogInformation "[Receiver:stopping] Taking pill instance"
+        stream.Dispose())
 
     let rec loop () =
         actor {
             let! _  = mailbox.Receive ()
-            let msg = waitForPacket stream |> packetToMsg
-                    
-            logger.LogDebug $"[Receiver:receive] msg: %A{msg}"
-            
-            mailbox.Context.Parent <! Message.PacketReceivedMsg msg
-            return! loop () 
+            try
+                let msg = waitForPacket stream |> packetToMsg
+                logger.LogDebug $"[Receiver:receive] msg: %A{msg}"
+                mailbox.Context.Parent <! Message.PacketReceivedMsg msg
+                return! loop () 
+            with
+            | :? SocketException as ex when ex.ErrorCode = 10053 -> 
+                return! loop () 
         }
         
     loop ()

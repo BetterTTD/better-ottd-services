@@ -16,8 +16,7 @@ type Client =
     { Id               : uint32
       Company          : Company
       Name             : string
-      Host             : string
-      Language         : NetworkLanguage }
+      Host             : string }
 
 type ServerInfo =
     { ServerName       : string
@@ -63,8 +62,7 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
                 { Id       = msg.ClientId
                   Company  = company
                   Name     = msg.Name
-                  Host     = msg.Address
-                  Language = msg.Language }
+                  Host     = msg.Address }
             let clients = state.Clients |> List.filter (fun cli -> cli.Id <> client.Id)
             { state with Clients = clients @ [ client ] }
         | None -> state

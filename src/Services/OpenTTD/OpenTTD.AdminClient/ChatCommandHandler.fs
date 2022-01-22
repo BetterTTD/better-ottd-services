@@ -13,7 +13,7 @@ let private (|Admin|Rules|Reset|Rename|Unknown|) input =
     | "!admin"   -> Admin
     | "!rules"   -> Rules
     | "!reset"   -> Reset
-    | "!resetMe" -> Reset
+    | "!resetme" -> Reset
     
     | str when str.StartsWith "!name " ||
                str.StartsWith "!rename " ->

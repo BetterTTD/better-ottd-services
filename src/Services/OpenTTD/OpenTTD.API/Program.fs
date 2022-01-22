@@ -1,3 +1,4 @@
+open Microsoft.Extensions.Logging
 open Saturn
 open Giraffe
 open Microsoft.Extensions.Hosting
@@ -18,6 +19,13 @@ let topRouter = router {
     forward "/api" apiRouter
 }
 
+let configureLogging (builder : ILoggingBuilder) =
+    let filter (l : LogLevel) = l.Equals LogLevel.Debug
+    builder.AddFilter(filter)
+           .AddConsole()
+           .AddDebug()
+    |> ignore
+
 let configureServices services =
     services
 
@@ -36,6 +44,7 @@ let app = application {
     use_router topRouter
     use_gzip
     
+    logging configureLogging
     service_config configureServices
     app_config configureApplication
 }

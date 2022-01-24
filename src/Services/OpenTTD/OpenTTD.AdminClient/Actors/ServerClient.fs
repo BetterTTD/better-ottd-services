@@ -21,8 +21,9 @@ type private Actors =
     { Sender    : IActorRef
       Receiver  : IActorRef
       Scheduler : IActorRef }
-
-let init (loggerFactory : ILoggerFactory) (cfg : ServerConfiguration) (mailbox : Actor<Message>) =
+    
+    
+let init (loggerFactory : ILoggerFactory, cfg : ServerConfiguration) (mailbox : Actor<Message>) =
 
     let logger = loggerFactory.CreateLogger "ServerClient"
     logger.LogInformation $"Initializing with configuration: %A{cfg}"
@@ -46,37 +47,27 @@ let init (loggerFactory : ILoggerFactory) (cfg : ServerConfiguration) (mailbox :
 
     
     let rec errored actors state =
+        logger.LogInformation "State: errored"
         actor {
-                    
-            logger.LogInformation "State: errored"
-            
             actors.Scheduler <! Scheduler.PauseJob
             return! errored actors state
         }
 
     and connected actors state =
+        logger.LogInformation "State: connected"
         actor {
-            
-            logger.LogInformation "State: connected"
-
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
-                
-                match msg with
-                | ServerChatMsg chatMsg -> ChatCommandHandler.handle (chatMsg, state, actors.Sender)
-                | _ -> ()
-                
+                ChatCommandHandler.handle (msg, state, actors.Sender)
                 return! connected actors state
                 
             | _ -> return UnhandledMessage
         }
         
     and connecting actors state =
+        logger.LogInformation "State: connecting"
         actor {
-            
-            logger.LogInformation "State: connecting"
-
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
                 let state = State.dispatch state msg
@@ -92,10 +83,8 @@ let init (loggerFactory : ILoggerFactory) (cfg : ServerConfiguration) (mailbox :
         }
         
     and idle actors state =
+        logger.LogInformation "State: idle"
         actor {
-            
-            logger.LogInformation "State: idle"
-
             match! mailbox.Receive () with
             | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
                 actors.Sender    <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }

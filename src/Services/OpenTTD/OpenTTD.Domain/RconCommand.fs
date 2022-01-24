@@ -3,8 +3,9 @@
 open System.Net
 open Microsoft.FSharp.Core
 
-type CompanyId = uint32
+type CompanyId = byte
 type ClientId = uint32
+type Message = string
 
 type IPAddressOrClientId =
     | IPAddress of IPAddress
@@ -13,11 +14,11 @@ type IPAddressOrClientId =
 type RconCommand =
     | Ban          of IPAddressOrClientId
     | Kick         of IPAddressOrClientId
-    | ClientName   of ClientId * string
+    | ClientName   of ClientId * Message
     | Move         of ClientId * CompanyId
     | ResetCompany of CompanyId
-    | Say          of string
-    | SayClient    of ClientId * string
+    | Say          of Message
+    | SayClient    of ClientId * Message
     | Pause
     | Unpause
     override this.ToString() =

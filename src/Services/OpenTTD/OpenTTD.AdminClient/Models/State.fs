@@ -1,6 +1,7 @@
 ﻿module OpenTTD.AdminClient.Models.State
 
 
+open FSharpx.Collections
 open OpenTTD.AdminClient.Networking.Enums
 open OpenTTD.AdminClient.Networking.PacketTransformer
 
@@ -31,6 +32,11 @@ type ServerState =
       Clients          : Client     list
       Companies        : Company    list }
 
+
+let private updateCompanyForClients (clients : Client list, company : Company ) =
+    match clients |> List.tryFind (fun cli -> cli.Company.Id = company.Id) with
+    | Some client -> (clients |> List.filter (fun cli -> cli.Id <> client.Id)) @ [ { client with Company = company } ]
+    | None        -> clients
 
 let empty =
     let spectator =
@@ -84,16 +90,6 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
         let clients = state.Clients |> List.filter (fun cli -> cli.Id <> msg.ClientId)
         { state with Clients = clients }
     
-    | ServerCompanyNewMsg msg ->
-        let company =
-            { Id = msg.CompanyId
-              Name = "Unknown"
-              ManagerName = "Unknown"
-              Color = Color.END
-              HasPassword = false }
-        let companies = state.Companies |> List.filter (fun cmp -> cmp.Id <> company.Id)
-        { state with Companies = companies @ [ company ] }
-    
     | ServerCompanyInfoMsg msg ->
         let company =
             { Id = msg.CompanyId
@@ -102,7 +98,8 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
               Color = msg.Color
               HasPassword = msg.HasPassword }
         let companies = state.Companies |> List.filter (fun cmp -> cmp.Id <> company.Id)
-        { state with Companies = companies @ [ company ] }
+        { state with Companies = companies @ [ company ]
+                     Clients   = updateCompanyForClients (state.Clients, company) }
     
     | ServerCompanyUpdateMsg msg ->
         let company =
@@ -112,7 +109,8 @@ let dispatch (state : ServerState) (msg : PacketMessage) =
               Color = msg.Color
               HasPassword = msg.HasPassword }
         let companies = state.Companies |> List.filter (fun cmp -> cmp.Id <> company.Id)
-        { state with Companies = companies @ [ company ] }
+        { state with Companies = companies @ [ company ]
+                     Clients   = updateCompanyForClients (state.Clients, company) }
         
     | ServerCompanyRemoveMsg msg ->
         let companies = state.Companies |> List.filter (fun cmp -> cmp.Id <> msg.CompanyId)

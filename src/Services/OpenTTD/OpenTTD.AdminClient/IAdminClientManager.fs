@@ -36,7 +36,7 @@ type AdminClientManager(
             
             match actors.ContainsKey tag with
             | false -> 
-                let ref = spawn system tag <| ServerClient.init loggerFactory cfg 
+                let ref = spawn system tag <| ServerClient.init (loggerFactory, cfg) 
                 ref <! AuthorizeMsg { Name = cfg.Bot.Name; Pass = cfg.Bot.Pass; Version = cfg.Bot.Ver }
                 actors <- actors.Add(tag, ref)
                 Ok ()

@@ -9,6 +9,10 @@ open Packet
 open FSharpx.Collections
 
 
+let private safeCompanyId = function
+    | 255uy -> 255uy
+    | id -> id + 1uy
+
 type ServerChatMessage =
     { NetworkAction   : NetworkAction
       ChatDestination : ChatDestination
@@ -91,7 +95,7 @@ type PacketMessage =
 
 let private readServerCompanyNew packet =
     let id, _ = readByte   packet
-    ServerCompanyNewMsg { CompanyId = id + 1uy }
+    ServerCompanyNewMsg { CompanyId = safeCompanyId id }
 
 let private readServerCompanyInfo packet =
     let id,      pac = readByte   packet
@@ -103,10 +107,10 @@ let private readServerCompanyInfo packet =
     let _      , _   = readBool   pac // is AI
     let color        = enum<Color>(int colorId)
     ServerCompanyInfoMsg
-        { CompanyId = id + 1uy
+        { CompanyId   = safeCompanyId id
           CompanyName = name
           ManagerName = manager
-          Color = color
+          Color       = color
           HasPassword = hasPass }
         
 let private readServerCompanyUpdate packet =
@@ -117,10 +121,10 @@ let private readServerCompanyUpdate packet =
     let hasPass, _   = readBool   pac
     let color        = enum<Color>(int colorId)
     ServerCompanyInfoMsg
-        { CompanyId = id + 1uy
+        { CompanyId   = safeCompanyId id
           CompanyName = name
           ManagerName = manager
-          Color = color
+          Color       = color
           HasPassword = hasPass }
     
 let private readServerCompanyRemove packet =
@@ -128,7 +132,7 @@ let private readServerCompanyRemove packet =
     let reasonId, _   = readByte pac
     let reason        = enum<AdminCompanyRemoveReason>(int reasonId)
     ServerCompanyRemoveMsg
-        { CompanyId = id + 1uy
+        { CompanyId = safeCompanyId id
           Reason    = reason }
 
 let private readServerProtocol packet =
@@ -209,7 +213,7 @@ let private readServerClientInfo packet =
           Name      = name
           Language  = enum<NetworkLanguage>(int lang)
           JoinDate  = joinDate
-          CompanyId = companyId + 1uy }
+          CompanyId = safeCompanyId companyId }
 
 let private readServerClientUpdate packet =
     let clientId, pac = readU32 packet
@@ -218,7 +222,7 @@ let private readServerClientUpdate packet =
     ServerClientUpdateMsg
         { ClientId  = clientId
           Name      = name
-          CompanyId = companyId + 1uy }
+          CompanyId = safeCompanyId companyId }
 
 let private readServerClientQuit packet =
     let clientId, _ = readU32 packet

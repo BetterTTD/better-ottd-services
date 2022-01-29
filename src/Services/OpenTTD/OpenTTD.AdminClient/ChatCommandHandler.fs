@@ -6,7 +6,6 @@ open Akka.FSharp
 
 open FSharpx.Collections
 open Microsoft.FSharp.Collections
-open OpenTTD.AdminClient.Models.State
 open OpenTTD.AdminClient.Networking.MessageTransformer
 open OpenTTD.AdminClient.Networking.PacketTransformer
 open OpenTTD.Domain

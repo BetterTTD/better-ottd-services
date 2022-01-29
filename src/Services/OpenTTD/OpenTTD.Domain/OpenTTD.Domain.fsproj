@@ -6,6 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Enums.fs" />
+        <Compile Include="ServerState.fs" />
         <Compile Include="RconCommand.fs" />
     </ItemGroup>
 

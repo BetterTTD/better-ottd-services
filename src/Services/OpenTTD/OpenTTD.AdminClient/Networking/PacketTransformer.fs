@@ -5,6 +5,7 @@ open System
 
 open Enums
 open Packet
+open OpenTTD.Domain
 
 open FSharpx.Collections
 

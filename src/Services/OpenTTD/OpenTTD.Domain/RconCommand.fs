@@ -3,9 +3,7 @@
 open System.Net
 open Microsoft.FSharp.Core
 
-type CompanyId = byte
-type ClientId = uint32
-type Message = string
+type ChatMessage = string
 
 type IPAddressOrClientId =
     | IPAddress of IPAddress
@@ -14,28 +12,26 @@ type IPAddressOrClientId =
 type RconCommand =
     | Ban          of IPAddressOrClientId
     | Kick         of IPAddressOrClientId
-    | ClientName   of ClientId * Message
+    | ClientName   of ClientId * ChatMessage
     | Move         of ClientId * CompanyId
     | ResetCompany of CompanyId
-    | Say          of Message
-    | SayClient    of ClientId * Message
+    | Say          of ChatMessage
+    | SayClient    of ClientId * ChatMessage
     | Pause
     | Unpause
     override this.ToString() =
         match this with
         | Ban ban ->
-            let cmd = sprintf "ban %s"
             match ban with
-            | IPAddress ipAddress -> cmd (ipAddress.ToString())
-            | ClientId clientId -> cmd (clientId.ToString())
+            | IPAddress ipAddress  ->  $"ban %s{(ipAddress.ToString())}"
+            | ClientId clientId    ->  $"ban %d{clientId}"
             
         | Kick kick ->
-            let cmd = sprintf "kick %s"
             match kick with
-            | IPAddress ipAddress -> cmd (ipAddress.ToString())
-            | ClientId clientId -> cmd (clientId.ToString())
+            | IPAddress ipAddress  ->  $"kick %s{(ipAddress.ToString())}"
+            | ClientId clientId    ->  $"kick %d{clientId}"
             
-        | ClientName (id, name)         -> $"client_name %d{id} %s{name}"
+        | ClientName (clientId, name)   -> $"client_name %d{clientId} %s{name}"
                                         
         | Move (clientId, companyId)    -> $"move %d{clientId} %d{companyId}"
                                         

@@ -15,6 +15,7 @@ open OpenTTD.AdminClient.Models.ActorModels
 open OpenTTD.AdminClient.Models.Configurations
 open OpenTTD.AdminClient.Networking.PacketTransformer
 open OpenTTD.AdminClient.Networking.MessageTransformer
+open OpenTTD.Domain
 
 
 type private Actors =
@@ -94,4 +95,4 @@ let init (loggerFactory : ILoggerFactory, cfg : ServerConfiguration) (mailbox : 
         }
         
         
-    idle actors State.empty
+    idle actors ServerState.Empty

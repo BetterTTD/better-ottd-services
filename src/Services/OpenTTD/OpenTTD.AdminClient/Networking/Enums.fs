@@ -68,37 +68,10 @@ type AdminUpdateType =
     | ADMIN_UPDATE_GAMESCRIPT              = 9
     | ADMIN_UPDATE_END                     = 10
     
-type Color =
-    | DARK_BLUE                            = 0
-    | PALE_GREEN                           = 1
-    | PINK                                 = 2
-    | YELLOW                               = 3
-    | RED                                  = 4
-    | LIGHT_BLUE                           = 5
-    | GREEN                                = 6
-    | DARK_GREEN                           = 7
-    | BLUE                                 = 8
-    | CREAM                                = 9
-    | MAUVE                                = 10
-    | PURPLE                               = 11
-    | ORANGE                               = 12
-    | BROWN                                = 13
-    | GREY                                 = 14
-    | WHITE                                = 15
-    | END                                  = 16
-    | INVALID                              = 0xFF
-    
 type DestType =
     | DESTTYPE_BROADCAST                   = 0
     | DESTTYPE_TEAM                        = 1
     | DESTTYPE_CLIENT                      = 2
-    
-type Landscape =
-    | LANDSCAPE_TEMPERATE                  = 0
-    | LANDSCAPE_ARCTIC                     = 1
-    | LANDSCAPE_TROPIC                     = 2
-    | LANDSCAPE_TOYLAND                    = 3
-    | NUM_LANDSCAPE                        = 4
     
 type NetworkAction =
     | NETWORK_ACTION_JOIN                  = 0

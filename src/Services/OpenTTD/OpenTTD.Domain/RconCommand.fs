@@ -7,7 +7,7 @@ type ChatMessage = string
 
 type IPAddressOrClientId =
     | IPAddress of IPAddress
-    | ClientId of ClientId
+    | ClientId  of ClientId
 
 type RconCommand =
     | Ban          of IPAddressOrClientId
@@ -23,13 +23,13 @@ type RconCommand =
         match this with
         | Ban ban ->
             match ban with
-            | IPAddress ipAddress  ->  $"ban %s{(ipAddress.ToString())}"
-            | ClientId clientId    ->  $"ban %d{clientId}"
-            
-        | Kick kick ->
-            match kick with
-            | IPAddress ipAddress  ->  $"kick %s{(ipAddress.ToString())}"
-            | ClientId clientId    ->  $"kick %d{clientId}"
+            | IPAddress ipAddress       -> $"ban %s{(ipAddress.ToString())}"
+            | ClientId clientId         -> $"ban %d{clientId}"
+                                        
+        | Kick kick ->                  
+            match kick with             
+            | IPAddress ipAddress       -> $"kick %s{(ipAddress.ToString())}"
+            | ClientId clientId         -> $"kick %d{clientId}"
             
         | ClientName (clientId, name)   -> $"client_name %d{clientId} %s{name}"
                                         

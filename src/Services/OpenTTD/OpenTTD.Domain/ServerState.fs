@@ -49,33 +49,33 @@ type ServerState =
       Clients          : Client     list
       Companies        : Company    list }
     static member Empty =
-        { Info        = None
-          Clients     = [ ]
-          Companies   = [ Company.Spectator ] }
+        { Info       = None
+          Clients    = [ ]
+          Companies  = [ Company.Spectator ] }
     
     member this.AttachInfo info =
         { this with Info = info }
         
-    member this.CreateClient (client: CreateClient) =
-        match this.Companies |> List.tryFind (fun company -> company.Id = client.CompanyId) with
+    member this.CreateClient (create: CreateClient) =
+        match this.Companies |> List.tryFind (fun company -> company.Id = create.CompanyId) with
         | Some company ->
-            let cli =
-                { Id       = client.Id
+            let client =
+                { Id       = create.Id
                   Company  = company
-                  Name     = client.Name
-                  Host     = client.Address }
+                  Name     = create.Name
+                  Host     = create.Address }
             let clients =
                 this.Clients
-                |> List.filter (fun c -> c.Id <> cli.Id)
-            { this with Clients = clients @ [ cli ] }
+                |> List.filter (fun c -> c.Id <> client.Id)
+            { this with Clients = clients @ [ client ] }
         | None -> this
         
-    member this.UpdateClient (client : UpdateClient) =
-        match this.Companies |> List.tryFind (fun company -> company.Id = client.CompanyId),
-              this.Clients   |> List.tryFind (fun cli     -> cli.Id     = client.Id) with
+    member this.UpdateClient (update : UpdateClient) =
+        match this.Companies |> List.tryFind (fun company -> company.Id = update.CompanyId),
+              this.Clients   |> List.tryFind (fun client  -> client.Id  = update.Id) with
         | Some company, Some oldClient ->
             let updatedClient =
-                { oldClient with Name    = client.Name
+                { oldClient with Name    = update.Name
                                  Company = company }
             let clients =
                 this.Clients
@@ -96,6 +96,7 @@ type ServerState =
             |> List.filter (fun com -> com.Id <> company.Id)
         { this with Companies = companies    @ [ company ]
                     Clients   = otherClients @ companyClients }
+        
     member this.RemoveCompany companyId =
         let companyClients =
             this.Clients

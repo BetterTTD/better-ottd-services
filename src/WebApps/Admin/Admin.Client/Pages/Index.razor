@@ -1,67 +1,7 @@
 ﻿@page "/"
-@using OpenTTD.SignalrHub.Messages.Models
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
-
-
-<div class="container">
-    <div class="row">
-        @foreach (var server in Servers)
-        {
-            <div class="col-md-6 col-xl-4">
-                <ServerCard />
-            </div>
-        }
-    </div>    
-</div>
-    
-
-@code
-{
-    private List<Server> Servers { get; } = new()
-    {
-        new Server
-        {
-            Id = Guid.Empty,
-            Clients = Array.Empty<Client>(),
-            Info = new ServerInfo
-            {
-                Ip = "127.0.0.1",
-                Port = 3977,
-                Name = "Test Server",
-                Version = "1.0.0",
-                Map = new ServerMap
-                {
-                    Height = 512,
-                    Width = 512,
-                    Landscape = 2,
-                    Seed = int.MaxValue
-                }
-            }
-        },
-        new Server
-        {
-            Id = Guid.Empty,
-            Clients = Array.Empty<Client>(),
-            Info = new ServerInfo
-            {
-                Ip = "127.0.0.1",
-                Port = 3977,
-                Name = "Test Server",
-                Version = "1.0.0",
-                Map = new ServerMap
-                {
-                    Height = 512,
-                    Width = 512,
-                    Landscape = 2,
-                    Seed = int.MaxValue
-                }
-            }
-        }
-    };
-
-}

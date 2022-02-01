@@ -6,7 +6,7 @@ open OpenTTD.API.Domain
 open OpenTTD.API.Storage
 
 
-type CommandHandler(storage : IClientStorage) =
+type CommandHandler(storage : IClientReadStorage) =
     
     let handle (command : Command) = task {
         match command with
@@ -47,11 +47,11 @@ type CommandHandler(storage : IClientStorage) =
         | DisconnectClient clientId ->
             match! storage.ClientExists (fun cfg -> cfg.Id = clientId) with
             | true  -> return DomainEvent.ClientDisconnected clientId |> Ok
-            | false -> return DomainError.ClientNotFound  clientId |> AppError.createResult
+            | false -> return DomainError.ClientNotFound  clientId    |> AppError.createResult
             
         | DeleteClient clientId ->
             match! storage.ClientExists (fun cfg -> cfg.Id = clientId) with
-            | true  -> return DomainEvent.ClientDeleted clientId |> Ok
+            | true  -> return DomainEvent.ClientDeleted clientId   |> Ok
             | false -> return DomainError.ClientNotFound  clientId |> AppError.createResult
     }
     

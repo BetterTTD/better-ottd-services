@@ -6,9 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FSharpx.Collections" Version="3.0.1" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <Compile Include="Enums.fs" />
-        <Compile Include="ServerState.fs" />
-        <Compile Include="RconCommand.fs" />
+        <Compile Include="Packet.fs" />
+        <Compile Include="PacketTransformer.fs" />
+        <Compile Include="MessageTransformer.fs" />
     </ItemGroup>
 
 </Project>

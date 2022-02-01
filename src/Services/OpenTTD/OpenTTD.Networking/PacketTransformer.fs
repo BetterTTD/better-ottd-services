@@ -3,11 +3,11 @@
 
 open System
 
+open FSharpx.Collections
+
 open Enums
 open Packet
-open OpenTTD.Domain
 
-open FSharpx.Collections
 
 
 let private safeCompanyId = function

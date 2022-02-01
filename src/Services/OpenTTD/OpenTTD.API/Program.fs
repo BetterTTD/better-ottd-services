@@ -41,10 +41,10 @@ let configureApplication (app : IApplicationBuilder) =
         app
 
 let app = application {
-    use_router topRouter
-    logging configureLogging
-    service_config configureServices
-    app_config configureApplication
+    use_router      topRouter
+    logging         configureLogging
+    service_config  configureServices
+    app_config      configureApplication
 }
 
 run app

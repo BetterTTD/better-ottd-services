@@ -1,7 +1,7 @@
 namespace OpenTTD.Domain
 
 open System.Net
-open OpenTTD.Domain
+open OpenTTD.AdminClient.Networking.Enums
 
 type CompanyId = byte
 type ClientId  = uint32

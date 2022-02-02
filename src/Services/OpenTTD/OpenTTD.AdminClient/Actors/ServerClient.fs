@@ -15,7 +15,6 @@ open OpenTTD.AdminClient.Models.ActorModels
 open OpenTTD.AdminClient.Models.Configurations
 open OpenTTD.AdminClient.Networking.PacketTransformer
 open OpenTTD.AdminClient.Networking.MessageTransformer
-open OpenTTD.Domain
 
 
 type private Actors =
@@ -59,15 +58,14 @@ let init (loggerFactory : ILoggerFactory, cfg : ServerConfiguration) (mailbox : 
         actor {
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
-                let state = State.dispatch state msg
+                let state = ServerState.Dispatch state msg
                 match msg with
                 | ServerChatMsg chatMsg ->
-                    match ChatHandler.handle state (chatMsg.ClientId, chatMsg.Message) with
-                    | Some commands ->
+                    ChatHandler.handle state (chatMsg.ClientId, chatMsg.Message)
+                    |> Option.iter (fun commands ->
                         commands
                         |> List.map (fun cmd -> AdminRconMsg { Command = cmd.ToString() })
-                        |> List.iter (fun cmd -> actors.Sender <! cmd)
-                    | None -> ()
+                        |> List.iter (fun cmd -> actors.Sender <! cmd))
                 | _ -> ()
                 return! connected actors state
                 
@@ -79,7 +77,7 @@ let init (loggerFactory : ILoggerFactory, cfg : ServerConfiguration) (mailbox : 
         actor {
             match! mailbox.Receive () with
             | PacketReceivedMsg msg ->
-                let state = State.dispatch state msg
+                let state = ServerState.Dispatch state msg
                 match msg with
                 | ServerProtocolMsg _ ->
                     defaultPolls @ defaultUpdateFrequencies |> List.iter (fun msg -> actors.Sender <! msg)

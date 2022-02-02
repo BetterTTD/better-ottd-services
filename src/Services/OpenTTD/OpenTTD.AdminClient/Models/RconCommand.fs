@@ -1,4 +1,4 @@
-﻿namespace OpenTTD.Domain
+﻿namespace OpenTTD.AdminClient.Models
 
 open System.Net
 open Microsoft.FSharp.Core

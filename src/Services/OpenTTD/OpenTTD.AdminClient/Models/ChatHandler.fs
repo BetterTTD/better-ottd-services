@@ -1,4 +1,4 @@
-﻿module OpenTTD.Domain.ChatHandler
+﻿module OpenTTD.AdminClient.Models.ChatHandler
 
 
 module private Handler =

@@ -1,6 +1,5 @@
 ﻿module OpenTTD.AdminClient.Models.ChatHandler
 
-
 module private Handler =
     let info clientId =
         [ SayClient (clientId, "Team Game - Vanilla server")
@@ -43,7 +42,6 @@ module private Handler =
 
     let rename clientId name =
         [ ClientName (clientId, name) ]
-
 
 let private (|Info|WhatIsTG|Admin|Rules|Reset|Rename|Unknown|) input =
     match input with

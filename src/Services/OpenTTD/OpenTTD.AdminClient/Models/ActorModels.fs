@@ -1,8 +1,6 @@
 ﻿module OpenTTD.AdminClient.Models.ActorModels
 
-
 open OpenTTD.AdminClient.Networking.PacketTransformer
-
 
 type Authorize =
     { Name    : string

@@ -130,7 +130,6 @@ type Landscape =
     | LANDSCAPE_TOYLAND                    = 3
     | NUM_LANDSCAPE                        = 4
     
-
 type NetworkLanguage =
     | NETLANG_ANY                          = 0
     

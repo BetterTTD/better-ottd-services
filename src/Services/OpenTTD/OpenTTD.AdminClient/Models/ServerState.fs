@@ -25,7 +25,7 @@ type Company =
       Color            : Color
       HasPassword      : bool }
     static member Spectator =
-        { Id          = byte 255
+        { Id          = 255uy
           Name        = "Spectator"
           ManagerName = ""
           Color       = Color.END
@@ -116,7 +116,6 @@ type ServerState =
         let clients = this.Clients |> List.filter (fun x -> x.Id <> clientId)
         { this with Clients = clients }
         
-
     static member Dispatch (state : ServerState) (msg : PacketMessage) =
         match msg with
         | ServerWelcomeMsg msg ->

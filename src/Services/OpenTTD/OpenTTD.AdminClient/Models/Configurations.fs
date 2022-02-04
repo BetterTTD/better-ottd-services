@@ -1,11 +1,9 @@
 ﻿module OpenTTD.AdminClient.Models.Configurations
 
-
 open System.Net
 
 open OpenTTD.AdminClient.Networking.MessageTransformer
 open OpenTTD.AdminClient.Networking.Enums
-
 
 [<Measure>]
 type port
@@ -19,7 +17,6 @@ type ServerConfiguration =
     { Host : IPAddress
       Port : int
       Bot  : BotConfiguration }
-    
 
 let defaultPolls =
     [ { UpdateType = AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO

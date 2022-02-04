@@ -1,23 +1,19 @@
 ﻿module OpenTTD.AdminClient.Networking.Packet
 
-
 open System
 open System.Text
 open Enums
-
 
 type Packet =
     { Size     : uint16
       Position : int
       Buffer   : byte array }
 
-
 // defaults
 
 let private defaultSize = 2us
 let private defaultPos = 2
 let private defaultBuf = Array.zeroCreate<byte> 1460
-
 
 // write
 
@@ -65,7 +61,6 @@ let writeU64 (value : uint64) packet =
 let writeI64 (value : int64) packet =
     write value 8 packet
 
-
 // read
 
 let readByte packet =
@@ -102,7 +97,6 @@ let readString packet =
         
     let bytes, pos, _ = read (Array.zeroCreate<byte> 0, position, buffer)
     (Encoding.Default.GetString bytes, { packet with Position = pos + 1 })
-
 
 // factory
 

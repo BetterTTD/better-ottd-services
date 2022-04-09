@@ -1,6 +1,16 @@
 version: '3.4'
 
 services:
+  
+  server:
+    image: openttd.server
+    container_name: tg.server
+    networks:
+      - tg
+    build:
+      context: .
+      dockerfile: OpenTTD/Dockerfile
+  
   db:
     image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
     container_name: tg.db
@@ -17,62 +27,6 @@ services:
       - tg
     environment:
       ACCEPT_EULA: "Y"
-
-  openttd.admin.client:
-    image: openttd.admin.client
-    container_name: tg.openttd.admin.client
-    networks:
-      - tg
-    depends_on:
-      - db
-      - seq
-    build: 
-      context: .
-      dockerfile: Services/OpenTTD/OpenTTD.AdminClient/Dockerfile
-
-  openttd.signalrhub:
-    image: openttd.signalrhub
-    container_name: tg.openttd.signalrhub
-    networks:
-      - tg
-    depends_on:
-      - openttd.admin.client
-    build:
-      context: .
-      dockerfile: Services/OpenTTD/OpenTTD.SignalrHub/Dockerfile
-
-  openttd.api:
-    image: openttd.api
-    container_name: tg.openttd.api
-    networks:
-      - tg
-    depends_on:
-      - openttd.admin.client
-    build:
-      context: .
-      dockerfile: Services/OpenTTD/OpenTTD.API/Dockerfile
-
-  admin.server:
-    image: admin.server
-    container_name: tg.admin.server
-    networks:
-      - tg
-    depends_on:
-      - openttd.api
-    build:
-      context: .
-      dockerfile: WebApps/Admin/Admin.Server/Dockerfile
-
-  admin.client:
-    image: admin.client
-    container_name: tg.admin.client
-    networks:
-      - tg
-    depends_on:
-      - admin.server
-    build:
-      context: .
-      dockerfile: WebApps/Admin/Admin.Client/Dockerfile
 
 networks:
   tg:

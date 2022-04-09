@@ -1,6 +1,10 @@
 version: '3.4'
 
 services:
+  server:
+    ports:
+      - "1:1"
+        
   db:
     ports:
       - "1433:1433"
@@ -8,35 +12,3 @@ services:
   seq:
     ports:
       - "5341:80"
-
-  openttd.admin.client:
-    ports:
-      - "6001:80"
-  
-  openttd.signalrhub:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-    ports:
-      - "6003:80"
-
-  openttd.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:80
-    ports:
-      - "80"
-      
-  admin.server:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:80
-    ports:
-      - "80"
-
-  admin.client:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-    ports:
-      - "6002:80"

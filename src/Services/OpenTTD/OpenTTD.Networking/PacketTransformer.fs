@@ -9,10 +9,9 @@ open Enums
 open Packet
 
 
-
 let private safeCompanyId = function
     | 255uy -> 255uy
-    | id -> id + 1uy
+    | id    -> id + 1uy
 
 type ServerChatMessage =
     { NetworkAction   : NetworkAction
@@ -162,15 +161,15 @@ let private readServerProtocol packet =
           UpdateSettings = dict }
 
 let private readServerWelcome packet =
-    let serverName, pac      = readString packet
+    let serverName,      pac = readString packet
     let networkRevision, pac = readString pac
-    let isDedicated, pac     = readBool pac
-    let mapName, pac         = readString pac
-    let mapSeed, pac         = readU32 pac
-    let landscape, pac       = readByte pac
-    let currentDate, pac     = readU32 pac
-    let mapWidth, pac        = readU16 pac
-    let mapHeight, _         = readU16 pac
+    let isDedicated,     pac = readBool   pac
+    let mapName,         pac = readString pac
+    let mapSeed,         pac = readU32    pac
+    let landscape,       pac = readByte   pac
+    let currentDate,     pac = readU32    pac
+    let mapWidth,        pac = readU16    pac
+    let mapHeight,       _   = readU16    pac
     ServerWelcomeMsg
         { ServerName      = serverName
           NetworkRevision = networkRevision
@@ -183,13 +182,13 @@ let private readServerWelcome packet =
           MapHeight       = int mapHeight }
 
 let private readServerChat packet =
-    let act, pac      = readByte packet
+    let act,      pac = readByte   packet
     let action        = enum<NetworkAction>(int act)
-    let dest, pac     = readByte pac
+    let dest,     pac = readByte   pac
     let destination   = enum<ChatDestination>(int dest)
-    let clientId, pac = readU32 pac
-    let message, pac  = readString pac
-    let data, _       = readU64 pac
+    let clientId, pac = readU32    pac
+    let message,  pac = readString pac
+    let data,     _   = readU64    pac
     ServerChatMsg
         { NetworkAction   = action
           ChatDestination = destination
@@ -202,12 +201,12 @@ let private readServerClientJoin packet =
     ServerClientJoinMsg { ClientID = clientId }
 
 let private readServerClientInfo packet =
-    let clientId, pac = readU32 packet
-    let address, pac  = readString pac
-    let name, pac     = readString pac
-    let lang, pac     = readByte pac
-    let joinDate, pac = readU32 pac
-    let companyId, _  = readByte pac
+    let clientId, pac = readU32    packet
+    let address,  pac = readString pac
+    let name,     pac = readString pac
+    let lang,     pac = readByte   pac
+    let joinDate, pac = readU32    pac
+    let companyId, _  = readByte   pac
     ServerClientInfoMsg
         { ClientId  = clientId
           Address   = address
@@ -217,9 +216,9 @@ let private readServerClientInfo packet =
           CompanyId = safeCompanyId companyId }
 
 let private readServerClientUpdate packet =
-    let clientId, pac = readU32 packet
-    let name, pac     = readString pac
-    let companyId, _  = readByte pac
+    let clientId,  pac = readU32    packet
+    let name,      pac = readString pac
+    let companyId, _   = readByte   pac
     ServerClientUpdateMsg
         { ClientId  = clientId
           Name      = name

@@ -2,20 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Repositories\IServerConfigurationRepository.fs" />
-        <Compile Include="IAdminClientProvider.fs" />
-
-        <Compile Include="Storage\ClientStorage.fs" />
-        
-        <Compile Include="Domain\Queries.fs" />
-        <Compile Include="Domain\Commands.fs" />
-        <Compile Include="Domain\Events.fs" />
-        <Compile Include="Domain\Errors.fs" />
-        <Compile Include="QueryHandler.fs" />
-        <Compile Include="CommandHandler.fs" />
         
         <Compile Include="ApiRouter.fs" />
         <Compile Include="Program.fs" />
@@ -27,6 +17,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OpenTTD.AdminClient\OpenTTD.AdminClient.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include=".dockerignore" />
+      <Content Include="Dockerfile" />
     </ItemGroup>
 
 </Project>

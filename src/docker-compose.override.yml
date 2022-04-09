@@ -3,7 +3,9 @@ version: '3.4'
 services:
   server:
     ports:
-      - "1:1"
+      - "3982:3982/tcp"
+      - "3982:3982/udp"
+      - "3977:3977/tcp"
         
   db:
     ports:

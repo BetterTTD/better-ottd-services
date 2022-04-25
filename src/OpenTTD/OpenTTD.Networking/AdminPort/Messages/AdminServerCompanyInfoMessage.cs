@@ -1,10 +1,11 @@
 ﻿using OpenTTD.Networking.AdminPort.Enums;
+using OpenTTD.Networking.AdminPort.Messages.Base;
 
 namespace OpenTTD.Networking.AdminPort.Messages;
 
 public sealed record AdminServerCompanyInfoMessage : IAdminMessage
 {
-    public AdminMessageType MessageType => AdminMessageType.ADMIN_PACKET_SERVER_COMPANY_INFO;
+    public AdminPacketType PacketType => AdminPacketType.ADMIN_PACKET_SERVER_COMPANY_INFO;
 
     public byte CompanyId { get; internal set; }
 

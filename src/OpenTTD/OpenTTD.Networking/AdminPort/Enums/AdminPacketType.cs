@@ -1,6 +1,6 @@
 ﻿namespace OpenTTD.Networking.AdminPort.Enums;
 
-public enum AdminMessageType
+public enum AdminPacketType
 {
 	ADMIN_PACKET_ADMIN_JOIN,             /// The admin announces and authenticates itself to the server.
 	ADMIN_PACKET_ADMIN_QUIT,             /// The admin tells the server that it is quitting.

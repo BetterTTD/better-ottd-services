@@ -2,6 +2,7 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using OpenTTD.Networking.AdminPort;
+using OpenTTD.Networking.AdminPort.Messages.Base;
 
 namespace OpenTTD.Networking.Actors.Receiver;
 
@@ -13,13 +14,16 @@ public sealed class ReceiverActor : ReceiveActor, IWithTimers
     
     public ITimerScheduler Timers { get; set; } = null!;
 
-    public ReceiverActor(Stream stream)
+    public ReceiverActor(Stream stream, IPacketTransformer packetTransformer)
     {
         ReceiveAsync<ReceiveMsg>(async _ =>
         {
             try
             {
                 var packet = await WaitForPacketAsync(stream, CancellationToken.None);
+                var message = packetTransformer.Transform(packet);
+                
+                Context.Parent.Tell(message);
             }
             catch (Exception e)
             {

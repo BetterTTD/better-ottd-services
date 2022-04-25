@@ -1,6 +1,6 @@
 ﻿namespace OpenTTD.Networking.AdminPort.Messages.Base;
 
-public interface IPacketTransformer<out IAdminMessage>
+public interface IPacketTransformer
 {
     IAdminMessage Transform(Packet packet);
 }

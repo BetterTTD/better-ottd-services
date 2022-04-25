@@ -1,7 +1,7 @@
 ﻿using OpenTTD.Networking.AdminPort.Enums;
 using OpenTTD.Networking.AdminPort.Messages.Base;
 
-namespace OpenTTD.Networking.AdminPort.Messages;
+namespace OpenTTD.Networking.AdminPort.Messages.AdminServerCompanyNew;
 
 public class AdminServerCompanyNewMessage : IAdminMessage
 {

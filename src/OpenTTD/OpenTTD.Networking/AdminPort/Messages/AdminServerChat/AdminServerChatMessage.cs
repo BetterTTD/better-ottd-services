@@ -13,20 +13,3 @@ public sealed record AdminServerChatMessage : IAdminMessage
     public string Message { get; init; }
     public long Data { get; init; }
 }
-
-public sealed class AdminServerChatTransformer : IPacketTransformer<AdminServerChatMessage>
-{
-    public AdminServerChatMessage Transform(Packet packet)
-    {
-        var msg = new AdminServerChatMessage
-        {
-            NetworkAction = (NetworkAction)packet.ReadByte(),
-            ChatDestination = (ChatDestination)packet.ReadByte(),
-            ClientId = packet.ReadU32(),
-            Message = packet.ReadString(),
-            Data = packet.ReadI64()
-        };
-
-        return msg;
-    }
-}

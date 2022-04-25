@@ -3,8 +3,10 @@ using OpenTTD.Networking.AdminPort.Messages.Base;
 
 namespace OpenTTD.Networking.AdminPort.Messages.AdminServerWelcome;
 
-public sealed class AdminServerWelcomeMessageTransformer : IPacketTransformer<AdminServerWelcomeMessage>
+public sealed class AdminServerWelcomeMessageTransformer : IMessageTransformer<AdminServerWelcomeMessage>
 {
+    public AdminPacketType PacketType => AdminPacketType.ADMIN_PACKET_SERVER_WELCOME;
+
     public AdminServerWelcomeMessage Transform(Packet packet)
     {
         var msg = new AdminServerWelcomeMessage

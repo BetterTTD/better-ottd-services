@@ -3,8 +3,10 @@ using OpenTTD.Networking.AdminPort.Messages.Base;
 
 namespace OpenTTD.Networking.AdminPort.Messages.AdminServerProtocol;
 
-public sealed class AdminServerProtocolTransformer : IPacketTransformer<AdminServerProtocolMessage>
+public sealed class AdminServerProtocolTransformer : IMessageTransformer<AdminServerProtocolMessage>
 {
+    public AdminPacketType PacketType => AdminPacketType.ADMIN_PACKET_SERVER_PROTOCOL;
+
     public AdminServerProtocolMessage Transform(Packet packet)
     {
         var updateFrequencies = new Dictionary<AdminUpdateType, UpdateFrequency>();

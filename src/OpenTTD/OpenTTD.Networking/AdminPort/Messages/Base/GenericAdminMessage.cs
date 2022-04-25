@@ -1,7 +1,6 @@
 ﻿using OpenTTD.Networking.AdminPort.Enums;
-using OpenTTD.Networking.AdminPort.Messages.Base;
 
-namespace OpenTTD.Networking.AdminPort.Messages;
+namespace OpenTTD.Networking.AdminPort.Messages.Base;
 
 public sealed record GenericAdminMessage : IAdminMessage
 {

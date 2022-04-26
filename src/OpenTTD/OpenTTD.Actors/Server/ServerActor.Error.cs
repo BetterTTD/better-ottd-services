@@ -1,6 +1,10 @@
 namespace OpenTTD.Actors.Server;
 
-public sealed record Error : Model;
+public sealed record Error : Model
+{
+    public Exception Exception { get; init; } = null!;
+    public string Message { get; init; } = "Unknown error";
+};
 
 public sealed partial class ServerActor
 {
@@ -10,6 +14,8 @@ public sealed partial class ServerActor
         {
             throw new InvalidOperationException();
         }
+        
+        _logger.Error(error.Exception, error.Message);
 
         return Stay();
     }

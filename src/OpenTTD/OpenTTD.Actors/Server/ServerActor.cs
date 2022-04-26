@@ -1,6 +1,7 @@
 using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using OpenTTD.Domain;
 
 namespace OpenTTD.Actors.Server;
 
@@ -18,13 +19,15 @@ public sealed partial class ServerActor : FSM<State, Model>
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
-    public ServerActor()
+    public ServerActor(ServerCredentials credentials)
     {
-        StartWith(State.Idle, new Idle());
+        StartWith(State.Idle, new Idle(credentials));
         
         When(State.Idle, IdleHandler);
         When(State.Connecting, ConnectingHandler);
         When(State.Connected, ConnectedHandler);
         When(State.Error, ErrorHandler);
+        
+        Initialize();
     }
 }

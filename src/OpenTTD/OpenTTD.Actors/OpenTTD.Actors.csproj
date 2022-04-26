@@ -8,16 +8,13 @@
 
     <ItemGroup>
         <PackageReference Include="Akka" Version="1.4.37" />
+        <PackageReference Include="Akka.DependencyInjection" Version="1.4.37" />
         <PackageReference Include="Akka.Logger.Serilog" Version="1.4.26" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
         <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Coordinator" />
     </ItemGroup>
 
     <ItemGroup>

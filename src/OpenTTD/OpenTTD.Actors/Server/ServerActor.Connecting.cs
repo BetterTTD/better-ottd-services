@@ -1,6 +1,9 @@
+using System.Net.Sockets;
+using OpenTTD.Domain;
+
 namespace OpenTTD.Actors.Server;
 
-public sealed record Connecting : Model;
+public sealed record Connecting(ServerCredentials Credentials) : Model;
 
 public sealed partial class ServerActor
 {

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Akka" Version="1.4.37" />
+        <PackageReference Include="Akka.Logger.Serilog" Version="1.4.26" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
+        <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Coordinator" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Server\ServerActor.Idle.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Connecting.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Connected.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Error.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

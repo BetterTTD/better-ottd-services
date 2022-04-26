@@ -7,16 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="AdminPort\Events" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Akka" Version="1.4.37" />
       <PackageReference Include="Akka.Logger.Serilog" Version="1.4.26" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     </ItemGroup>
 
 </Project>

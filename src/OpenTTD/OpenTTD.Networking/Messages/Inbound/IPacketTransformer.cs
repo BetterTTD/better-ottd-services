@@ -4,10 +4,10 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound;
 
-public interface IPacketTransformer<out TMessage> where TMessage : IMessage
+public interface IPacketTransformer
 {
     PacketType PacketType { get; }
     
     [Pure]
-    TMessage Transform(Packet packet);
+    IMessage Transform(Packet packet);
 }

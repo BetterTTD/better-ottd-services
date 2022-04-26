@@ -38,34 +38,34 @@ public static class NetworkingModule
 
     private static IServiceCollection AddMessageTransformers(this IServiceCollection services)
     {
-        services.AddTransient<IMessageTransformer<JoinMessage>, JoinTransformer>();
-        services.AddTransient<IMessageTransformer<PollMessage>, PollTransformer>();
-        services.AddTransient<IMessageTransformer<RconMessage>, RconTransformer>();
-        services.AddTransient<IMessageTransformer<UpdateFrequencyMessage>, UpdateFrequencyTransformer>();
+        services.AddTransient<IMessageTransformer, JoinTransformer>();
+        services.AddTransient<IMessageTransformer, PollTransformer>();
+        services.AddTransient<IMessageTransformer, RconTransformer>();
+        services.AddTransient<IMessageTransformer, UpdateFrequencyTransformer>();
 
         return services;
     }
 
     private static IServiceCollection AddPacketTransformers(this IServiceCollection services)
     {
-        services.AddTransient<IPacketTransformer<ServerClientErrorMessage>, ServerClientErrorTransformer>();
-        services.AddTransient<IPacketTransformer<ServerClientInfoMessage>, ServerClientInfoTransformer>();
-        services.AddTransient<IPacketTransformer<ServerClientJoinMessage>, ServerClientJoinTransformer>();
-        services.AddTransient<IPacketTransformer<ServerClientQuitMessage>, ServerClientQuitTransformer>();
-        services.AddTransient<IPacketTransformer<ServerClientUpdateMessage>, ServerClientUpdateTransformer>();
+        services.AddTransient<IPacketTransformer, ServerClientErrorTransformer>();
+        services.AddTransient<IPacketTransformer, ServerClientInfoTransformer>();
+        services.AddTransient<IPacketTransformer, ServerClientJoinTransformer>();
+        services.AddTransient<IPacketTransformer, ServerClientQuitTransformer>();
+        services.AddTransient<IPacketTransformer, ServerClientUpdateTransformer>();
         
-        services.AddTransient<IPacketTransformer<ServerCompanyInfoMessage>, ServerCompanyInfoTransformer>();
-        services.AddTransient<IPacketTransformer<ServerCompanyNewMessage>, ServerCompanyNewTransformer>();
-        services.AddTransient<IPacketTransformer<ServerCompanyRemoveMessage>, ServerCompanyRemoveTransformer>();
-        services.AddTransient<IPacketTransformer<ServerCompanyUpdateMessage>, ServerCompanyUpdateTransformer>();
+        services.AddTransient<IPacketTransformer, ServerCompanyInfoTransformer>();
+        services.AddTransient<IPacketTransformer, ServerCompanyNewTransformer>();
+        services.AddTransient<IPacketTransformer, ServerCompanyRemoveTransformer>();
+        services.AddTransient<IPacketTransformer, ServerCompanyUpdateTransformer>();
         
-        services.AddTransient<IPacketTransformer<ServerWelcomeMessage>, ServerWelcomeTransformer>();
-        services.AddTransient<IPacketTransformer<ServerProtocolMessage>, ServerProtocolTransformer>();
+        services.AddTransient<IPacketTransformer, ServerWelcomeTransformer>();
+        services.AddTransient<IPacketTransformer, ServerProtocolTransformer>();
         
-        services.AddTransient<IPacketTransformer<ServerChatMessage>, ServerChatTransformer>();
-        services.AddTransient<IPacketTransformer<ServerConsoleMessage>, ServerConsoleTransformer>();
-        services.AddTransient<IPacketTransformer<ServerPongMessage>, ServerPongTransformer>();
-        services.AddTransient<IPacketTransformer<ServerRconMessage>, ServerRconTransformer>();
+        services.AddTransient<IPacketTransformer, ServerChatTransformer>();
+        services.AddTransient<IPacketTransformer, ServerConsoleTransformer>();
+        services.AddTransient<IPacketTransformer, ServerPongTransformer>();
+        services.AddTransient<IPacketTransformer, ServerRconTransformer>();
 
         return services;
     }

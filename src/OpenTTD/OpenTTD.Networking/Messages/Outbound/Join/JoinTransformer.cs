@@ -3,12 +3,13 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Outbound.Join;
 
-public sealed class JoinTransformer : IMessageTransformer<JoinMessage>
+public sealed class JoinTransformer : IMessageTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_ADMIN_JOIN;
 
-    public Packet Transform(JoinMessage msg)
+    public Packet Transform(IMessage message)
     {
+        var msg = (message as JoinMessage)!;
         var packet = new Packet();
 
         packet.SendByte((byte)msg.PacketType);

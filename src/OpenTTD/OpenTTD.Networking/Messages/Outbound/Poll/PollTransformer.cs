@@ -3,12 +3,13 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Outbound.Poll;
 
-public sealed class PollTransformer : IMessageTransformer<PollMessage>
+public sealed class PollTransformer : IMessageTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_ADMIN_POLL;
     
-    public Packet Transform(PollMessage msg)
+    public Packet Transform(IMessage message)
     {
+        var msg = (message as PollMessage)!;
         var packet = new Packet();
         
         packet.SendByte((byte)msg.PacketType);

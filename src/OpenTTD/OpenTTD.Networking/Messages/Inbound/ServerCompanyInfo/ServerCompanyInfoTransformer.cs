@@ -3,11 +3,11 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound.ServerCompanyInfo;
 
-public sealed class ServerCompanyInfoTransformer : IPacketTransformer<ServerCompanyInfoMessage>
+public sealed class ServerCompanyInfoTransformer : IPacketTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_SERVER_COMPANY_INFO;
 
-    public ServerCompanyInfoMessage Transform(Packet packet)
+    public IMessage Transform(Packet packet)
     {
         var msg = new ServerCompanyInfoMessage
         {

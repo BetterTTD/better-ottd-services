@@ -26,7 +26,7 @@ public class AkkaHostedService : IHostedService
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
-            .WithConfig("akka { loglevel=INFO, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
+            .WithConfig("akka { loglevel=DEBUG, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
             .And(DependencyResolverSetup.Create(_serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);
@@ -55,10 +55,19 @@ public class AkkaHostedService : IHostedService
     {
         try
         {
-            var credentials = new ServerCredentials(new ServerAddress(IPAddress.Parse("127.0.0.1"), 3977), "12345");
-            var msg = new AddServer(credentials);
+            var msg = new ServerAdd(new ServerCredentials
+            {
+                ServerAddress = new ServerAddress(IPAddress.Parse("127.0.0.1"), 3977),
+                Name = "TG Admin",
+                Version = "1.0",
+                Password = "12345"
+            });
+            
             var guid = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
             var guid2 = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
+            
+            _coordinator.Tell(new ServerConnect(guid.Value.ServerIdentifier));
+            
         }
         catch (Exception enx)
         {

@@ -3,11 +3,11 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 
-public sealed class ServerProtocolTransformer : IPacketTransformer<ServerProtocolMessage>
+public sealed class ServerProtocolTransformer : IPacketTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_SERVER_PROTOCOL;
 
-    public ServerProtocolMessage Transform(Packet packet)
+    public IMessage Transform(Packet packet)
     {
         var updateFrequencies = new Dictionary<AdminUpdateType, Enums.UpdateFrequency>();
         var version = packet.ReadByte();

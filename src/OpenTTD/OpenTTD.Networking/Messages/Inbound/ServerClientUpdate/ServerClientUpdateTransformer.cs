@@ -3,11 +3,11 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound.ServerClientUpdate;
 
-public sealed class ServerClientUpdateTransformer : IPacketTransformer<ServerClientUpdateMessage>
+public sealed class ServerClientUpdateTransformer : IPacketTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_SERVER_CLIENT_UPDATE;
 
-    public ServerClientUpdateMessage Transform(Packet packet)
+    public IMessage Transform(Packet packet)
     {
         var msg = new ServerClientUpdateMessage
         {

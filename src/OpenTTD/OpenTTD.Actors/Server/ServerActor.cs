@@ -13,6 +13,8 @@ public enum State
     Error
 }
 
+public sealed record NetworkActors(IActorRef Sender, IActorRef Receiver);
+
 public abstract record Model;
 
 public sealed partial class ServerActor : FSM<State, Model>
@@ -24,6 +26,7 @@ public sealed partial class ServerActor : FSM<State, Model>
         StartWith(State.Idle, new Idle(credentials));
         
         When(State.Idle, IdleHandler);
+        
         When(State.Connecting, ConnectingHandler);
         When(State.Connected, ConnectedHandler);
         When(State.Error, ErrorHandler);

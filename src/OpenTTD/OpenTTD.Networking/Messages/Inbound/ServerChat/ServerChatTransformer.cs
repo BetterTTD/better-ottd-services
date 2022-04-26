@@ -3,11 +3,11 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound.ServerChat;
 
-public sealed class ServerChatTransformer : IPacketTransformer<ServerChatMessage>
+public sealed class ServerChatTransformer : IPacketTransformer
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_SERVER_CHAT;
 
-    public ServerChatMessage Transform(Packet packet)
+    public IMessage Transform(Packet packet)
     {
         var msg = new ServerChatMessage
         {

@@ -7,12 +7,12 @@ namespace OpenTTD.Networking.Messages;
 
 public sealed class PacketService : IPacketService
 {
-    private readonly IEnumerable<IPacketTransformer<IMessage>> _packetTransformers;
-    private readonly IEnumerable<IMessageTransformer<IMessage>> _messageTransformers;
+    private readonly IEnumerable<IPacketTransformer> _packetTransformers;
+    private readonly IEnumerable<IMessageTransformer> _messageTransformers;
 
     public PacketService(
-        IEnumerable<IPacketTransformer<IMessage>> packetTransformers,
-        IEnumerable<IMessageTransformer<IMessage>> messageTransformers) =>
+        IEnumerable<IPacketTransformer> packetTransformers,
+        IEnumerable<IMessageTransformer> messageTransformers) =>
         (_packetTransformers, _messageTransformers) =
         (packetTransformers, messageTransformers);
 
@@ -20,7 +20,7 @@ public sealed class PacketService : IPacketService
     {
         var type = packet.ReadByte();
 
-        return Enum.IsDefined(typeof(PacketType), type)
+        return Enum.IsDefined(typeof(PacketType), (int) type)
             ? TransformPacket((PacketType)type, packet)
             : new GenericMessage { PacketType = PacketType.INVALID_ADMIN_PACKET };
     }

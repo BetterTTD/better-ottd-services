@@ -6,10 +6,11 @@ using OpenTTD.Networking.Messages;
 
 namespace OpenTTD.Actors.Receiver;
 
+public sealed record ReceiveMsg;
+public sealed record ReceivedMsg(IMessage Message);
+
 public sealed class ReceiverActor : ReceiveActor, IWithTimers
 {
-    private sealed record ReceiveMsg;
-    
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
     public ITimerScheduler Timers { get; set; } = null!;
@@ -25,7 +26,9 @@ public sealed class ReceiverActor : ReceiveActor, IWithTimers
                 var packet = await WaitForPacketAsync(stream, CancellationToken.None);
                 var message = packetService.ReadPacket(packet);
                 
-                Context.Parent.Tell(message);
+                _logger.Debug($"{nameof(ReceiverActor)} received {message.PacketType} message.");
+
+                Context.Parent.Tell(new ReceivedMsg(message));
             }
             catch (Exception e)
             {

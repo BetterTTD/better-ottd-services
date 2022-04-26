@@ -2,26 +2,26 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using OpenTTD.Networking.AdminPort;
-using OpenTTD.Networking.AdminPort.Messages.Base;
+using OpenTTD.Networking.AdminPort.Messages;
 
 namespace OpenTTD.Networking.Actors.Receiver;
 
-public record ReceiveMsg;
-
 public sealed class ReceiverActor : ReceiveActor, IWithTimers
 {
+    private sealed record ReceiveMsg;
+    
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
     public ITimerScheduler Timers { get; set; } = null!;
 
-    public ReceiverActor(Stream stream, IPacketTransformer packetTransformer)
+    public ReceiverActor(Stream stream, IPacketService packetService)
     {
         ReceiveAsync<ReceiveMsg>(async _ =>
         {
             try
             {
                 var packet = await WaitForPacketAsync(stream, CancellationToken.None);
-                var message = packetTransformer.Transform(packet);
+                var message = packetService.ReadPacket(packet);
                 
                 Context.Parent.Tell(message);
             }

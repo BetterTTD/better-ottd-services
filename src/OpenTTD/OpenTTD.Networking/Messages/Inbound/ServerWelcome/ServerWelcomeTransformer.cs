@@ -3,7 +3,7 @@ using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 
-public sealed class ServerWelcomePacketTransformer : IPacketTransformer<ServerWelcomeMessage>
+public sealed class ServerWelcomeTransformer : IPacketTransformer<ServerWelcomeMessage>
 {
     public PacketType PacketType => PacketType.ADMIN_PACKET_SERVER_WELCOME;
 

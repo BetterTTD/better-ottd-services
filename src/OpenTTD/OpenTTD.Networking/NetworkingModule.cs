@@ -38,34 +38,34 @@ public static class NetworkingModule
 
     private static IServiceCollection AddMessageTransformers(this IServiceCollection services)
     {
-        services.AddTransient(typeof(IMessageTransformer<>), typeof(JoinTransformer));
-        services.AddTransient(typeof(IMessageTransformer<>), typeof(PollTransformer));
-        services.AddTransient(typeof(IMessageTransformer<>), typeof(RconTransformer));
-        services.AddTransient(typeof(IMessageTransformer<>), typeof(UpdateFrequencyTransformer));
+        services.AddTransient<IMessageTransformer<JoinMessage>, JoinTransformer>();
+        services.AddTransient<IMessageTransformer<PollMessage>, PollTransformer>();
+        services.AddTransient<IMessageTransformer<RconMessage>, RconTransformer>();
+        services.AddTransient<IMessageTransformer<UpdateFrequencyMessage>, UpdateFrequencyTransformer>();
 
         return services;
     }
 
     private static IServiceCollection AddPacketTransformers(this IServiceCollection services)
     {
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerClientErrorTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerClientInfoTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerClientJoinTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerClientQuitTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerClientUpdateTransformer));
+        services.AddTransient<IPacketTransformer<ServerClientErrorMessage>, ServerClientErrorTransformer>();
+        services.AddTransient<IPacketTransformer<ServerClientInfoMessage>, ServerClientInfoTransformer>();
+        services.AddTransient<IPacketTransformer<ServerClientJoinMessage>, ServerClientJoinTransformer>();
+        services.AddTransient<IPacketTransformer<ServerClientQuitMessage>, ServerClientQuitTransformer>();
+        services.AddTransient<IPacketTransformer<ServerClientUpdateMessage>, ServerClientUpdateTransformer>();
         
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerCompanyInfoTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerCompanyNewTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerCompanyRemoveTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerCompanyUpdateTransformer));
+        services.AddTransient<IPacketTransformer<ServerCompanyInfoMessage>, ServerCompanyInfoTransformer>();
+        services.AddTransient<IPacketTransformer<ServerCompanyNewMessage>, ServerCompanyNewTransformer>();
+        services.AddTransient<IPacketTransformer<ServerCompanyRemoveMessage>, ServerCompanyRemoveTransformer>();
+        services.AddTransient<IPacketTransformer<ServerCompanyUpdateMessage>, ServerCompanyUpdateTransformer>();
         
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerWelcomePacketTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerProtocolTransformer));
+        services.AddTransient<IPacketTransformer<ServerWelcomeMessage>, ServerWelcomeTransformer>();
+        services.AddTransient<IPacketTransformer<ServerProtocolMessage>, ServerProtocolTransformer>();
         
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerChatTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerConsoleTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerPongTransformer));
-        services.AddTransient(typeof(IPacketTransformer<>), typeof(ServerRconTransformer));
+        services.AddTransient<IPacketTransformer<ServerChatMessage>, ServerChatTransformer>();
+        services.AddTransient<IPacketTransformer<ServerConsoleMessage>, ServerConsoleTransformer>();
+        services.AddTransient<IPacketTransformer<ServerPongMessage>, ServerPongTransformer>();
+        services.AddTransient<IPacketTransformer<ServerRconMessage>, ServerRconTransformer>();
 
         return services;
     }

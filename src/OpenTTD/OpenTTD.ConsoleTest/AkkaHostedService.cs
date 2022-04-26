@@ -1,7 +1,10 @@
+using System.Net;
 using Akka.Actor;
 using Akka.DependencyInjection;
+using Akka.Util;
 using Microsoft.Extensions.Hosting;
 using OpenTTD.Actors.Coordinator;
+using OpenTTD.Domain;
 
 namespace OpenTTD.ConsoleTest;
 
@@ -23,7 +26,7 @@ public class AkkaHostedService : IHostedService
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
-            .WithConfig("akka { loglevel=INFO,  loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
+            .WithConfig("akka { loglevel=INFO, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
             .And(DependencyResolverSetup.Create(_serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);
@@ -33,6 +36,8 @@ public class AkkaHostedService : IHostedService
 
         _actorSystem.WhenTerminated.ContinueWith(_ => { _appLifetime.StopApplication(); }, cancellationToken);
 
+        Test(cancellationToken);
+        
         return Task.CompletedTask;
     }
 
@@ -44,5 +49,21 @@ public class AkkaHostedService : IHostedService
         await CoordinatedShutdown
             .Get(_actorSystem)
             .Run(CoordinatedShutdown.ClrExitReason.Instance);
+    }
+
+    private async void Test(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var credentials = new ServerCredentials(new ServerAddress(IPAddress.Parse("127.0.0.1"), 3977), "12345");
+            var msg = new AddServer(credentials);
+            var guid = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
+            var guid2 = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
+        }
+        catch (Exception enx)
+        {
+            Console.WriteLine(enx);
+            throw;
+        }
     }
 }

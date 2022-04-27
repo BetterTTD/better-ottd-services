@@ -1,9 +1,11 @@
 using Akka.Actor;
 using Akka.Util;
+using Akka.Util.Internal;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using OpenTTD.Domain;
 using OpenTTD.Networking.Enums;
+using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Poll;
@@ -52,37 +54,21 @@ public sealed partial class ServerActor
                     return Stay().Using(state);
                 }
                 
-                var polls = new Dictionary<AdminUpdateType, uint>
-                {
-                    { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, uint.MaxValue },
-                    { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue }
-                };
-
-                var updateFrequencies = new Dictionary<AdminUpdateType, UpdateFrequency>
-                {
-                    { AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
-                    { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
-                    { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
-                };
-
-                foreach (var (type, data) in polls)
-                {
-                    state.Network.Sender.Tell(new SendMessage(new PollMessage()
+                new List<IMessage>()
+                    .Union(new Dictionary<AdminUpdateType, uint>
                     {
-                        UpdateType = type,
-                        Argument = data
-                    }));
-                }
+                        { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, uint.MaxValue },
+                        { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue }
+                    }.Select(x => new PollMessage(x.Key, x.Value)))
+                    .Union(new Dictionary<AdminUpdateType, UpdateFrequency>
+                    {
+                        { AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
+                        { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
+                        { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
+                    }.Select(x => new UpdateFrequencyMessage(x.Key, x.Value)))
+                    .Select(x => new SendMessage(x))
+                    .ForEach(x => state.Network.Sender.Tell(x));
                 
-                foreach (var (type, frequency) in updateFrequencies)
-                {
-                    state.Network.Sender.Tell(new SendMessage(new UpdateFrequencyMessage
-                    {
-                        UpdateType = type,
-                        UpdateFrequency = frequency
-                    }));
-                }
-
                 var protocol = state.MaybeProtocol.Value;
                 var welcome = state.MaybeWelcome.Value;
                 
@@ -102,8 +88,9 @@ public sealed partial class ServerActor
                     {
                         Version = protocol.NetworkVersion,
                         Revision = welcome.NetworkRevision,
-                        UpdateFrequencies = state.MaybeProtocol.Value.AdminUpdateSettings,
-                    }
+                        UpdateFrequencies = protocol.AdminUpdateSettings,
+                    },
+                    Companies = new List<Company> { Company.Spectator }
                 };
                 
                 return GoTo(State.Connected).Using(new Connected(state.Credentials, state.Network, server));

@@ -7,4 +7,5 @@ public sealed record Server
     public bool IsDedicated { get; set; }
     public Map Map { get; init; } = new();
     public ServerNetwork Network { get; init; } = new();
+    public List<Company> Companies { get; init; } = new() { Company.Spectator };
 }

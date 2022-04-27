@@ -23,7 +23,11 @@ public sealed partial class ServerActor
     {
         if (@event.StateData is not Connecting connecting)
         {
-            return GoTo(State.Error).Using(new Error());
+            return GoTo(State.Error).Using(new Error
+            {
+                Exception = new InvalidOperationException(),
+                Message = "Invalid state data"
+            });
         }
 
         if (@event.FsmEvent is ReceivedMsg msg)
@@ -32,13 +36,13 @@ public sealed partial class ServerActor
             {
                 var state = msg.Message switch
                 {
-                    ServerProtocolMessage protocol => connecting with
+                    ServerProtocolMessage protocolMsg => connecting with
                     {
-                        MaybeProtocol = new Option<ServerProtocolMessage>(protocol)
+                        MaybeProtocol = new Option<ServerProtocolMessage>(protocolMsg)
                     },
-                    ServerWelcomeMessage welcome => connecting with
+                    ServerWelcomeMessage welcomeMsg => connecting with
                     {
-                        MaybeWelcome = new Option<ServerWelcomeMessage>(welcome)
+                        MaybeWelcome = new Option<ServerWelcomeMessage>(welcomeMsg)
                     },
                     _ => throw new InvalidCastException()
                 };
@@ -78,8 +82,31 @@ public sealed partial class ServerActor
                         UpdateFrequency = frequency
                     }));
                 }
-                    
-                return GoTo(State.Connected).Using(new Connected());
+
+                var protocol = state.MaybeProtocol.Value;
+                var welcome = state.MaybeWelcome.Value;
+                
+                var server = new Domain.Server
+                {
+                    Name = welcome.ServerName,
+                    IsDedicated = welcome.IsDedicated,
+                    Date = welcome.CurrentDate,
+                    Map = new Map
+                    {
+                        Name = welcome.MapName,
+                        Landscape = welcome.Landscape,
+                        Width = welcome.MapWidth,
+                        Height = welcome.MapHeight
+                    },
+                    Network = new ServerNetwork
+                    {
+                        Version = protocol.NetworkVersion,
+                        Revision = welcome.NetworkRevision,
+                        UpdateFrequencies = state.MaybeProtocol.Value.AdminUpdateSettings,
+                    }
+                };
+                
+                return GoTo(State.Connected).Using(new Connected(state.Credentials, state.Network, server));
 
             }
             catch (Exception exn)

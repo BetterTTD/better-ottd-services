@@ -33,13 +33,13 @@ public class CoordinatorActor : ReceiveActor
                 
                 servers.Add(guid, (msg.Credentials, serverRef));
             
-                _logger.Warning($"Server added: {msg.Credentials.ServerAddress}");
+                _logger.Warning($"Server added: {msg.Credentials.NetworkAddress}");
 
                 Sender.Tell(Result.Success(new ServerAdded(guid)));
                 return;
             }
             
-            _logger.Warning($"Server already exists: {msg.Credentials.ServerAddress}");
+            _logger.Warning($"Server already exists: {msg.Credentials.NetworkAddress}");
             
             Sender.Tell(Result.Failure<ServerAdded>(new ArgumentException("Server already exists")));
         });

@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -57,7 +57,7 @@ public class AkkaHostedService : IHostedService
         {
             var msg = new ServerAdd(new ServerCredentials
             {
-                ServerAddress = new ServerAddress(IPAddress.Parse("127.0.0.1"), 3977),
+                NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), 3977),
                 Name = "TG Admin",
                 Version = "1.0",
                 Password = "12345"

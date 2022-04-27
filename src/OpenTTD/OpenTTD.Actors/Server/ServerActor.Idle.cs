@@ -30,7 +30,7 @@ public sealed partial class ServerActor
 
         if (@event.FsmEvent is Connect)
         {
-            EstablishConnection(credentials.ServerAddress);
+            EstablishConnection(credentials.NetworkAddress);
 
             return Stay();
         }
@@ -77,7 +77,7 @@ public sealed partial class ServerActor
         return null!;
     }
 
-    private void EstablishConnection(ServerAddress address)
+    private void EstablishConnection(NetworkAddress address)
     {
         Task.Run(async () =>
             {

@@ -6,6 +6,7 @@ using OpenTTD.Domain;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
+using OpenTTD.Networking.Messages.Outbound.Poll;
 using OpenTTD.Networking.Messages.Outbound.UpdateFrequency;
 
 namespace OpenTTD.Actors.Server;
@@ -47,14 +48,29 @@ public sealed partial class ServerActor
                     return Stay().Using(state);
                 }
                 
-                var polls = new Dictionary<AdminUpdateType, UpdateFrequency>
+                var polls = new Dictionary<AdminUpdateType, uint>
+                {
+                    { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, uint.MaxValue },
+                    { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue }
+                };
+
+                var updateFrequencies = new Dictionary<AdminUpdateType, UpdateFrequency>
                 {
                     { AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
                 };
 
-                foreach (var (type, frequency) in polls)
+                foreach (var (type, data) in polls)
+                {
+                    state.Network.Sender.Tell(new SendMessage(new PollMessage()
+                    {
+                        UpdateType = type,
+                        Argument = data
+                    }));
+                }
+                
+                foreach (var (type, frequency) in updateFrequencies)
                 {
                     state.Network.Sender.Tell(new SendMessage(new UpdateFrequencyMessage
                     {

@@ -16,7 +16,7 @@ public sealed class ServerClientInfoTransformer : IPacketTransformer
             ClientName = packet.ReadString(),
             Language = packet.ReadByte(),
             JoinDate = packet.ReadU32(),
-            PlayingAs = packet.ReadByte(),
+            CompanyId = packet.ReadByte(),
         };
 
         return msg;

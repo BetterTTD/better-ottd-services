@@ -39,7 +39,11 @@ public sealed partial class ServerActor
         {
             if (!connectionResult.IsSuccess)
             {
-                return GoTo(State.Error).Using(new Error { Exception = connectionResult.Exception });
+                return GoTo(State.Error).Using(new Error
+                {
+                    Exception = connectionResult.Exception,
+                    Message = "Connection could not be established"
+                });
             }
             
             var stream = _client.GetStream();

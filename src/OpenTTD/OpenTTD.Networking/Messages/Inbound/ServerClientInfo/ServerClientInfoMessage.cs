@@ -11,5 +11,5 @@ public sealed record ServerClientInfoMessage : IMessage
     public string ClientName { get; init; }
     public byte Language { get; init; }
     public long JoinDate { get; init; }
-    public byte PlayingAs { get; init; }
+    public byte CompanyId { get; init; }
 }

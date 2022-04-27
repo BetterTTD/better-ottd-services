@@ -5,6 +5,8 @@ using OpenTTD.Domain;
 
 namespace OpenTTD.Actors.Server;
 
+public sealed record NetworkActors(IActorRef Sender, IActorRef Receiver);
+
 public enum State
 {
     Idle,
@@ -12,8 +14,6 @@ public enum State
     Connected,
     Error
 }
-
-public sealed record NetworkActors(IActorRef Sender, IActorRef Receiver);
 
 public abstract record Model;
 

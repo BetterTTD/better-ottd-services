@@ -38,12 +38,9 @@ public sealed partial class ServerActor
                     .For(Context.System)
                     .Props<ReceiverActor>(stream);
 
-                var sender = Context.ActorOf(senderProps); 
-                var receiver = Context.ActorOf(receiverProps); 
-                
                 var network = new NetworkActors(
-                    Sender: sender,
-                    Receiver: receiver);
+                    Sender: Context.ActorOf(senderProps),
+                    Receiver: Context.ActorOf(receiverProps));
 
                 network.Sender.Tell(new SendMessage(new JoinMessage
                 {

@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
@@ -21,6 +22,8 @@ public sealed partial class ServerActor : FSM<State, Model>
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
+    private readonly TcpClient _client = new();
+
     public ServerActor(ServerCredentials credentials)
     {
         StartWith(State.Idle, new Idle(credentials));
@@ -30,6 +33,14 @@ public sealed partial class ServerActor : FSM<State, Model>
         When(State.Connecting, ConnectingHandler);
         When(State.Connected, ConnectedHandler);
         When(State.Error, ErrorHandler);
+        
+        OnTransition((_, next) =>
+        {
+            if (next == State.Error)
+            {
+                Self.Tell(new ErrorOccurred(), Sender);
+            }   
+        });
         
         Initialize();
     }

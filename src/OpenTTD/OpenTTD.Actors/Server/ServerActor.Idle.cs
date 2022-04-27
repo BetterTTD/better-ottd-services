@@ -11,57 +11,82 @@ using OpenTTD.Networking.Messages.Outbound.Join;
 
 namespace OpenTTD.Actors.Server;
 
-public sealed record Idle(ServerCredentials Credentials) : Model;
-
 public sealed partial class ServerActor
 {
+    private sealed record Idle(ServerCredentials Credentials) : Model;
+    
+    private sealed record ConnectionEstablished;
+    
     private State<State, Model> IdleHandler(Event<Model> @event)
     {
         if (@event.StateData is not Idle(var credentials))
         {
-            return GoTo(State.Error).Using(new Error());
+            return GoTo(State.Error).Using(new Error
+            {
+                Exception = new InvalidOperationException(),
+                Message = "Invalid state data"
+            });
         }
 
         if (@event.FsmEvent is Connect)
         {
-            try
-            {
-                var client = new TcpClient();
-                client.ConnectAsync(credentials.ServerAddress.IpAddress, credentials.ServerAddress.Port);
+            EstablishConnection(credentials.ServerAddress);
 
-                var stream = client.GetStream();
-                
-                var senderProps = DependencyResolver
-                    .For(Context.System)
-                    .Props<SenderActor>(stream);
-                var receiverProps = DependencyResolver
-                    .For(Context.System)
-                    .Props<ReceiverActor>(stream);
-
-                var network = new NetworkActors(
-                    Sender: Context.ActorOf(senderProps),
-                    Receiver: Context.ActorOf(receiverProps));
-
-                network.Sender.Tell(new SendMessage(new JoinMessage
-                {
-                    AdminName = credentials.Name,
-                    AdminVersion = credentials.Version,
-                    Password = credentials.Password
-                }));
-
-                var connectingState = new Connecting(
-                    credentials, network,
-                    Option<ServerProtocolMessage>.None,
-                    Option<ServerWelcomeMessage>.None);
-                
-                return GoTo(State.Connecting).Using(connectingState);
-            }
-            catch (Exception exn)
-            {
-                return GoTo(State.Error).Using(new Error { Exception = exn, Message = exn.Message });
-            }
+            return Stay();
         }
 
+        if (@event.FsmEvent is Result<ConnectionEstablished> connectionResult)
+        {
+            if (!connectionResult.IsSuccess)
+            {
+                return GoTo(State.Error).Using(new Error { Exception = connectionResult.Exception });
+            }
+            
+            var stream = _client.GetStream();
+            
+            var senderProps = DependencyResolver
+                .For(Context.System)
+                .Props<SenderActor>(stream);
+            var receiverProps = DependencyResolver
+                .For(Context.System)
+                .Props<ReceiverActor>(stream);
+
+            var network = new NetworkActors(
+                Sender: Context.ActorOf(senderProps),
+                Receiver: Context.ActorOf(receiverProps));
+
+            network.Sender.Tell(new SendMessage(new JoinMessage
+            {
+                AdminName = credentials.Name,
+                AdminVersion = credentials.Version,
+                Password = credentials.Password
+            }));
+
+            var connectingState = new Connecting(
+                credentials, network,
+                Option<ServerProtocolMessage>.None,
+                Option<ServerWelcomeMessage>.None);
+            
+            return GoTo(State.Connecting).Using(connectingState);
+        }
+        
         return null!;
+    }
+
+    private void EstablishConnection(ServerAddress address)
+    {
+        Task.Run(async () =>
+            {
+                try
+                {
+                    await _client.ConnectAsync(address.IpAddress, address.Port);
+                    return Result.Success(new ConnectionEstablished());
+                }
+                catch (SocketException exn)
+                {
+                    return Result.Failure<ConnectionEstablished>(exn);
+                }
+            })
+            .PipeTo(Self, Sender);
     }
 }

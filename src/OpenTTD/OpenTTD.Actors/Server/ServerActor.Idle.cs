@@ -8,6 +8,7 @@ using OpenTTD.Domain;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Join;
+using Common;
 
 namespace OpenTTD.Actors.Server;
 
@@ -16,38 +17,44 @@ public sealed partial class ServerActor
     private sealed record Idle(ServerCredentials Credentials) : Model;
     
     private sealed record ConnectionEstablished;
-    
-    private State<State, Model> IdleHandler(Event<Model> @event)
-    {
-        if (@event.StateData is not Idle(var credentials))
-        {
-            return GoTo(State.Error).Using(new Error
-            {
-                Exception = new InvalidOperationException(),
-                Message = "Invalid state data"
-            });
-        }
 
-        if (@event.FsmEvent is Connect)
+    private State<State, Model> IdleHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    {
+        (Connect, Idle(var credentials)) => F.Run(() =>
         {
-            EstablishConnection(credentials.NetworkAddress);
+            Task.Run(async () =>
+                {
+                    try
+                    {
+                        var address = credentials.NetworkAddress;
+                        await _client.ConnectAsync(address.IpAddress, address.Port);
+                        return Result.Success(new ConnectionEstablished());
+                    }
+                    catch (SocketException exn)
+                    {
+                        return Result.Failure<ConnectionEstablished>(exn);
+                    }
+                })
+                .PipeTo(Self, Sender);
 
             return Stay();
-        }
+        }),
 
-        if (@event.FsmEvent is Result<ConnectionEstablished> connectionResult)
+        (Result<ConnectionEstablished> result, Idle(var credentials)) => F.Run(() =>
         {
-            if (!connectionResult.IsSuccess)
+            if (!result.IsSuccess)
             {
+                Self.Tell(new ErrorOccurred(), Sender);
+
                 return GoTo(State.Error).Using(new Error
                 {
-                    Exception = connectionResult.Exception,
+                    Exception = result.Exception,
                     Message = "Connection could not be established"
                 });
             }
-            
+
             var stream = _client.GetStream();
-            
+
             var senderProps = DependencyResolver
                 .For(Context.System)
                 .Props<SenderActor>(stream);
@@ -70,27 +77,19 @@ public sealed partial class ServerActor
                 credentials, network,
                 Option<ServerProtocolMessage>.None,
                 Option<ServerWelcomeMessage>.None);
-            
-            return GoTo(State.Connecting).Using(connectingState);
-        }
-        
-        return null!;
-    }
 
-    private void EstablishConnection(NetworkAddress address)
-    {
-        Task.Run(async () =>
+            return GoTo(State.Connecting).Using(connectingState);
+        }),
+
+        _ => F.Run(() =>
+        {
+            Self.Tell(new ErrorOccurred(), Sender);
+
+            return GoTo(State.Error).Using(new Error
             {
-                try
-                {
-                    await _client.ConnectAsync(address.IpAddress, address.Port);
-                    return Result.Success(new ConnectionEstablished());
-                }
-                catch (SocketException exn)
-                {
-                    return Result.Failure<ConnectionEstablished>(exn);
-                }
-            })
-            .PipeTo(Self, Sender);
-    }
+                Exception = new InvalidOperationException(),
+                Message = "Invalid state data"
+            });
+        })
+    };
 }

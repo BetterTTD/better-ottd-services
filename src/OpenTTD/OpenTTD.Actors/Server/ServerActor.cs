@@ -17,6 +17,7 @@ public enum State
 }
 
 public abstract record Model;
+public abstract record NetworkModel(NetworkActors Network) : Model;
 
 public sealed partial class ServerActor : FSM<State, Model>
 {
@@ -38,6 +39,12 @@ public sealed partial class ServerActor : FSM<State, Model>
         {
             if (next == State.Error)
             {
+                if (StateData is NetworkModel model)
+                {
+                    model.Network.Receiver.Tell(PoisonPill.Instance);
+                    model.Network.Sender.Tell(PoisonPill.Instance);
+                }
+                
                 Self.Tell(new ErrorOccurred(), Sender);
             }   
         });

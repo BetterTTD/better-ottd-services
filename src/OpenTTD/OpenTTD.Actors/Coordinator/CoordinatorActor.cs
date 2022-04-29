@@ -46,7 +46,19 @@ public class CoordinatorActor : ReceiveActor
 
         Receive<ServerConnect>(msg =>
         {
-            if (servers.TryGetValue(msg.Guid, out var data)) data.Ref.Tell(new Connect());
+            if (servers.TryGetValue(msg.Guid, out var data))
+            {
+                data.Ref.Tell(new Connect());
+            }
+        });
+        
+        Receive<ServerRemove>(msg =>
+        {
+            if (servers.TryGetValue(msg.Guid, out var data))
+            {
+                data.Ref.Tell(PoisonPill.Instance);
+                servers.Remove(msg.Guid);
+            }
         });
     }
 }

@@ -1,3 +1,5 @@
+using Common;
+
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
@@ -9,16 +11,16 @@ public sealed partial class ServerActor
     };
 
     private sealed record ErrorOccurred;
-    
-    private State<State, Model> ErrorHandler(Event<Model> @event)
-    {
-        if (@event.StateData is not Error error)
-        {
-            throw new InvalidOperationException();
-        }
-        
-        _logger.Error(error.Exception, error.Message);
 
-        return Stay();
-    }
+    private State<State, Model> ErrorHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    {
+        (ErrorOccurred, Error model) => F.Run(() =>
+        {
+            _logger.Error(model.Exception, model.Message);
+
+            return Stay();
+        }),
+
+        _ => throw new InvalidOperationException()
+    };
 }

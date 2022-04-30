@@ -18,6 +18,7 @@ using OpenTTD.Networking.Messages.Inbound.ServerRcon;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound;
 using OpenTTD.Networking.Messages.Outbound.Join;
+using OpenTTD.Networking.Messages.Outbound.Ping;
 using OpenTTD.Networking.Messages.Outbound.Poll;
 using OpenTTD.Networking.Messages.Outbound.Rcon;
 using OpenTTD.Networking.Messages.Outbound.UpdateFrequency;
@@ -38,6 +39,7 @@ public static class NetworkingModule
 
     private static IServiceCollection AddMessageTransformers(this IServiceCollection services)
     {
+        services.AddTransient<IMessageTransformer, PingTransformer>();
         services.AddTransient<IMessageTransformer, JoinTransformer>();
         services.AddTransient<IMessageTransformer, PollTransformer>();
         services.AddTransient<IMessageTransformer, RconTransformer>();

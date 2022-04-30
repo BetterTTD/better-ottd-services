@@ -9,12 +9,10 @@ namespace OpenTTD.Actors.Receiver;
 public sealed record ReceiveMsg;
 public sealed record ReceivedMsg(IMessage Message);
 
-public sealed class ReceiverActor : ReceiveActor, IWithTimers
+public sealed class ReceiverActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    public ITimerScheduler Timers { get; set; } = null!;
-
     public ReceiverActor(Stream stream, IPacketService packetService)
     {
         ReceiveAsync<ReceiveMsg>(async _ =>
@@ -26,6 +24,7 @@ public sealed class ReceiverActor : ReceiveActor, IWithTimers
                 var packet = await WaitForPacketAsync(stream, CancellationToken.None);
                 var message = packetService.ReadPacket(packet);
                 
+                Self.Tell(new ReceiveMsg(), Sender);
                 _logger.Debug($"{nameof(ReceiverActor)} received {message.PacketType} message.");
 
                 Context.Parent.Tell(new ReceivedMsg(message));
@@ -35,13 +34,8 @@ public sealed class ReceiverActor : ReceiveActor, IWithTimers
                 _logger.Error(e, $"{nameof(ReceiverActor)} received an error.");
             }
         });
-    }
-
-    protected override void PreStart()
-    {
-        base.PreStart();
         
-        Timers.StartPeriodicTimer(nameof(ReceiveActor), new ReceiveMsg(), TimeSpan.FromSeconds(1));
+        Self.Tell(new ReceiveMsg(), Sender);
     }
 
     private static async Task<Packet> WaitForPacketAsync(Stream stream, CancellationToken token)

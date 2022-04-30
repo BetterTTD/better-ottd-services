@@ -2,13 +2,16 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using OpenTTD.Networking.Messages;
+using OpenTTD.Networking.Messages.Outbound.Ping;
 
 namespace OpenTTD.Actors.Sender;
 
 public sealed record SendMessage(IMessage Message);
 
-public sealed class SenderActor : ReceiveActor
+public sealed class SenderActor : ReceiveActor, IWithTimers
 {
+    public ITimerScheduler Timers { get; set; } = default!;
+
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
     public SenderActor(Stream stream, IPacketService packetService)
@@ -29,5 +32,15 @@ public sealed class SenderActor : ReceiveActor
                 _logger.Error(e, $"{nameof(SenderActor)} received an error.");
             }
         });
+    }
+
+    protected override void PreStart()
+    {
+        base.PreStart();
+        
+        Timers.StartPeriodicTimer(
+            nameof(SenderActor), 
+            new SendMessage(new PingMessage()), 
+            TimeSpan.FromSeconds(30));
     }
 }

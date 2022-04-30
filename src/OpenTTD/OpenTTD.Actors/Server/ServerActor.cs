@@ -30,7 +30,6 @@ public sealed partial class ServerActor : FSM<State, Model>
         StartWith(State.Idle, new Idle(credentials));
         
         When(State.Idle, IdleHandler);
-        
         When(State.Connecting, ConnectingHandler);
         When(State.Connected, ConnectedHandler);
         When(State.Error, ErrorHandler);

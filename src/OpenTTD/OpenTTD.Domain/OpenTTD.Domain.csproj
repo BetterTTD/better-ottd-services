@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
       <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
     </ItemGroup>
 

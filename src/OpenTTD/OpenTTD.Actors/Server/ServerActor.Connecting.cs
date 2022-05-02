@@ -4,7 +4,6 @@ using Akka.Util.Internal;
 using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.Models;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages;
@@ -70,29 +69,7 @@ public sealed partial class ServerActor
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));
 
-            var protocol = state.MaybeProtocol.Value;
-            var welcome = state.MaybeWelcome.Value;
-
-            var server = new Domain.Entities.Server
-            {
-                Name = welcome.ServerName,
-                IsDedicated = welcome.IsDedicated,
-                Date = welcome.CurrentDate,
-                Map = new Map
-                {
-                    Name = welcome.MapName,
-                    Landscape = welcome.Landscape,
-                    Width = welcome.MapWidth,
-                    Height = welcome.MapHeight
-                },
-                Network = new ServerNetwork
-                {
-                    Version = protocol.NetworkVersion,
-                    Revision = welcome.NetworkRevision,
-                    UpdateFrequencies = protocol.AdminUpdateSettings,
-                },
-                Companies = new List<Company> { Company.Spectator }
-            };
+            var server = _dispatcher.Create(state.MaybeWelcome.Value, state.MaybeProtocol.Value);
 
             return GoTo(State.CONNECTED).Using(new Connected(state.Credentials, state.Network, server));
         }),

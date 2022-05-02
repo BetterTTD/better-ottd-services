@@ -25,7 +25,9 @@ public sealed partial class ServerActor
                 });
             }
 
-            return Stay();
+            var server = _dispatcher.Dispatch(result.Value, model.Server);
+            
+            return Stay().Using(model with { Server = server });
         }),
         
         var (_, (credentials)) => F.Run(() =>

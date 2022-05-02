@@ -3,6 +3,7 @@ using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Common;
+using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;
@@ -24,12 +25,15 @@ public abstract record NetworkModel(
 
 public sealed partial class ServerActor : FSM<State, Model>
 {
+    private readonly IServerDispatcher _dispatcher;
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
     private readonly TcpClient _client = new();
 
-    public ServerActor(ServerCredentials credentials)
+    public ServerActor(ServerCredentials credentials, IServerDispatcher dispatcher)
     {
+        _dispatcher = dispatcher;
+        
         StartWith(State.IDLE, new Idle(credentials));
         
         When(State.IDLE, IdleHandler);
@@ -59,7 +63,6 @@ public sealed partial class ServerActor : FSM<State, Model>
         });
         
         Initialize();
-        
     }
 
     private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch

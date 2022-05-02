@@ -35,7 +35,7 @@ public sealed partial class ServerActor : FSM<State, Model>
     public ServerActor(ServerId id, ServerCredentials credentials, IServerDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
-        
+
         StartWith(State.IDLE, new Idle(id, credentials));
         
         When(State.IDLE, IdleHandler);

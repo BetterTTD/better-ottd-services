@@ -1,6 +1,8 @@
+using System.Net;
 using Common;
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Inbound.ServerClientError;
 using OpenTTD.Networking.Messages.Inbound.ServerClientInfo;
@@ -70,14 +72,18 @@ public sealed class ServerDispatcher : IServerDispatcher
         }),
         
         ServerClientInfoMessage msg => F.Run(() =>
-        {
+        { 
+            _ = IPAddress.TryParse(msg.Hostname, out var address);
+
             var company = server.Companies.First(c => c.Id.Value == msg.CompanyId);
             var client = new Client
             {
+                Id = new ClientId(msg.ClientId),
                 Name = msg.ClientName,
                 JoinDate = msg.JoinDate,
                 Company = company,
-                Language = msg.Language
+                Language = msg.Language,
+                Address = address ?? IPAddress.None
             };
             
             var updated = company with
@@ -144,8 +150,9 @@ public sealed class ServerDispatcher : IServerDispatcher
 
         ServerCompanyInfoMessage msg => F.Run(() =>
         {
-            var company = server.Companies.First(c => c.Id.Value == msg.CompanyId) with
+            var company = server.Companies.FirstOrDefault(c => c.Id.Value == msg.CompanyId, Company.Spectator) with
             {
+                Id = new CompanyId(msg.CompanyId),
                 Name = msg.CompanyName,
                 ManagerName = msg.ManagerName,
                 Color = msg.Color,

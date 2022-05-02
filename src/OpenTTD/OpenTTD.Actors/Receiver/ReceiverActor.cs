@@ -20,8 +20,9 @@ public sealed class ReceiverActor : ReceiveActor
             try
             {
                 _logger.Debug($"{nameof(ReceiverActor)} receiving a package...");
-                
-                var packet = await WaitForPacketAsync(stream, CancellationToken.None);
+
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+                var packet = await WaitForPacketAsync(stream, cts.Token);
                 var message = packetService.ReadPacket(packet);
                 
                 Self.Tell(new ReceiveMsg(), Sender);

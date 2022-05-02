@@ -1,6 +1,6 @@
 ﻿namespace OpenTTD.Networking.Enums;
 
-public enum AdminEventType
+public enum EventType
 {
     ChatMessageReceived = 1,
     ConsoleMessage = 2,

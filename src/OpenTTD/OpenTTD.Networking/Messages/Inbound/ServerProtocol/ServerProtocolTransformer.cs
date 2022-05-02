@@ -9,12 +9,12 @@ public sealed class ServerProtocolTransformer : IPacketTransformer
 
     public IMessage Transform(Packet packet)
     {
-        var updateFrequencies = new Dictionary<AdminUpdateType, Enums.UpdateFrequency>();
+        var updateFrequencies = new Dictionary<UpdateType, Enums.UpdateFrequency>();
         var version = packet.ReadByte();
 
         while (packet.ReadBool())
         {
-            var updateType = (AdminUpdateType)packet.ReadU16();
+            var updateType = (UpdateType)packet.ReadU16();
             var frequency = packet.ReadU16();
             updateFrequencies.Add(updateType, (Enums.UpdateFrequency)frequency);
         }

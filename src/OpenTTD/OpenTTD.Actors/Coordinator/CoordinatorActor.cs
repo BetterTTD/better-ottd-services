@@ -9,14 +9,14 @@ using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 
-public record ServerAdd(ServerCredentials Credentials);
-public record ServerConnect(ServerId Id);
-public record ServerDisconnect(ServerId Id);
-public record ServerRemove(ServerId Id);
+public sealed record ServerAdd(ServerCredentials Credentials);
+public sealed record ServerConnect(ServerId Id);
+public sealed record ServerDisconnect(ServerId Id);
+public sealed record ServerRemove(ServerId Id);
 
-public record ServerAdded(ServerId Id);
+public sealed record ServerAdded(ServerId Id);
 
-public class CoordinatorActor : ReceiveActor
+public sealed class CoordinatorActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 

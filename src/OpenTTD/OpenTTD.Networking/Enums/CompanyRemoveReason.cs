@@ -1,6 +1,6 @@
 ﻿namespace OpenTTD.Networking.Enums;
 
-public enum AdminCompanyRemoveReason
+public enum CompanyRemoveReason
 {
     /// <summary>
     /// The company is manually removed.

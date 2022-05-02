@@ -55,16 +55,16 @@ public sealed partial class ServerActor
             }
 
             new List<IMessage>()
-                .Union(new Dictionary<AdminUpdateType, uint>
+                .Union(new Dictionary<UpdateType, uint>
                 {
-                    { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, uint.MaxValue },
-                    { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue }
+                    { UpdateType.ADMIN_UPDATE_COMPANY_INFO, uint.MaxValue },
+                    { UpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue }
                 }.Select(x => new PollMessage(x.Key, x.Value)))
-                .Union(new Dictionary<AdminUpdateType, UpdateFrequency>
+                .Union(new Dictionary<UpdateType, UpdateFrequency>
                 {
-                    { AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
-                    { AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
-                    { AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
+                    { UpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
+                    { UpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
+                    { UpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
                 }.Select(x => new UpdateFrequencyMessage(x.Key, x.Value)))
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));

@@ -1,6 +1,6 @@
 ﻿namespace OpenTTD.Networking.Enums;
 
-public enum AdminUpdateType
+public enum UpdateType
 {
 	ADMIN_UPDATE_DATE,            /// Updates about the date of the game.
 	ADMIN_UPDATE_CLIENT_INFO,     /// Updates about the information of clients.

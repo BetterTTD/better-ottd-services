@@ -14,7 +14,7 @@ public sealed class ServerCompanyInfoTransformer : IPacketTransformer
             CompanyId = packet.ReadByte(),
             CompanyName = packet.ReadString(),
             ManagerName = packet.ReadString(),
-            Color = packet.ReadByte(),
+            Color = (Color)packet.ReadByte(),
             HasPassword = packet.ReadBool(),
             CreationDate = packet.ReadU32(),
             IsAi = packet.ReadBool(),

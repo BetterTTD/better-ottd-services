@@ -9,7 +9,7 @@ public sealed record ServerCompanyUpdateMessage : IMessage
     public byte CompanyId { get; init; }
     public string CompanyName { get; init; } = string.Empty;
     public string ManagerName { get; init; } = string.Empty;
-    public byte Color { get; init; }
+    public Color Color { get; init; }
     public bool HasPassword { get; init; }
     public byte MonthsOfBankruptcy { get; init; }
     public byte[] ShareOwnersIds { get; } = new byte[4];

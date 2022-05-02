@@ -14,12 +14,12 @@ public sealed class ServerCompanyUpdateTransformer : IPacketTransformer
             CompanyId = packet.ReadByte(),
             CompanyName = packet.ReadString(),
             ManagerName = packet.ReadString(),
-            Color = packet.ReadByte(),
+            Color = (Color)packet.ReadByte(),
             HasPassword = packet.ReadBool(),
             MonthsOfBankruptcy = packet.ReadByte()
         };
-        
-        for (var i = 0; i < msg.ShareOwnersIds.Length; ++i) 
+
+        for (var i = 0; i < msg.ShareOwnersIds.Length; ++i)
             msg.ShareOwnersIds[i] = packet.ReadByte();
 
         return msg;

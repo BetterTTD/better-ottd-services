@@ -9,7 +9,7 @@ public sealed record ServerCompanyInfoMessage : IMessage
     public byte CompanyId { get; init; }
     public string CompanyName { get; init; }
     public string ManagerName { get; init; }
-    public byte Color { get; init; }
+    public Color Color { get; init; }
     public bool HasPassword { get; init; }
     public long CreationDate { get; init; }
     public bool IsAi { get; init; }

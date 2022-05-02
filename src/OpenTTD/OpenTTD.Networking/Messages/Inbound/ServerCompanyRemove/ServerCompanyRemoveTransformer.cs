@@ -9,7 +9,7 @@ public sealed class ServerCompanyRemoveTransformer : IPacketTransformer
 
     public IMessage Transform(Packet packet)
     {
-        var msg = new ServerCompanyRemoveMessage(packet.ReadByte(), (AdminCompanyRemoveReason) packet.ReadByte());
+        var msg = new ServerCompanyRemoveMessage(packet.ReadByte(), (CompanyRemoveReason) packet.ReadByte());
         return msg;
     }
 }

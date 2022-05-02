@@ -161,13 +161,6 @@ public sealed class ServerDispatcher : IServerDispatcher
             };
         }),
         
-        ServerCompanyRemoveMessage msg => F.Run(() => server with
-        {
-            Companies = server.Companies
-                .Where(c => c.Id.Value != msg.CompanyId)
-                .ToList()
-        }),
-        
         ServerCompanyUpdateMessage msg => F.Run(() =>
         {
             var company = server.Companies.First(c => c.Id.Value == msg.CompanyId) with
@@ -187,6 +180,13 @@ public sealed class ServerDispatcher : IServerDispatcher
             };
         }),
         
+        ServerCompanyRemoveMessage msg => F.Run(() => server with
+        {
+            Companies = server.Companies
+                .Where(c => c.Id.Value != msg.CompanyId)
+                .ToList()
+        }),
+
         // Default arm
         _ => server
     };

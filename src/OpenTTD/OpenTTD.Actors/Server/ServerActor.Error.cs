@@ -1,5 +1,4 @@
 using Common;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;

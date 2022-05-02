@@ -4,7 +4,6 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using Microsoft.Extensions.Hosting;
 using OpenTTD.Actors.Coordinator;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 

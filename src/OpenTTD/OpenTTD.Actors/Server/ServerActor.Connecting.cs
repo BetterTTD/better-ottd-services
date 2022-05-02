@@ -4,7 +4,6 @@ using Akka.Util.Internal;
 using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.Models;
 using OpenTTD.Networking.Enums;
@@ -28,7 +27,17 @@ public sealed partial class ServerActor
     {
         (ReceivedMsg msg, Connecting model) => F.Run(() =>
         {
-            var state = msg.Message switch
+            var result = msg.MsgResult;
+            if (!result.IsSuccess)
+            {
+                return GoTo(State.ERROR).Using(new Error(model.Credentials)
+                {
+                    Exception = result.Exception,
+                    Message = result.Exception.Message
+                });
+            }
+            
+            var state = result.Value switch
             {
                 ServerProtocolMessage protocolMsg => model with
                 {

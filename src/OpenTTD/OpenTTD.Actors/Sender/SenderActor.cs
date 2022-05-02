@@ -37,10 +37,15 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
     protected override void PreStart()
     {
         base.PreStart();
-        
         Timers.StartPeriodicTimer(
             nameof(SenderActor), 
             new SendMessage(new PingMessage()), 
             TimeSpan.FromSeconds(30));
+    }
+
+    protected override void PostStop()
+    {
+        base.PostStop();
+        Timers.CancelAll();
     }
 }

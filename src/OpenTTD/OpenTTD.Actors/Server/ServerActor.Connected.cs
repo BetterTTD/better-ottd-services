@@ -1,6 +1,5 @@
 using Common;
 using OpenTTD.Actors.Receiver;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;
@@ -16,7 +15,16 @@ public sealed partial class ServerActor
     {
         (ReceivedMsg msg, Connected model) => F.Run(() =>
         {
-            _logger.Info(msg.Message.PacketType.ToString());
+            var result = msg.MsgResult;
+            if (!result.IsSuccess)
+            {
+                return GoTo(State.ERROR).Using(new Error(model.Credentials)
+                {
+                    Exception = result.Exception,
+                    Message = result.Exception.Message
+                });
+            }
+
             return Stay();
         }),
         

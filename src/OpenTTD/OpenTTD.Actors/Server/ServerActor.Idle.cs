@@ -4,7 +4,6 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.Domain;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Join;

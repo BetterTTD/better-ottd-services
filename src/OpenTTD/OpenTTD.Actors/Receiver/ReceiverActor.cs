@@ -1,13 +1,14 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using Akka.Util;
 using OpenTTD.Networking.Common;
 using OpenTTD.Networking.Messages;
 
 namespace OpenTTD.Actors.Receiver;
 
 public sealed record ReceiveMsg;
-public sealed record ReceivedMsg(IMessage Message);
+public sealed record ReceivedMsg(Result<IMessage> MsgResult);
 
 public sealed class ReceiverActor : ReceiveActor
 {
@@ -28,11 +29,12 @@ public sealed class ReceiverActor : ReceiveActor
                 Self.Tell(new ReceiveMsg(), Sender);
                 _logger.Debug($"{nameof(ReceiverActor)} received {message.PacketType} message.");
 
-                Context.Parent.Tell(new ReceivedMsg(message));
+                Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
             }
-            catch (Exception e)
+            catch (Exception exn)
             {
-                _logger.Error(e, $"{nameof(ReceiverActor)} received an error.");
+                _logger.Error(exn, $"{nameof(ReceiverActor)} received an error.");
+                Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
             }
         });
         

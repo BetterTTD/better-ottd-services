@@ -4,7 +4,6 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using OpenTTD.Actors.Server;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 

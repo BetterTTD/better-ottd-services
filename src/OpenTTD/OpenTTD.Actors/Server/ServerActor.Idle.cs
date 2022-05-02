@@ -9,18 +9,19 @@ using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Join;
 using Common;
 using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record Idle(ServerCredentials Credentials) : Model(Credentials);
+    private sealed record Idle(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
     
     private sealed record ConnectionEstablished;
 
     private State<State, Model> IdleHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
-        (Connect, Idle(var credentials)) => F.Run(() =>
+        (Connect, Idle(_, var credentials)) => F.Run(() =>
         {
             Task.Run(async () =>
                 {
@@ -40,13 +41,13 @@ public sealed partial class ServerActor
             return Stay();
         }),
 
-        (Result<ConnectionEstablished> result, Idle(var credentials)) => F.Run(() =>
+        (Result<ConnectionEstablished> result, Idle(var id, var credentials)) => F.Run(() =>
         {
             if (!result.IsSuccess)
             {
                 Self.Tell(new ErrorOccurred(), Sender);
 
-                return GoTo(State.ERROR).Using(new Error(credentials)
+                return GoTo(State.ERROR).Using(new Error(id, credentials)
                 {
                     Exception = result.Exception,
                     Message = "Connection could not be established"
@@ -74,18 +75,18 @@ public sealed partial class ServerActor
             }));
 
             var connectingState = new Connecting(
-                credentials, network,
+                id, credentials, network,
                 Option<ServerProtocolMessage>.None,
                 Option<ServerWelcomeMessage>.None);
 
             return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        var (_, (credentials)) => F.Run(() =>
+        var (_, (id, credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.ERROR).Using(new Error(credentials)
+            return GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"

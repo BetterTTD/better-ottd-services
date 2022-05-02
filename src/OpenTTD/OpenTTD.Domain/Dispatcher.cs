@@ -18,16 +18,17 @@ namespace OpenTTD.Domain;
 
 public interface IServerDispatcher
 {
-    Server Create(ServerWelcomeMessage welcome, ServerProtocolMessage protocol);
+    Server Create(ServerId serverId, ServerWelcomeMessage welcome, ServerProtocolMessage protocol);
     Server Dispatch(IMessage message, Server server);
 }
 
 public sealed class ServerDispatcher : IServerDispatcher
 {
-    public Server Create(ServerWelcomeMessage welcome, ServerProtocolMessage protocol)
+    public Server Create(ServerId serverId, ServerWelcomeMessage welcome, ServerProtocolMessage protocol)
     {
         var server = new Server
         {
+            Id = serverId,
             Name = welcome.ServerName,
             IsDedicated = welcome.IsDedicated,
             Date = welcome.CurrentDate,

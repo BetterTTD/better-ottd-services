@@ -28,9 +28,9 @@ public sealed class CoordinatorActor : ReceiveActor
         {
             if (servers.All(pair => pair.Value.Credentials != msg.Credentials))
             {
-                var serverProps = DependencyResolver.For(Context.System).Props<ServerActor>(msg.Credentials);
-                var serverRef = Context.ActorOf(serverProps);
                 var id = new ServerId(Guid.NewGuid());
+                var serverProps = DependencyResolver.For(Context.System).Props<ServerActor>(id, msg.Credentials);
+                var serverRef = Context.ActorOf(serverProps);
                 
                 servers.Add(id, (msg.Credentials, serverRef));
             

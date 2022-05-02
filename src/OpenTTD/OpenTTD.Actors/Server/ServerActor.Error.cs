@@ -1,11 +1,12 @@
 using Common;
 using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record Error(ServerCredentials Credentials) : Model(Credentials)
+    private sealed record Error(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials)
     {
         public Exception Exception { get; init; } = null!;
         public string Message { get; init; } = "Unknown error";

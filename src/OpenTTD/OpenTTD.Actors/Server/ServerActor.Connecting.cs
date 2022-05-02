@@ -5,6 +5,7 @@ using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
@@ -17,10 +18,11 @@ namespace OpenTTD.Actors.Server;
 public sealed partial class ServerActor
 {
     private sealed record Connecting(
+        ServerId Id, 
         ServerCredentials Credentials,
         NetworkActors Network,
         Option<ServerProtocolMessage> MaybeProtocol,
-        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Credentials, Network);
+        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Id, Credentials, Network);
 
     private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
@@ -29,7 +31,7 @@ public sealed partial class ServerActor
             var result = msg.MsgResult;
             if (!result.IsSuccess)
             {
-                return GoTo(State.ERROR).Using(new Error(model.Credentials)
+                return GoTo(State.ERROR).Using(new Error(model.Id, model.Credentials)
                 {
                     Exception = result.Exception,
                     Message = result.Exception.Message
@@ -69,16 +71,16 @@ public sealed partial class ServerActor
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));
 
-            var server = _dispatcher.Create(state.MaybeWelcome.Value, state.MaybeProtocol.Value);
+            var server = _dispatcher.Create(state.Id, state.MaybeWelcome.Value, state.MaybeProtocol.Value);
 
-            return GoTo(State.CONNECTED).Using(new Connected(state.Credentials, state.Network, server));
+            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network, server));
         }),
 
-        var (_, (credentials)) => F.Run(() =>
+        var (_, (id, credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.ERROR).Using(new Error(credentials)
+            return GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"

@@ -5,6 +5,7 @@ using Akka.Logger.Serilog;
 using Common;
 using OpenTTD.Domain;
 using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
@@ -18,10 +19,11 @@ public enum State
     ERROR
 }
 
-public abstract record Model(ServerCredentials Credentials);
+public abstract record Model(ServerId Id, ServerCredentials Credentials);
 public abstract record NetworkModel(
+    ServerId Id, 
     ServerCredentials Credentials, 
-    NetworkActors Network) : Model(Credentials);
+    NetworkActors Network) : Model(Id, Credentials);
 
 public sealed partial class ServerActor : FSM<State, Model>
 {
@@ -30,11 +32,11 @@ public sealed partial class ServerActor : FSM<State, Model>
 
     private readonly TcpClient _client = new();
 
-    public ServerActor(ServerCredentials credentials, IServerDispatcher dispatcher)
+    public ServerActor(ServerId id, ServerCredentials credentials, IServerDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
         
-        StartWith(State.IDLE, new Idle(credentials));
+        StartWith(State.IDLE, new Idle(id, credentials));
         
         When(State.IDLE, IdleHandler);
         When(State.CONNECTING, ConnectingHandler);
@@ -68,13 +70,13 @@ public sealed partial class ServerActor : FSM<State, Model>
     private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
         (Disconnect, { } model) => F.Run(() => 
-            GoTo(State.IDLE).Using(new Idle(model.Credentials))),
+            GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials))),
 
-        var (_, (credentials)) => F.Run(() =>
+        var (_, (id, credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.ERROR).Using(new Error(credentials)
+            return GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = $"{nameof(DefaultHandler)} Unhandled message"

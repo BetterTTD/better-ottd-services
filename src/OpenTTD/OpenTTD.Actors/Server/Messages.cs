@@ -1,3 +1,4 @@
 ﻿namespace OpenTTD.Actors.Server;
 
-public record Connect;
+public sealed record Connect;
+public sealed record Disconnect;

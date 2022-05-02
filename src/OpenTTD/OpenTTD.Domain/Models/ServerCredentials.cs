@@ -1,6 +1,7 @@
 using System.Net;
+using OpenTTD.Domain.ValueObjects;
 
-namespace OpenTTD.Domain;
+namespace OpenTTD.Domain.Models;
 
 public sealed record ServerCredentials
 {

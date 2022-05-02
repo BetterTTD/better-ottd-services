@@ -9,12 +9,13 @@ using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Join;
 using Common;
+using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record Idle(ServerCredentials Credentials) : Model;
+    private sealed record Idle(ServerCredentials Credentials) : Model(Credentials);
     
     private sealed record ConnectionEstablished;
 
@@ -46,7 +47,7 @@ public sealed partial class ServerActor
             {
                 Self.Tell(new ErrorOccurred(), Sender);
 
-                return GoTo(State.Error).Using(new Error
+                return GoTo(State.ERROR).Using(new Error(credentials)
                 {
                     Exception = result.Exception,
                     Message = "Connection could not be established"
@@ -78,18 +79,20 @@ public sealed partial class ServerActor
                 Option<ServerProtocolMessage>.None,
                 Option<ServerWelcomeMessage>.None);
 
-            return GoTo(State.Connecting).Using(connectingState);
+            return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        _ => F.Run(() =>
+        var (_, (credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.Error).Using(new Error
+            return GoTo(State.ERROR).Using(new Error(credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"
             });
-        })
+        }),
+        
+        _ => throw new InvalidOperationException()
     };
 }

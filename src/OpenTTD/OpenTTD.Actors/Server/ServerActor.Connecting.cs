@@ -5,6 +5,8 @@ using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using OpenTTD.Domain;
+using OpenTTD.Domain.Entities;
+using OpenTTD.Domain.Models;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
@@ -20,7 +22,7 @@ public sealed partial class ServerActor
         ServerCredentials Credentials,
         NetworkActors Network,
         Option<ServerProtocolMessage> MaybeProtocol,
-        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Network);
+        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Credentials, Network);
 
     private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
@@ -62,7 +64,7 @@ public sealed partial class ServerActor
             var protocol = state.MaybeProtocol.Value;
             var welcome = state.MaybeWelcome.Value;
 
-            var server = new Domain.Server
+            var server = new Domain.Entities.Server
             {
                 Name = welcome.ServerName,
                 IsDedicated = welcome.IsDedicated,
@@ -83,18 +85,20 @@ public sealed partial class ServerActor
                 Companies = new List<Company> { Company.Spectator }
             };
 
-            return GoTo(State.Connected).Using(new Connected(state.Credentials, state.Network, server));
+            return GoTo(State.CONNECTED).Using(new Connected(state.Credentials, state.Network, server));
         }),
 
-        _ => F.Run(() =>
+        var (_, (credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.Error).Using(new Error
+            return GoTo(State.ERROR).Using(new Error(credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"
             });
-        })
+        }),
+        
+        _ => throw new InvalidOperationException()
     };
 }

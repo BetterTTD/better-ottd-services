@@ -5,15 +5,17 @@ using Akka.Logger.Serilog;
 using Akka.Util;
 using OpenTTD.Actors.Server;
 using OpenTTD.Domain;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 
 public record ServerAdd(ServerCredentials Credentials);
-public record ServerConnect(Guid Guid);
-public record ServerDisconnect(Guid Guid);
-public record ServerRemove(Guid Guid);
+public record ServerConnect(ServerId Id);
+public record ServerDisconnect(ServerId Id);
+public record ServerRemove(ServerId Id);
 
-public record ServerAdded(Guid ServerIdentifier);
+public record ServerAdded(ServerId Id);
 
 public class CoordinatorActor : ReceiveActor
 {
@@ -21,7 +23,7 @@ public class CoordinatorActor : ReceiveActor
 
     public CoordinatorActor()
     {
-        var servers = new Dictionary<Guid, (ServerCredentials Credentials, IActorRef Ref)>();
+        var servers = new Dictionary<ServerId, (ServerCredentials Credentials, IActorRef Ref)>();
 
         Receive<ServerAdd>(msg =>
         {
@@ -29,13 +31,13 @@ public class CoordinatorActor : ReceiveActor
             {
                 var serverProps = DependencyResolver.For(Context.System).Props<ServerActor>(msg.Credentials);
                 var serverRef = Context.ActorOf(serverProps);
-                var guid = Guid.NewGuid();
+                var id = new ServerId(Guid.NewGuid());
                 
-                servers.Add(guid, (msg.Credentials, serverRef));
+                servers.Add(id, (msg.Credentials, serverRef));
             
                 _logger.Warning($"Server added: {msg.Credentials.NetworkAddress}");
 
-                Sender.Tell(Result.Success(new ServerAdded(guid)));
+                Sender.Tell(Result.Success(new ServerAdded(id)));
                 return;
             }
             
@@ -46,18 +48,26 @@ public class CoordinatorActor : ReceiveActor
 
         Receive<ServerConnect>(msg =>
         {
-            if (servers.TryGetValue(msg.Guid, out var data))
+            if (servers.TryGetValue(msg.Id, out var data))
             {
                 data.Ref.Tell(new Connect());
             }
         });
         
+        Receive<ServerDisconnect>(msg =>
+        {
+            if (servers.TryGetValue(msg.Id, out var data))
+            {
+                data.Ref.Tell(new Disconnect());
+            }
+        });
+        
         Receive<ServerRemove>(msg =>
         {
-            if (servers.TryGetValue(msg.Guid, out var data))
+            if (servers.TryGetValue(msg.Id, out var data))
             {
                 data.Ref.Tell(PoisonPill.Instance);
-                servers.Remove(msg.Guid);
+                servers.Remove(msg.Id);
             }
         });
     }

@@ -1,12 +1,10 @@
 using System.Net;
+using OpenTTD.Domain.ValueObjects;
 
-namespace OpenTTD.Domain;
+namespace OpenTTD.Domain.Entities;
 
-public sealed record ClientId(byte Value);
-
-public sealed record Client
+public sealed record Client : Entity<ClientId>
 {
-    public ClientId Id { get; init; } = new(0);
     public NetworkAddress Host { get; init; } = new(IPAddress.None, 0);
     public string Name { get; init; } = "Unknown";
     public byte Language { get; init; }

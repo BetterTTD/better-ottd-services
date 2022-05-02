@@ -1,6 +1,7 @@
 using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Domain;
+using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;
 
@@ -9,7 +10,7 @@ public sealed partial class ServerActor
     private sealed record Connected(
         ServerCredentials Credentials, 
         NetworkActors Network, 
-        Domain.Server Server) : NetworkModel(Network);
+        Domain.Entities.Server Server) : NetworkModel(Credentials, Network);
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
@@ -19,15 +20,17 @@ public sealed partial class ServerActor
             return Stay();
         }),
         
-        _ => F.Run(() =>
+        var (_, (credentials)) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.Error).Using(new Error
+            return GoTo(State.ERROR).Using(new Error(credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"
             });
-        })
+        }),
+        
+        _ => throw new InvalidOperationException()
     };
 }

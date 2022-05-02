@@ -1,6 +1,6 @@
 using OpenTTD.Networking.Enums;
 
-namespace OpenTTD.Domain;
+namespace OpenTTD.Domain.Models;
 
 public sealed record Map
 {

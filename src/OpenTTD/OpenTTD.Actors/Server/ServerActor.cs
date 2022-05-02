@@ -2,7 +2,9 @@ using System.Net.Sockets;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using Common;
 using OpenTTD.Domain;
+using OpenTTD.Domain.Models;
 
 namespace OpenTTD.Actors.Server;
 
@@ -10,14 +12,16 @@ public sealed record NetworkActors(IActorRef Sender, IActorRef Receiver);
 
 public enum State
 {
-    Idle,
-    Connecting,
-    Connected,
-    Error
+    IDLE,
+    CONNECTING,
+    CONNECTED,
+    ERROR
 }
 
-public abstract record Model;
-public abstract record NetworkModel(NetworkActors Network) : Model;
+public abstract record Model(ServerCredentials Credentials);
+public abstract record NetworkModel(
+    ServerCredentials Credentials, 
+    NetworkActors Network) : Model(Credentials);
 
 public sealed partial class ServerActor : FSM<State, Model>
 {
@@ -27,27 +31,54 @@ public sealed partial class ServerActor : FSM<State, Model>
 
     public ServerActor(ServerCredentials credentials)
     {
-        StartWith(State.Idle, new Idle(credentials));
+        StartWith(State.IDLE, new Idle(credentials));
         
-        When(State.Idle, IdleHandler);
-        When(State.Connecting, ConnectingHandler);
-        When(State.Connected, ConnectedHandler);
-        When(State.Error, ErrorHandler);
+        When(State.IDLE, IdleHandler);
+        When(State.CONNECTING, ConnectingHandler);
+        When(State.CONNECTED, ConnectedHandler);
+        When(State.ERROR, ErrorHandler);
         
-        OnTransition((_, next) =>
+        WhenUnhandled(DefaultHandler);
+        
+        OnTransition((prev, next) =>
         {
-            if (next == State.Error)
+            if (prev == State.IDLE && next == State.IDLE)
             {
-                if (StateData is NetworkModel model)
-                {
-                    model.Network.Receiver.Tell(PoisonPill.Instance);
-                    model.Network.Sender.Tell(PoisonPill.Instance);
-                }
-                
+                return;
+            }
+            
+            if (next is State.ERROR or State.IDLE && StateData is NetworkModel model)
+            {
+                model.Network.Receiver.Tell(PoisonPill.Instance);
+                model.Network.Sender.Tell(PoisonPill.Instance);
+            }
+
+            if (next is State.ERROR)
+            {
                 Self.Tell(new ErrorOccurred(), Sender);
-            }   
+            }
         });
         
         Initialize();
+        
     }
+
+    private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    {
+        (Disconnect, { } model) => F.Run(() => 
+            GoTo(State.IDLE).Using(new Idle(model.Credentials))),
+
+        var (_, (credentials)) => F.Run(() =>
+        {
+            Self.Tell(new ErrorOccurred(), Sender);
+
+            return GoTo(State.ERROR).Using(new Error(credentials)
+            {
+                Exception = new InvalidOperationException(),
+                Message = $"{nameof(DefaultHandler)} Unhandled message"
+            });
+        }),
+        
+        _ => throw new InvalidOperationException()
+    };
 }

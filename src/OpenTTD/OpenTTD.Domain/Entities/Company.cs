@@ -1,10 +1,9 @@
-namespace OpenTTD.Domain;
+using OpenTTD.Domain.ValueObjects;
 
-public sealed record CompanyId(byte Value);
+namespace OpenTTD.Domain.Entities;
 
-public sealed record Company
+public sealed record Company : Entity<CompanyId>
 {
-    public CompanyId Id { get; init; } = new(255);
     public string Name { get; init; } = "Unknown";
     public string ManagerName { get; init; } = "Unknown";
     public byte Color { get; init; }

@@ -5,10 +5,12 @@ using Akka.Util;
 using Microsoft.Extensions.Hosting;
 using OpenTTD.Actors.Coordinator;
 using OpenTTD.Domain;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.ConsoleTest;
 
-public class AkkaHostedService : IHostedService
+public sealed class AkkaHostedService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;
@@ -63,10 +65,9 @@ public class AkkaHostedService : IHostedService
                 Password = "12345"
             });
             
-            var guid = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
-            var guid2 = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
+            var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
             
-            _coordinator.Tell(new ServerConnect(guid.Value.ServerIdentifier));
+            _coordinator.Tell(new ServerConnect(result.Value.Id));
             
         }
         catch (Exception enx)

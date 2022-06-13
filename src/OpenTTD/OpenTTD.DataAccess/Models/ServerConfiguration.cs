@@ -3,7 +3,7 @@ using OpenTTD.DataAccess.Models.Base;
 
 namespace OpenTTD.DataAccess.Models;
 
-public sealed class ServerConfiguration : Modifiable<int>
+public class ServerConfiguration : Modifiable<int>
 {
     public IPAddress IpAddress { get; init; } = IPAddress.None;
     public int Port { get; init; } = default;

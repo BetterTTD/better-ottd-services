@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using Domain.ValueObjects;
 using Networking.Messages;
 using Networking.Messages.Outbound.Ping;
 
@@ -14,22 +15,24 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
 
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
-    public SenderActor(Stream stream, IPacketService packetService)
+    public SenderActor(ServerId serverId, Stream stream, IPacketService packetService)
     {
         ReceiveAsync<SendMessage>(async msg =>
         {
             try
             {
-                _logger.Debug($"{nameof(SenderActor)} sending a packet of type {msg.Message.PacketType}");
+                _logger.Debug("[{Guid}] Sending a packet of type {PacketType}", 
+                    serverId.Value, msg.Message.PacketType);
                 
                 var packet = packetService.CreatePacket(msg.Message);
                 packet.PrepareToSend();
 
                 await stream.WriteAsync(packet.Buffer.AsMemory(0, packet.Size));
             }
-            catch (Exception e)
+            catch (Exception exn)
             {
-                _logger.Error(e, $"{nameof(SenderActor)} received an error.");
+                _logger.Error(exn, "[{Guid}] Received an error while sending a packet of type {PacketType}",
+                    serverId.Value, msg.Message.PacketType);
             }
         });
     }

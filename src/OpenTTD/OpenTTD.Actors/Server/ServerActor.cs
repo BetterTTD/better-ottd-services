@@ -52,6 +52,8 @@ public sealed partial class ServerActor : FSM<State, Model>
                 return;
             }
             
+            _logger.Info("[{Guid}] Changing state from {Prev} to {Next}", id.Value, prev, next);
+            
             if (next is State.ERROR or State.IDLE && StateData is NetworkModel model)
             {
                 model.Network.Receiver.Tell(PoisonPill.Instance);

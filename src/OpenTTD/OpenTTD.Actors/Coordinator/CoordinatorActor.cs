@@ -20,6 +20,8 @@ public sealed class CoordinatorActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
+    private readonly Dictionary<ServerId, (ServerCredentials Credentials, IActorRef Ref)> _servers = new();
+
     public CoordinatorActor()
     {
         var servers = new Dictionary<ServerId, (ServerCredentials Credentials, IActorRef Ref)>();
@@ -33,14 +35,15 @@ public sealed class CoordinatorActor : ReceiveActor
                 var serverRef = Context.ActorOf(serverProps);
                 
                 servers.Add(id, (msg.Credentials, serverRef));
-            
-                _logger.Info($"Server added: {msg.Credentials.NetworkAddress}");
+
+                _logger.Info("Server added: {NetworkAddress} with an id {Guid}", 
+                    msg.Credentials.NetworkAddress, id.Value);
 
                 Sender.Tell(Result.Success(new ServerAdded(id)));
                 return;
             }
             
-            _logger.Warning($"Server already exists: {msg.Credentials.NetworkAddress}");
+            _logger.Warning("Server already exists: {NetworkAddress}", msg.Credentials.NetworkAddress);
             
             Sender.Tell(Result.Failure<ServerAdded>(new ArgumentException("Server already exists")));
         });
@@ -69,5 +72,15 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers.Remove(msg.Id);
             }
         });
+    }
+
+    protected override void PreStart()
+    {
+        base.PreStart();
+    }
+
+    protected override void PostStop()
+    {
+        base.PostStop();
     }
 }

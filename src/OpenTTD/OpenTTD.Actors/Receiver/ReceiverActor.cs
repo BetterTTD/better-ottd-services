@@ -2,6 +2,7 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
+using Domain.ValueObjects;
 using Networking.Common;
 using Networking.Messages;
 
@@ -14,26 +15,26 @@ public sealed class ReceiverActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    public ReceiverActor(Stream stream, IPacketService packetService)
+    public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService)
     {
         ReceiveAsync<ReceiveMsg>(async _ =>
         {
             try
             {
-                _logger.Debug($"{nameof(ReceiverActor)} receiving a package...");
+                _logger.Debug("[{Guid}] receiving a package...", serverId.Value);
 
                 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
                 var packet = await WaitForPacketAsync(stream, cts.Token);
                 var message = packetService.ReadPacket(packet);
                 
                 Self.Tell(new ReceiveMsg(), Sender);
-                _logger.Debug($"{nameof(ReceiverActor)} received {message.PacketType} message.");
+                _logger.Debug("[{Guid}] received a packet of type {PacketType}", serverId.Value, message.PacketType);
 
                 Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
             }
             catch (Exception exn)
             {
-                _logger.Error(exn, $"{nameof(ReceiverActor)} received an error.");
+                _logger.Error(exn, "[{Guid}] Received an error while receiving a packet.", serverId.Value);
                 Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
             }
         });

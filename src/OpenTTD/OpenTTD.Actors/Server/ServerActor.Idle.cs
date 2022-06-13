@@ -21,13 +21,14 @@ public sealed partial class ServerActor
 
     private State<State, Model> IdleHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
-        (Connect, Idle(_, var credentials)) => F.Run(() =>
+        (Connect, Idle(var serverId, var credentials)) => F.Run(() =>
         {
             Task.Run(async () =>
                 {
                     try
                     {
                         var address = credentials.NetworkAddress;
+                        _logger.Info("[{Guid}] Establishing connection with address {Address}", serverId.Value, address);
                         await _client.ConnectAsync(address.IpAddress, address.Port);
                         return Result.Success(new ConnectionEstablished());
                     }
@@ -41,27 +42,29 @@ public sealed partial class ServerActor
             return Stay();
         }),
 
-        (Result<ConnectionEstablished> result, Idle(var id, var credentials)) => F.Run(() =>
+        (Result<ConnectionEstablished> result, Idle(var serverId, var credentials)) => F.Run(() =>
         {
             if (!result.IsSuccess)
             {
                 Self.Tell(new ErrorOccurred(), Sender);
 
-                return GoTo(State.ERROR).Using(new Error(id, credentials)
+                return GoTo(State.ERROR).Using(new Error(serverId, credentials)
                 {
                     Exception = result.Exception,
                     Message = "Connection could not be established"
                 });
             }
+            
+            _logger.Info("[{Guid}] Connection established successfully", serverId.Value);
 
             var stream = _client.GetStream();
 
             var senderProps = DependencyResolver
                 .For(Context.System)
-                .Props<SenderActor>(stream);
+                .Props<SenderActor>(serverId, stream);
             var receiverProps = DependencyResolver
                 .For(Context.System)
-                .Props<ReceiverActor>(stream);
+                .Props<ReceiverActor>(serverId, stream);
 
             var network = new NetworkActors(
                 Sender: Context.ActorOf(senderProps),
@@ -75,7 +78,7 @@ public sealed partial class ServerActor
             }));
 
             var connectingState = new Connecting(
-                id, credentials, network,
+                serverId, credentials, network,
                 Option<ServerProtocolMessage>.None,
                 Option<ServerWelcomeMessage>.None);
 

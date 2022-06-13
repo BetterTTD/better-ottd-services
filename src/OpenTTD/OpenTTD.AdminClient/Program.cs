@@ -1,21 +1,57 @@
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+void ConfigureLogging(ILoggingBuilder loggingBuilder)
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .WriteTo.Console()
+        .CreateLogger();
+    
+    Log.Logger = logger;
+
+    loggingBuilder
+        .ClearProviders()
+        .AddSerilog(logger);
 }
 
-app.UseHttpsRedirection();
+void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnvironment env)
+{
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+    services.AddOptions();
+}
 
-app.UseAuthorization();
+void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        //app.UseSwagger();
+        //app.UseSwaggerUI();
+    }
+    else
+    {
+        app.UseHsts();
+    }
 
-app.MapControllers();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.UseRouting();
+}
 
-app.Run();
+void ConfigureRoutes(IEndpointRouteBuilder router)
+{
+    
+}
+
+var builder = WebApplication.CreateBuilder(args);
+ConfigureLogging(builder.Logging);
+ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
+
+var app = builder.Build();
+ConfigureApplication(app, builder.Environment);
+ConfigureRoutes(app);
+
+await app.RunAsync();

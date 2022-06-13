@@ -7,6 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Serilog" Version="2.11.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
@@ -14,6 +17,14 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
+      <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
+      <ProjectReference Include="..\OpenTTD.ConsoleTest\OpenTTD.ConsoleTest.csproj" />
+      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
+      <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
     </ItemGroup>
 
 </Project>

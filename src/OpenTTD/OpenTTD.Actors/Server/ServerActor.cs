@@ -3,9 +3,9 @@ using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Common;
-using OpenTTD.Domain;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using Domain;
+using Domain.Models;
+using Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 

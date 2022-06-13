@@ -1,24 +1,29 @@
+using Domain;
+using Networking;
+using OpenTTD.AdminClient.HostedServices;
 using Serilog;
 
-void ConfigureLogging(ILoggingBuilder loggingBuilder)
+void ConfigureLogging(ILoggingBuilder builder)
 {
-    var logger = new LoggerConfiguration()
-        .MinimumLevel.Information()
+    builder.ClearProviders();
+    builder.AddSerilog(Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug()
         .WriteTo.Console()
-        .CreateLogger();
-    
-    Log.Logger = logger;
-
-    loggingBuilder
-        .ClearProviders()
-        .AddSerilog(logger);
+        .CreateLogger());
 }
 
 void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnvironment env)
 {
+    services.AddLogging();
+    
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddOptions();
+
+    services.AddAdminPortNetworking();
+    services.AddDomain();
+
+    services.AddHostedService<AkkaHostedService>();
 }
 
 void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)
@@ -37,7 +42,6 @@ void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)
     app.UseSwaggerUI();
     
     app.UseHttpsRedirection();
-    app.UseAuthorization();
     app.UseRouting();
 }
 

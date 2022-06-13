@@ -4,12 +4,12 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
-using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
-using OpenTTD.Networking.Messages.Outbound.Join;
+using Networking.Messages.Inbound.ServerProtocol;
+using Networking.Messages.Inbound.ServerWelcome;
+using Networking.Messages.Outbound.Join;
 using Common;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using Domain.Models;
+using Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 

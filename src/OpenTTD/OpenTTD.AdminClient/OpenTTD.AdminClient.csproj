@@ -21,10 +21,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
+      <ProjectReference Include="..\..\Shared\Domain\Domain.csproj" />
+      <ProjectReference Include="..\..\Shared\Networking\Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
-      <ProjectReference Include="..\OpenTTD.ConsoleTest\OpenTTD.ConsoleTest.csproj" />
-      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
-      <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Networking\Networking.csproj" />
     </ItemGroup>
 
 </Project>

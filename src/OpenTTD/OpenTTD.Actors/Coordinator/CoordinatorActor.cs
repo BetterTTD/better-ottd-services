@@ -4,8 +4,8 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using OpenTTD.Actors.Server;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using Domain.Models;
+using Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 

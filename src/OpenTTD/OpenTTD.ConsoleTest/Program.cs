@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTTD.ConsoleTest;
-using OpenTTD.Domain;
-using OpenTTD.Networking;
+using Domain;
+using Networking;
 using Serilog;
 
 await Host

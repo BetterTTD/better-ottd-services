@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\Domain\Domain.csproj" />
+      <ProjectReference Include="..\..\Shared\Networking\Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
-      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
-      <ProjectReference Include="..\OpenTTD.Networking\OpenTTD.Networking.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,8 +4,8 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using Microsoft.Extensions.Hosting;
 using OpenTTD.Actors.Coordinator;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using Domain.Models;
+using Domain.ValueObjects;
 
 namespace OpenTTD.ConsoleTest;
 

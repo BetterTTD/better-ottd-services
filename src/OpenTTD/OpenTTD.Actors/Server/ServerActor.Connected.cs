@@ -1,7 +1,7 @@
 using Common;
 using OpenTTD.Actors.Receiver;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using Domain.Models;
+using Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 

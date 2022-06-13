@@ -4,14 +4,14 @@ using Akka.Util.Internal;
 using Common;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
-using OpenTTD.Networking.Enums;
-using OpenTTD.Networking.Messages;
-using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
-using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
-using OpenTTD.Networking.Messages.Outbound.Poll;
-using OpenTTD.Networking.Messages.Outbound.UpdateFrequency;
+using Domain.Models;
+using Domain.ValueObjects;
+using Networking.Enums;
+using Networking.Messages;
+using Networking.Messages.Inbound.ServerProtocol;
+using Networking.Messages.Inbound.ServerWelcome;
+using Networking.Messages.Outbound.Poll;
+using Networking.Messages.Outbound.UpdateFrequency;
 
 namespace OpenTTD.Actors.Server;
 

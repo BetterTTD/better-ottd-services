@@ -14,3 +14,7 @@ services:
   seq:
     ports:
       - "5341:80"
+  
+  redis:
+    ports:
+      - '6379:6379'

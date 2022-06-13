@@ -27,7 +27,16 @@ services:
       - tg
     environment:
       ACCEPT_EULA: "Y"
-
+  
+  redis:
+    image: docker.io/bitnami/redis:7.0
+    container_name: tg.redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    networks:
+      - tg
+        
 networks:
   tg:
     name: tg.network

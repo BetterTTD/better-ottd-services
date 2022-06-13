@@ -34,7 +34,7 @@ public sealed class CoordinatorActor : ReceiveActor
                 
                 servers.Add(id, (msg.Credentials, serverRef));
             
-                _logger.Warning($"Server added: {msg.Credentials.NetworkAddress}");
+                _logger.Info($"Server added: {msg.Credentials.NetworkAddress}");
 
                 Sender.Tell(Result.Success(new ServerAdded(id)));
                 return;

@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace OpenTTD.DataAccess;
 
-public sealed class AdminClientDesignTimeDbContextFactory : IDbContextFactory<AdminClientContext>
+public sealed class AdminClientDesignTimeDbContextFactory : IDesignTimeDbContextFactory<AdminClientContext>
 {
-    public AdminClientContext CreateDbContext() => new(
+    public AdminClientContext CreateDbContext(string[] args) => new(
         new LoggerFactory(),
         new OptionsWrapper<AdminClientConnectionString>(
             new AdminClientConnectionString(

@@ -25,7 +25,7 @@ using Networking.Messages.Outbound.UpdateFrequency;
 
 namespace Networking;
 
-public static class NetworkingModule
+public static class Module
 {
     public static IServiceCollection AddAdminPortNetworking(this IServiceCollection services)
     {

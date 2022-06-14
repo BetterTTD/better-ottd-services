@@ -28,4 +28,10 @@ public sealed class AdminClientContext : DbContext
             .UseLoggerFactory(_loggerFactory)
             .UseSqlServer(_connectionString.Value);
     }
+    
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(typeof(AdminClientContext).Assembly);
+    }
 }

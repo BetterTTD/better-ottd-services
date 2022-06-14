@@ -16,6 +16,7 @@
         <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
         <ProjectReference Include="..\..\Shared\Domain\Domain.csproj" />
         <ProjectReference Include="..\..\Shared\Networking\Networking.csproj" />
+        <ProjectReference Include="..\OpenTTD.Services\OpenTTD.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>

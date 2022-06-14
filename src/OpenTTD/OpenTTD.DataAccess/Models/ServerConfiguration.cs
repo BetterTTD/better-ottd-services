@@ -1,9 +1,10 @@
 ﻿using System.Net;
+using Domain.ValueObjects;
 using OpenTTD.DataAccess.Models.Base;
 
 namespace OpenTTD.DataAccess.Models;
 
-public class ServerConfiguration : Modifiable<int>
+public class ServerConfiguration : Modifiable<ServerId>
 {
     public IPAddress IpAddress { get; init; } = IPAddress.None;
     public int Port { get; init; } = default;

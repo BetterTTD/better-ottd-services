@@ -49,7 +49,7 @@ public sealed class ServerConfigurationService : IServerConfigurationService
         {
             var cfg = await _dbContext.ServerConfigurations
                 .Where(sc => 
-                    sc.IpAddress.ToString() == credentials.NetworkAddress.IpAddress.ToString() &&
+                    Equals(sc.IpAddress, credentials.NetworkAddress.IpAddress) &&
                     sc.Port == credentials.NetworkAddress.Port)
                 .SingleOrDefaultAsync(ctx);
 

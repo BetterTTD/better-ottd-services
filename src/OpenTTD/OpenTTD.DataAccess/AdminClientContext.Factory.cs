@@ -11,7 +11,7 @@ public sealed class AdminClientDesignTimeDbContextFactory : IDesignTimeDbContext
         new OptionsWrapper<AdminClientConnectionString>(
             new AdminClientConnectionString
             {
-                Value = "Server=localhost,1433;Initial Catalog=AdminClientDB;User ID=sa;Password=Strong_P@55w0rd"
+                Value = "Server=localhost,1433;Initial Catalog=AdminClientDB;User ID=sa;Password=Your_password123"
             }
         )
     );

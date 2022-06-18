@@ -125,6 +125,7 @@ public sealed class CoordinatorActor : ReceiveActor
                     _logger.Error(serverIdRes.Exception, 
                         "Error while removing server {ServerId}", 
                         msg.ServerId.Value);
+                    
                     return;
                 }
 
@@ -174,7 +175,9 @@ public sealed class CoordinatorActor : ReceiveActor
             {
                 _logger.Error(configurationsResult.Exception, 
                     "Error while {PreStart} for {CoordinatorActor}", 
-                    nameof(PreStart), nameof(CoordinatorActor));    
+                    nameof(PreStart), nameof(CoordinatorActor));
+                
+                return;
             }
 
             configurationsResult.Value.ForEach(cfg => AddServerActor(

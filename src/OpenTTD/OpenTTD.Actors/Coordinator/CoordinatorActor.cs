@@ -12,6 +12,7 @@ using OpenTTD.Services;
 
 namespace OpenTTD.Actors.Coordinator;
 
+public sealed record Initialize;
 public sealed record ServerAdd(ServerCredentials Credentials);
 public sealed record ServerConnect(ServerId ServerId);
 public sealed record ServerDisconnect(ServerId ServerId);
@@ -21,13 +22,50 @@ public sealed record ServerAdded(ServerId Id);
 
 public sealed class CoordinatorActor : ReceiveActor
 {
-    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
+    
     private readonly Dictionary<ServerId, (ServerCredentials Credentials, IActorRef Ref)> _servers = new();
     
     public CoordinatorActor(IServiceScopeFactory scopeFactory)
     {
-        _scopeFactory = scopeFactory;
+        Self.Tell(new Initialize());
+        
+        ReceiveAsync<Initialize>(async _ =>
+        {
+            using var scope = scopeFactory.CreateScope();
+            var serverService = scope.ServiceProvider.GetRequiredService<IServerConfigurationService>();
+
+            try
+            {
+                var configurationsResult = await serverService.GetConfigurationsAsync();
+            
+                if (!configurationsResult.IsSuccess)
+                {
+                    _logger.Error(configurationsResult.Exception, 
+                        "Error while {PreStart} for {CoordinatorActor}", 
+                        nameof(PreStart), nameof(CoordinatorActor));
+                
+                    return;
+                }
+
+                configurationsResult.Value.ForEach(cfg => AddServerActor(
+                    cfg.Id,
+                    new ServerCredentials
+                    {
+                        Name = cfg.Name,
+                        NetworkAddress = new NetworkAddress(cfg.IpAddress, cfg.Port),
+                        Password = cfg.Password,
+                        Version = cfg.Version
+                    })
+                );
+            }
+            catch (Exception exn)
+            {
+                _logger.Error(exn, 
+                    "Error while {PreStart} for {CoordinatorActor}", 
+                    nameof(PreStart), nameof(CoordinatorActor));
+            }
+        });
         
         ReceiveAsync<ServerAdd>(async msg =>
         {
@@ -57,6 +95,8 @@ public sealed class CoordinatorActor : ReceiveActor
                 AddServerActor(serverId, msg.Credentials);
 
                 await db.SaveChangesAsync();
+
+                Sender.Tell(Result.Success(new ServerAdded(serverId)));
                 
                 _logger.Info(
                     "Server added: {NetworkAddress} with an id {Guid}",
@@ -162,54 +202,11 @@ public sealed class CoordinatorActor : ReceiveActor
         });
     }
 
-    protected override async void PreStart()
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var serverService = scope.ServiceProvider.GetRequiredService<IServerConfigurationService>();
-
-        try
-        {
-            var configurationsResult = await serverService.GetConfigurationsAsync();
-            
-            if (!configurationsResult.IsSuccess)
-            {
-                _logger.Error(configurationsResult.Exception, 
-                    "Error while {PreStart} for {CoordinatorActor}", 
-                    nameof(PreStart), nameof(CoordinatorActor));
-                
-                return;
-            }
-
-            configurationsResult.Value.ForEach(cfg => AddServerActor(
-                cfg.Id,
-                new ServerCredentials
-                {
-                    Name = cfg.Name,
-                    NetworkAddress = new NetworkAddress(cfg.IpAddress, cfg.Port),
-                    Password = cfg.Password,
-                    Version = cfg.Version
-                })
-            );
-        }
-        catch (Exception exn)
-        {
-            _logger.Error(exn, 
-                "Error while {PreStart} for {CoordinatorActor}", 
-                nameof(PreStart), nameof(CoordinatorActor));
-        }
-        finally
-        {
-            base.PreStart();    
-        }
-    }
-
     private void AddServerActor(ServerId serverId, ServerCredentials credentials)
     {
         var serverProps = DependencyResolver.For(Context.System).Props<ServerActor>(serverId, credentials);
         var serverRef = Context.ActorOf(serverProps);
 
         _servers.Add(serverId, (credentials, serverRef));
-
-        Sender.Tell(Result.Success(new ServerAdded(serverId)));
     }
 }

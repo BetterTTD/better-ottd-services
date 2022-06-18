@@ -89,10 +89,11 @@ public sealed class ServerConfigurationService : IServerConfigurationService
             }
 
             var cfg = cfgResult.Value;
-            if (cfg == null)
+            if (cfg.IsEmpty)
             {
-                return Result.Failure<ServerId>(
-                    new ArgumentNullException(nameof(cfg), "Server not found. Nothing to delete"));
+                return Result.Failure<ServerId>(new ArgumentNullException(
+                    nameof(cfg),
+                    "Server not found. Nothing to delete"));
             }
 
             _dbContext.Remove(cfg);

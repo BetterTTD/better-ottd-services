@@ -65,7 +65,8 @@ public sealed class ServerConfigurationService : IServerConfigurationService
                 IpAddress = credentials.NetworkAddress.IpAddress,
                 Port = credentials.NetworkAddress.Port,
                 Name = credentials.Name,
-                Version = credentials.Version
+                Version = credentials.Version,
+                Password = credentials.Password
             };
         
             await _dbContext.AddAsync(dbo, ctx);

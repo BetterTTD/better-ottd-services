@@ -9,9 +9,10 @@ public sealed class AdminClientDesignTimeDbContextFactory : IDesignTimeDbContext
     public AdminClientContext CreateDbContext(string[] args) => new(
         new LoggerFactory(),
         new OptionsWrapper<AdminClientConnectionString>(
-            new AdminClientConnectionString(
-                "Server=localhost,1433;Initial Catalog=AdminClientDB;User ID=sa;Password=Strong_P@55w0rd"
-            )
+            new AdminClientConnectionString
+            {
+                Value = "Server=localhost,1433;Initial Catalog=AdminClientDB;User ID=sa;Password=Strong_P@55w0rd"
+            }
         )
     );
 }

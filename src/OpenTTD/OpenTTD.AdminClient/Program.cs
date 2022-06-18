@@ -23,7 +23,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
 
     services.AddAdminPortNetworking();
     services.AddDomain();
-    services.AddDataAccessModule();
+    services.AddDataAccessModule(cfg);
     services.AddServicesModule();
 
     services.AddHostedService<AkkaHostedService>();

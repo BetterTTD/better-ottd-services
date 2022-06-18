@@ -5,16 +5,18 @@ namespace OpenTTD.DataAccess;
 
 public static class Module
 {
-    public static IServiceCollection AddDataAccessModule(this IServiceCollection services)
+    public static IServiceCollection AddDataAccessModule(this IServiceCollection services, IConfiguration cfg)
     {
-        services.AddSingleton(sp =>
+        services.Configure<AdminClientConnectionString>(connStr =>
         {
-            var cfg = sp.GetRequiredService<IConfiguration>();
-            var str = cfg.GetConnectionString(nameof(AdminClientConnectionString));
+            var value = cfg.GetConnectionString(nameof(AdminClientConnectionString));
+            
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new InvalidOperationException("Connection string should not be empty");
+            }
 
-            return string.IsNullOrWhiteSpace(str)
-                ? throw new ArgumentException("Connection string can not be null or empty", nameof(str))
-                : new AdminClientConnectionString(str);
+            connStr.Value = value;
         });
             
         services.AddDbContext<AdminClientContext>();

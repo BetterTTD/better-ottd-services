@@ -1,4 +1,5 @@
 ﻿using Akka.Util;
+using Akka.Util.Extensions;
 using Domain.Models;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -29,16 +30,16 @@ public sealed class ServerConfigurationService : IServerConfigurationService
         }
     }
 
-    public async Task<Result<ServerConfiguration?>> GetConfigurationAsync(ServerId serverId, CancellationToken ctx = default)
+    public async Task<Result<Option<ServerConfiguration>>> GetConfigurationAsync(ServerId serverId, CancellationToken ctx = default)
     {
         try
         {
             var cfg = await _dbContext.ServerConfigurations.SingleOrDefaultAsync(sc => sc.Id == serverId, ctx);
-            return Result.Success(cfg);
+            return Result.Success(cfg?.AsOption() ?? Option<ServerConfiguration>.None);
         }
         catch (Exception exn)
         {
-            return Result.Failure<ServerConfiguration?>(exn);
+            return Result.Failure<Option<ServerConfiguration>>(exn);
         }
     }
 

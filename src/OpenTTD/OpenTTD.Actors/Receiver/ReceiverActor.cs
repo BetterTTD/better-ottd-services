@@ -21,14 +21,14 @@ public sealed class ReceiverActor : ReceiveActor
         {
             try
             {
-                _logger.Debug("[{Guid}] receiving a package...", serverId.Value);
+                _logger.Debug("[{Guid}] Receiving a package...", serverId.Value);
 
                 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
                 var packet = await WaitForPacketAsync(stream, cts.Token);
                 var message = packetService.ReadPacket(packet);
                 
                 Self.Tell(new ReceiveMsg(), Sender);
-                _logger.Debug("[{Guid}] received a packet of type {PacketType}", serverId.Value, message.PacketType);
+                _logger.Debug("[{Guid}] Received a packet of type {PacketType}", serverId.Value, message.PacketType);
 
                 Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
             }

@@ -64,11 +64,13 @@ public sealed partial class ServerActor : FSM<State, Model>
             {
                 Self.Tell(new ErrorOccurred(), Sender);
             }
+            
+            Context.Parent.Tell(new ServerStateChanged(id, next));
         });
         
         Initialize();
     }
-
+    
     private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
     {
         (Disconnect, { } model) => F.Run(() => 

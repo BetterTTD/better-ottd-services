@@ -6,124 +6,60 @@ using Akka.Util;
 using OpenTTD.Actors.Server;
 using Domain.Models;
 using Domain.ValueObjects;
-using Microsoft.Extensions.DependencyInjection;
-using OpenTTD.DataAccess;
-using OpenTTD.Services;
 
 namespace OpenTTD.Actors.Coordinator;
-
-public sealed record Initialize;
-public sealed record ServerAdd(ServerCredentials Credentials);
-public sealed record ServerConnect(ServerId ServerId);
-public sealed record ServerDisconnect(ServerId ServerId);
-public sealed record ServerRemove(ServerId ServerId);
-
-public sealed record ServerAdded(ServerId Id);
 
 public sealed class CoordinatorActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    private readonly Dictionary<ServerId, (ServerCredentials Credentials, IActorRef Ref)> _servers = new();
-    
-    public CoordinatorActor(IServiceScopeFactory scopeFactory)
+    public CoordinatorActor()
     {
-        Self.Tell(new Initialize());
+        Dictionary<ServerId, (ServerCredentials Credentials, State ServerState, IActorRef Ref)> servers = new();
         
-        ReceiveAsync<Initialize>(async _ =>
+        Receive<ServerAdd>(msg =>
         {
-            using var scope = scopeFactory.CreateScope();
-            var serverService = scope.ServiceProvider.GetRequiredService<IServerConfigurationService>();
-
-            try
+            if (servers.TryGetValue(msg.ServerId, out _))
             {
-                var configurationsResult = await serverService.GetConfigurationsAsync();
-            
-                if (!configurationsResult.IsSuccess)
-                {
-                    _logger.Error(configurationsResult.Exception, 
-                        "Error while {PreStart} for {CoordinatorActor}", 
-                        nameof(PreStart), nameof(CoordinatorActor));
+                _logger.Warning(
+                    "Server {ServerId} already added", 
+                    msg.ServerId.Value);
                 
-                    return;
-                }
-
-                configurationsResult.Value.ForEach(cfg => AddServerActor(
-                    cfg.Id,
-                    new ServerCredentials
-                    {
-                        Name = cfg.Name,
-                        NetworkAddress = new NetworkAddress(cfg.IpAddress, cfg.Port),
-                        Password = cfg.Password,
-                        Version = cfg.Version
-                    })
-                );
+                Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
             }
-            catch (Exception exn)
+            else
             {
-                _logger.Error(exn, 
-                    "Error while {PreStart} for {CoordinatorActor}", 
-                    nameof(PreStart), nameof(CoordinatorActor));
-            }
-        });
-        
-        ReceiveAsync<ServerAdd>(async msg =>
-        {
-            using var scope = scopeFactory.CreateScope();
-            var serverService = scope.ServiceProvider.GetRequiredService<IServerConfigurationService>();
-            var db = scope.ServiceProvider.GetRequiredService<AdminClientContext>();
+                var serverProps = DependencyResolver
+                    .For(Context.System)
+                    .Props<ServerActor>(msg.ServerId, msg.Credentials);
+                var serverRef = Context.ActorOf(serverProps);
 
-            try
-            {
-                var serverIdRes = await serverService.AddServerAsync(msg.Credentials);
-
-                if (!serverIdRes.IsSuccess)
-                {
-                    var (ip, port) = msg.Credentials.NetworkAddress;
-                    
-                    _logger.Error(serverIdRes.Exception, 
-                        "Error while adding server {Ip}:{Port}", 
-                        ip, port);
-                    
-                    Sender.Tell(Result.Failure<ServerAdded>(new ArgumentException("Server already exists")));
-                    
-                    return;
-                }
-
-                var serverId = serverIdRes.Value;
-                
-                AddServerActor(serverId, msg.Credentials);
-
-                await db.SaveChangesAsync();
-
-                Sender.Tell(Result.Success(new ServerAdded(serverId)));
+                servers.Add(msg.ServerId, (msg.Credentials, State.IDLE, serverRef));
                 
                 _logger.Info(
-                    "Server added: {NetworkAddress} with an id {Guid}",
-                    msg.Credentials.NetworkAddress, serverId.Value);
-            }
-            catch (Exception exn)
-            {
-                var (ip, port) = msg.Credentials.NetworkAddress;
-                    
-                _logger.Error(exn, 
-                    "Error while adding server {Ip}:{Port}", 
-                    ip, port);
-            }
-            finally
-            {
-                scope.Dispose();
+                    "Server {ServerId} was added", 
+                    msg.ServerId.Value);
+                
+                Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
             }
         });
 
         Receive<ServerConnect>(msg =>
         {
-            if (_servers.TryGetValue(msg.ServerId, out var data))
+            if (servers.TryGetValue(msg.ServerId, out var data))
             {
-                data.Ref.Tell(new Connect());
+                if (data.ServerState is State.CONNECTED or State.CONNECTING)
+                {
+                    _logger.Warning(
+                        "Server {ServerId} is connected but connect called", 
+                        msg.ServerId.Value);
+                    return;
+                }
+                
                 _logger.Info(
                     "Server {ServerId} will be connected", 
                     msg.ServerId.Value);
+                data.Ref.Tell(new Connect());
             }
             else
             {
@@ -135,8 +71,16 @@ public sealed class CoordinatorActor : ReceiveActor
         
         Receive<ServerDisconnect>(msg =>
         {
-            if (_servers.TryGetValue(msg.ServerId, out var data))
+            if (servers.TryGetValue(msg.ServerId, out var data))
             {
+                if (data.ServerState is not State.CONNECTED)
+                {
+                    _logger.Warning(
+                        "Server {ServerId} is not connected but disconnect called", 
+                        msg.ServerId.Value);
+                    return;
+                }
+                
                 data.Ref.Tell(new Disconnect());
                 _logger.Info(
                     "Server {ServerId} will be disconnected", 
@@ -150,63 +94,42 @@ public sealed class CoordinatorActor : ReceiveActor
             }
         });
         
-        ReceiveAsync<ServerRemove>(async msg =>
+        Receive<ServerRemove>(msg =>
         {
-            using var scope = scopeFactory.CreateScope();
-            var serverService = scope.ServiceProvider.GetRequiredService<IServerConfigurationService>();
-            var db = scope.ServiceProvider.GetRequiredService<AdminClientContext>();
-
-            try
+            if (servers.TryGetValue(msg.ServerId, out var data))
             {
-                var serverIdRes = await serverService.DeleteServerAsync(msg.ServerId);
+                data.Ref.Tell(PoisonPill.Instance);
 
-                if (!serverIdRes.IsSuccess)
-                {
-                    _logger.Error(serverIdRes.Exception, 
-                        "Error while removing server {ServerId}", 
-                        msg.ServerId.Value);
-                    
-                    return;
-                }
-
-                var serverId = serverIdRes.Value;
-                
-                if (_servers.TryGetValue(serverId, out var data))
-                {
-                    data.Ref.Tell(PoisonPill.Instance);
-                    _servers.Remove(msg.ServerId);
-                }
-                else
-                {
-                    _logger.Warning(
-                        "Server {ServerId} was not found while removing", 
-                        msg.ServerId.Value);
-                }
-
-                await db.SaveChangesAsync();
+                servers.Remove(msg.ServerId);
                 
                 _logger.Info(
-                    "Server {ServerId} has been removed", 
-                    serverId.Value);
-            }
-            catch (Exception exn)
-            {
-                _logger.Error(exn, 
-                    "Error while removing server {ServerId}", 
+                    "Server {ServerId} was added", 
                     msg.ServerId.Value);
             }
-            finally
+            else
             {
-                scope.Dispose();
+                _logger.Warning(
+                    "Server {ServerId} was not found while remove", 
+                    msg.ServerId.Value);
             }
         });
-    }
 
-    private void AddServerActor(ServerId serverId, ServerCredentials credentials)
-    {
-        var serverProps = DependencyResolver.For(Context.System).Props<ServerActor>(serverId, credentials);
-        var serverRef = Context.ActorOf(serverProps);
-
-        _servers.Add(serverId, (credentials, serverRef));
+        Receive<ServerStateChanged>(msg =>
+        {
+            if (servers.TryGetValue(msg.ServerId, out var data))
+            {
+                servers[msg.ServerId] = (data.Credentials, msg.State, data.Ref);
+                
+                _logger.Info(
+                    $"Server {{ServerId}} state was modified to {msg.State}", 
+                    msg.ServerId.Value);
+            }
+            else
+            {
+                _logger.Warning(
+                    "Server {ServerId} was not found while changing state", 
+                    msg.ServerId.Value);
+            }
+        });
     }
 }

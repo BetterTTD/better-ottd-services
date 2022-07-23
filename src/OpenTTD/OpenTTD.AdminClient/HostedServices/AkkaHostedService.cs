@@ -55,7 +55,9 @@ public sealed class AkkaHostedService : IHostedService
     {
         try
         {
-            var msg = new ServerAdd(new ServerCredentials
+            var serverId = new ServerId(Guid.NewGuid());
+
+            var msg = new ServerAdd(serverId, new ServerCredentials
             {
                 NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), 3977),
                 Name = "TG Admin",
@@ -64,9 +66,13 @@ public sealed class AkkaHostedService : IHostedService
             });
             
             var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
+
+            if (result.Value.Id != serverId)
+            {
+                throw new InvalidOperationException();
+            }
             
             _coordinator.Tell(new ServerConnect(result.Value.Id));
-            
         }
         catch (Exception enx)
         {

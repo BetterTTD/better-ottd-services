@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Models\Configurations.fs" />
+        <Compile Include="Models\Domain.fs" />
+        <Compile Include="Services\ServersProvider.fs" />
+        <Compile Include="Services\OttdService.fs" />
+        <Compile Include="HostedServices\TelegramHostedService.fs" />
+        <Compile Include="HostedServices\AvailabilityHostedService.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include=".dockerignore" />
+      <Content Include="Dockerfile" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FSharp.Data" Version="4.2.9" />
+      <PackageReference Include="Giraffe" Version="6.0.0" />
+      <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+    </ItemGroup>
+
+</Project>

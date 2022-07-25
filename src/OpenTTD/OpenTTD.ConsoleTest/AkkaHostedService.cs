@@ -79,11 +79,6 @@ public sealed class AkkaHostedService : IHostedService
                 .Delay(TimeSpan.FromSeconds(1), cancellationToken)
                 .ContinueWith(_ => _coordinator.Tell(new ServerConnect(serverId)), cancellationToken)
                 .ContinueWith(_ => _coordinator.Tell(new ServerConnect(serverId)), cancellationToken);
-            
-            await Task
-                .Delay(TimeSpan.FromSeconds(5), cancellationToken)
-                .ContinueWith(_ => _coordinator.Tell(new ServerDisconnect(serverId)), cancellationToken)
-                .ContinueWith(_ => _coordinator.Tell(new ServerDisconnect(serverId)), cancellationToken);
         }
         catch (Exception enx)
         {

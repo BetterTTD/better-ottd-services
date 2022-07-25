@@ -18,11 +18,12 @@ type AvailabilityHostedService(
     let job _ =
         try
             let prevState = ottdService.Servers
+            let allLiveServers = ottdProvider.GetLiveServers
             
             let online =
                 ottdService.Servers
                 |> List.filter (fun mem ->
-                    ottdProvider.GetLiveServers
+                    allLiveServers
                     |> List.map (fun onl -> onl.Name)
                     |> List.distinct
                     |> List.exists ((=) mem.Name))
@@ -33,14 +34,8 @@ type AvailabilityHostedService(
                 |> List.filter (fun mem -> online |> List.exists ((<>) mem))
                 |> List.map (fun serv -> { serv with Online = false })
             
-            missing @ online
-            |> List.iter (fun serv -> ottdService.UpdateServer(serv.Name, serv.Online))
-            
-            let postState = ottdService.Servers
-            
-            let diff = postState |> List.except prevState
-            
-            logger.LogInformation $"Servers: %A{ottdService.Servers}"
+            let diff = missing @ online |> List.except prevState
+            diff |> List.iter (fun serv -> ottdService.UpdateServer(serv.Name, serv.Online))
         with
         | exn -> logger.LogError(exn, "Error!")
     
@@ -63,5 +58,9 @@ type AvailabilityHostedService(
             do! Task.CompletedTask
         }
             
-        member this.StopAsync _ =
-            Task.CompletedTask
+        member this.StopAsync _ = task {
+            match this.Timer with
+            | Some timer -> timer.Change(Timeout.Infinite, 0) |> ignore
+            | _          -> ()
+        }
+            

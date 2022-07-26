@@ -10,6 +10,8 @@
         <Compile Include="Models\Domain.fs" />
         <Compile Include="Services\ServersProvider.fs" />
         <Compile Include="Services\OttdService.fs" />
+        <Compile Include="Services\ITelegramService.fs" />
+        <Compile Include="Services\TelegramUpdateHandler.fs" />
         <Compile Include="HostedServices\TelegramHostedService.fs" />
         <Compile Include="HostedServices\AvailabilityHostedService.fs" />
         <Compile Include="Program.fs" />

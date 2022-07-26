@@ -35,6 +35,10 @@ type AvailabilityHostedService(
         
         let diff = missing @ online |> List.except prevState
         diff |> List.iter (fun serv -> ottdService.UpdateServer(serv.Name, serv.Online))
+        
+        
+        
+        ()
     
     member val Timer : Option<Timer> = Option.None with get, set
     

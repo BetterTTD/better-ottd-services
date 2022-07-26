@@ -31,26 +31,49 @@ module Commands =
         if str.StartsWith("/display")
         then Some Display
         else None
-
+    
+    let (|AddAdmin|_|) (str : string) =
+        if str.StartsWith("/add-admin")
+        then str.Split "/add-admin"
+             |> Seq.filter (fun str -> str <> "/add-admin")
+             |> Seq.map (fun str -> str.TrimStart().TrimEnd())
+             |> Seq.tryLast
+        else None
+        
+    let (|RemoveAdmin|_|) (str : string) =
+        if str.StartsWith("/remove-admin")
+        then str.Split "/remove-admin"
+             |> Seq.filter (fun str -> str <> "/remove-admin")
+             |> Seq.map (fun str -> str.TrimStart().TrimEnd())
+             |> Seq.tryLast
+        else None
+        
 open Commands
 
 type TelegramUpdateHandler(ottd : IOttdService, telegram : ITelegramService) =
     let handleMessage (message : Message) = task {
         match message.Text with
         | Start ->
-            observers <- observers @ [ (message.Chat.Id, None) ]
-            do! display message.Chat.Id
+            telegram.AddChat message.Chat.Id
+            do! telegram.SendDashboard message.Chat.Id
+        
+        | AddAdmin name ->
             
+            ()
+        
+        | RemoveAdmin name -> ()
+        
         | Watch serverName ->
             ottd.WatchServer serverName
-            do! display message.Chat.Id
+            do! telegram.SendDashboard message.Chat.Id
             
         | Forget serverName ->
             ottd.ForgetServer serverName
-            do! display message.Chat.Id
+            do! telegram.SendDashboard message.Chat.Id
             
-        | Display -> do! display message.Chat.Id
-            
+        | Display ->
+            do! telegram.SendDashboard message.Chat.Id
+        
         | _ -> ()
     }
         

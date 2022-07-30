@@ -71,12 +71,12 @@ public sealed partial class ServerActor : FSM<State, Model>
         Initialize();
     }
     
-    private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (Disconnect, { } model) => F.Run(() => 
+        ({ } model, Disconnect) => F.Run(() => 
             GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials))),
 
-        var (_, (id, credentials)) => F.Run(() =>
+        var ((id, credentials), _) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 

@@ -14,9 +14,9 @@ public sealed partial class ServerActor
 
     private sealed record ErrorOccurred;
 
-    private State<State, Model> ErrorHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    private State<State, Model> ErrorHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (ErrorOccurred, Error model) => F.Run(() =>
+        (Error model, _) => F.Run(() =>
         {
             _logger.Error(model.Exception, model.Message);
 

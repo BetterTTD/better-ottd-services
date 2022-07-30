@@ -2,6 +2,8 @@ using Common;
 using OpenTTD.Actors.Receiver;
 using Domain.Models;
 using Domain.ValueObjects;
+using Networking.Enums;
+using Networking.Messages.Inbound;
 
 namespace OpenTTD.Actors.Server;
 
@@ -10,12 +12,11 @@ public sealed partial class ServerActor
     private sealed record Connected(
         ServerId Id, 
         ServerCredentials Credentials, 
-        NetworkActors Network, 
-        Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
+        NetworkActors Network) : NetworkModel(Id, Credentials, Network);
 
-    private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (ReceivedMsg msg, Connected model) => F.Run(() =>
+        (Connected model, ReceivedMsg msg) => F.Run(() =>
         {
             var result = msg.MsgResult;
             if (!result.IsSuccess)
@@ -27,12 +28,16 @@ public sealed partial class ServerActor
                 });
             }
 
-            var server = _dispatcher.Dispatch(result.Value, model.Server);
+            if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
+            {
+                //Grace shutdown
+                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
+            }
             
-            return Stay().Using(model with { Server = server });
+            return Stay().Using(model);
         }),
         
-        var (_, (id, credentials)) => F.Run(() =>
+        var ((id, credentials), _) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 

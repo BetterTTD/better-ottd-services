@@ -8,6 +8,7 @@ using Domain.Models;
 using Domain.ValueObjects;
 using Networking.Enums;
 using Networking.Messages;
+using Networking.Messages.Inbound;
 using Networking.Messages.Inbound.ServerProtocol;
 using Networking.Messages.Inbound.ServerWelcome;
 using Networking.Messages.Outbound.Poll;
@@ -24,9 +25,9 @@ public sealed partial class ServerActor
         Option<ServerProtocolMessage> MaybeProtocol,
         Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Id, Credentials, Network);
 
-    private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (ReceivedMsg msg, Connecting model) => F.Run(() =>
+        (Connecting model, ReceivedMsg msg) => F.Run(() =>
         {
             var result = msg.MsgResult;
             if (!result.IsSuccess)
@@ -38,6 +39,12 @@ public sealed partial class ServerActor
                 });
             }
             
+            if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
+            {
+                //Grace shutdown
+                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
+            }
+
             var state = result.Value switch
             {
                 ServerProtocolMessage protocolMsg => model with
@@ -71,12 +78,10 @@ public sealed partial class ServerActor
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));
 
-            var server = _dispatcher.Create(state.Id, state.MaybeWelcome.Value, state.MaybeProtocol.Value);
-
-            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network, server));
+            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network));
         }),
 
-        var (_, (id, credentials)) => F.Run(() =>
+        var ((id, credentials), _) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 

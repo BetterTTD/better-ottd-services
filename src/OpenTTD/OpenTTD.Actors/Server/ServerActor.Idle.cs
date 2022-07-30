@@ -19,9 +19,9 @@ public sealed partial class ServerActor
     
     private sealed record ConnectionEstablished;
 
-    private State<State, Model> IdleHandler(Event<Model> @event) => (@event.FsmEvent, @event.StateData) switch
+    private State<State, Model> IdleHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (Connect, Idle(var serverId, var credentials)) => F.Run(() =>
+        (Idle(var serverId, var credentials), Connect) => F.Run(() =>
         {
             Task.Run(async () =>
                 {
@@ -42,7 +42,7 @@ public sealed partial class ServerActor
             return Stay();
         }),
 
-        (Result<ConnectionEstablished> result, Idle(var serverId, var credentials)) => F.Run(() =>
+        (Idle(var serverId, var credentials), Result<ConnectionEstablished> result) => F.Run(() =>
         {
             if (!result.IsSuccess)
             {
@@ -85,7 +85,7 @@ public sealed partial class ServerActor
             return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        var (_, (id, credentials)) => F.Run(() =>
+        var ((id, credentials), _) => F.Run(() =>
         {
             Self.Tell(new ErrorOccurred(), Sender);
 

@@ -22,7 +22,7 @@ public sealed class CoordinatorActor : ReceiveActor
             if (servers.TryGetValue(msg.ServerId, out _))
             {
                 _logger.Warning(
-                    "Server {ServerId} already added", 
+                    "[{ServerId}] Server already added", 
                     msg.ServerId.Value);
                 
                 Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
@@ -37,7 +37,7 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers.Add(msg.ServerId, (msg.Credentials, State.IDLE, serverRef));
                 
                 _logger.Info(
-                    "Server {ServerId} was added", 
+                    "[{ServerId}] Server was added", 
                     msg.ServerId.Value);
                 
                 Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
@@ -51,20 +51,20 @@ public sealed class CoordinatorActor : ReceiveActor
                 if (data.ServerState is State.CONNECTED or State.CONNECTING)
                 {
                     _logger.Warning(
-                        "Server {ServerId} is connected but connect called", 
+                        "[{ServerId}] Server is connected but connect called", 
                         msg.ServerId.Value);
                     return;
                 }
                 
                 _logger.Info(
-                    "Server {ServerId} will be connected", 
+                    "[{ServerId}] Server will be connected", 
                     msg.ServerId.Value);
                 data.Ref.Tell(new Connect());
             }
             else
             {
                 _logger.Warning(
-                    "Server {ServerId} was not found while connecting", 
+                    "[{ServerId}] Server was not found while connecting", 
                     msg.ServerId.Value);
             }
         });
@@ -76,20 +76,20 @@ public sealed class CoordinatorActor : ReceiveActor
                 if (data.ServerState is not State.CONNECTED)
                 {
                     _logger.Warning(
-                        "Server {ServerId} is not connected but disconnect called", 
+                        "[{ServerId}] Server is not connected but disconnect called", 
                         msg.ServerId.Value);
                     return;
                 }
                 
                 data.Ref.Tell(new Disconnect());
                 _logger.Info(
-                    "Server {ServerId} will be disconnected", 
+                    "[{ServerId}] Server will be disconnected", 
                     msg.ServerId.Value);
             }
             else
             {
                 _logger.Warning(
-                    "Server {ServerId} was not found while disconnecting", 
+                    "[{ServerId}] Server was not found while disconnecting", 
                     msg.ServerId.Value);
             }
         });
@@ -103,13 +103,13 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers.Remove(msg.ServerId);
                 
                 _logger.Info(
-                    "Server {ServerId} was added", 
+                    "[{ServerId}] Server was added", 
                     msg.ServerId.Value);
             }
             else
             {
                 _logger.Warning(
-                    "Server {ServerId} was not found while remove", 
+                    "[{ServerId}] Server was not found while remove", 
                     msg.ServerId.Value);
             }
         });
@@ -121,13 +121,13 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers[msg.ServerId] = (data.Credentials, msg.State, data.Ref);
                 
                 _logger.Info(
-                    $"Server {{ServerId}} state was modified to {msg.State}", 
-                    msg.ServerId.Value);
+                    "[{ServerId}] Server state was modified to {State}", 
+                    msg.ServerId.Value, msg.State);
             }
             else
             {
                 _logger.Warning(
-                    "Server {ServerId} was not found while changing state", 
+                    "[{ServerId}] Server was not found while changing state", 
                     msg.ServerId.Value);
             }
         });

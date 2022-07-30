@@ -41,7 +41,6 @@ public sealed partial class ServerActor
             
             if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
             {
-                //Grace shutdown
                 return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
             }
 

@@ -26,7 +26,9 @@ void ConfigureApplication(IApplicationBuilder app, IWebHostEnvironment env)
 
 void ConfigureRouting(IEndpointRouteBuilder route)
 {
+    route.MapRazorPages();
     route.MapControllers();
+    route.MapFallbackToFile("index.html");
 }
 
 var builder = WebApplication.CreateBuilder(args);

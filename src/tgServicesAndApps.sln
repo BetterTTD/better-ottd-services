@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Availability", "Availabilit
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AvailabilityApp", "Availability\AvailabilityApp\AvailabilityApp.fsproj", "{4923C00A-DB71-4DAA-8E5E-B6CC130FAF6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.DataAccess", "Services\OpenTTD\OpenTTD.DataAccess\OpenTTD.DataAccess.csproj", "{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{4923C00A-DB71-4DAA-8E5E-B6CC130FAF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4923C00A-DB71-4DAA-8E5E-B6CC130FAF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4923C00A-DB71-4DAA-8E5E-B6CC130FAF6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{39EC7BB7-67EE-4BC3-8A5F-3EE029B66CB6} = {632B2863-CDE3-4E94-B4D6-3F52520A9297}
 		{0FC227FA-B1FF-4E14-8D83-558FBA07199B} = {5F0B062A-7568-4079-80EE-25829E27C85E}
 		{4923C00A-DB71-4DAA-8E5E-B6CC130FAF6F} = {0FC227FA-B1FF-4E14-8D83-558FBA07199B}
+		{AFC11C7F-98DE-474A-88EF-9AA2498AF2BD} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B01EB61-45F2-4DF5-97A2-4101DA40ACF4}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OpenTTD.DataAccess.Models;
 
 namespace OpenTTD.DataAccess;
 
@@ -8,6 +9,8 @@ public sealed class OttdContext : DbContext
 {
     private readonly ILoggerFactory _loggerFactory;
     private readonly OttdDbConnectionString _connectionString;
+
+    public DbSet<Server> Servers { get; set; } = null!;
 
     public OttdContext(ILoggerFactory loggerFactory, IOptions<OttdDbConnectionString> connectionStringOption)
     {

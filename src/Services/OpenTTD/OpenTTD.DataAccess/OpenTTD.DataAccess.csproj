@@ -28,5 +28,9 @@
         <DependentUpon>OttdContext.cs</DependentUpon>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
     
 </Project>

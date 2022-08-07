@@ -12,7 +12,11 @@ public sealed class ServerConfiguration : IEntityTypeConfiguration<Server>
     {
         builder.ToTable(Tables.Server, Schemas.Dbo);
 
-        builder.HasKey(p => p.Id).HasName("ServerID");
+        builder.HasKey(p => p.Id);
+
+        builder
+            .Property(p => p.Id)
+            .HasColumnName("ServerID");
 
         builder
             .Property(p => p.Name)
@@ -29,7 +33,7 @@ public sealed class ServerConfiguration : IEntityTypeConfiguration<Server>
         
         builder
             .Property(p => p.Port)
-            .HasConversion(port => port.Value, str => new ServerPort(str));
+            .HasConversion(port => port.Value, @int => new ServerPort(@int));
         
         builder
             .Property(p => p.Version)

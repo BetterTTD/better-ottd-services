@@ -2,6 +2,8 @@ using Domain;
 using Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.DataAccess;
+using OpenTTD.DataAccess.Extensions;
+using OpenTTD.DataAccess.Seeder;
 using Serilog;
 
 void ConfigureLogging(ILoggingBuilder builder)
@@ -59,4 +61,5 @@ var app = builder.Build();
 ConfigureApplication(app, builder.Environment);
 ConfigureRoutes(app);
 
+await app.MigrateDatabaseAsync<OttdContext, OttdDbSeeder>();
 await app.RunAsync();

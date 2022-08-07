@@ -1,6 +1,7 @@
 using Domain;
 using Networking;
 using OpenTTD.AdminClient.HostedServices;
+using OpenTTD.DataAccess;
 using Serilog;
 
 void ConfigureLogging(ILoggingBuilder builder)
@@ -21,7 +22,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
 
     services.AddAdminPortNetworking();
     services.AddDomain();
-
+    services.AddOttdDataAccessModule(cfg.GetConnectionString(OttdDbConnectionString.Key));
+        
     services.AddHostedService<AkkaHostedService>();
 }
 

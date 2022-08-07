@@ -22,5 +22,11 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="OttdContext.Factory.cs">
+        <DependentUpon>OttdContext.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
     
 </Project>

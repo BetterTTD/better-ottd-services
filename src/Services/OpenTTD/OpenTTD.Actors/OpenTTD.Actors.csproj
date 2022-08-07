@@ -13,12 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
-        <ProjectReference Include="..\..\Shared\Domain\Domain.csproj" />
-        <ProjectReference Include="..\..\Shared\Networking\Networking.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Update="Server\ServerActor.Idle.cs">
         <DependentUpon>ServerActor.cs</DependentUpon>
       </Compile>
@@ -31,6 +25,10 @@
       <Compile Update="Server\ServerActor.Error.cs">
         <DependentUpon>ServerActor.cs</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>

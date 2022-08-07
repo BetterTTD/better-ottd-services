@@ -29,7 +29,7 @@ public sealed class ServerDispatcher : IServerDispatcher
         var server = new Server
         {
             Id = serverId,
-            Name = welcome.ServerName,
+            Name = new ServerName(welcome.ServerName),
             IsDedicated = welcome.IsDedicated,
             Date = welcome.CurrentDate,
             Map = new Map

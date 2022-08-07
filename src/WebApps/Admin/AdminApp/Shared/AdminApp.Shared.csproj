@@ -9,4 +9,8 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Shared\Networking\Networking.csproj" />
+  </ItemGroup>
 </Project>

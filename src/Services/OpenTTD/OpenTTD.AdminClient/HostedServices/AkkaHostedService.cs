@@ -8,7 +8,15 @@ using Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public sealed class AkkaHostedService : IHostedService
+public interface IActorService
+{
+    public Task<ServerId> AddServer(ServerCredentials credentials, CancellationToken ct);
+    public void ServerConnect(ServerId serverId);
+    public void ServerDisconnect(ServerId serverId);
+    public void RemoveServer(ServerId serverId);
+}
+
+public sealed class AkkaHostedService : IHostedService, IActorService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;
@@ -55,9 +63,7 @@ public sealed class AkkaHostedService : IHostedService
     {
         try
         {
-            var serverId = new ServerId(Guid.NewGuid());
-
-            var msg = new ServerAdd(serverId, new ServerCredentials
+            var msg = new ServerAdd(new ServerCredentials
             {
                 NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), 3977),
                 Name = "TG Admin",
@@ -67,11 +73,6 @@ public sealed class AkkaHostedService : IHostedService
             
             var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
 
-            if (result.Value.Id != serverId)
-            {
-                throw new InvalidOperationException();
-            }
-            
             _coordinator.Tell(new ServerConnect(result.Value.Id));
         }
         catch (Exception enx)
@@ -79,5 +80,34 @@ public sealed class AkkaHostedService : IHostedService
             Console.WriteLine(enx);
             throw;
         }
+    }
+
+    public async Task<ServerId> AddServer(ServerCredentials credentials, CancellationToken ct)
+    {
+        var msg = new ServerAdd(credentials);
+            
+        var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: ct);
+
+        if (!result.IsSuccess)
+        {
+            throw new InvalidOperationException();
+        }
+        
+        return result.Value.Id;
+    }
+
+    public void ServerConnect(ServerId serverId)
+    {
+        _coordinator.Tell(new ServerConnect(serverId));
+    }
+
+    public void ServerDisconnect(ServerId serverId)
+    {
+        _coordinator.Tell(new ServerDisconnect(serverId));
+    }
+
+    public void RemoveServer(ServerId serverId)
+    {
+        _coordinator.Tell(new ServerRemove(serverId));
     }
 }

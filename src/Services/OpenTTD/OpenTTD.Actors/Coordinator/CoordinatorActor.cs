@@ -19,28 +19,38 @@ public sealed class CoordinatorActor : ReceiveActor
         
         Receive<ServerAdd>(msg =>
         {
-            if (servers.TryGetValue(msg.ServerId, out _))
+            var maybeServerId = servers
+                .Where(s =>
+                    s.Value.Credentials.Name == msg.Credentials.Name ||
+                    Equals(s.Value.Credentials.NetworkAddress.IpAddress, msg.Credentials.NetworkAddress.IpAddress) &&
+                    s.Value.Credentials.NetworkAddress.Port == msg.Credentials.NetworkAddress.Port)
+                .Select(x => x.Key)
+                .FirstOrDefault();
+            
+            if (maybeServerId is not null)
             {
                 _logger.Warning(
                     "[{ServerId}] Server already added", 
-                    msg.ServerId.Value);
+                    maybeServerId.Value);
                 
-                Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
+                Sender.Tell(Result.Success(new ServerAdded(maybeServerId)));
             }
             else
             {
+                var serverId = new ServerId(Guid.NewGuid());
+
                 var serverProps = DependencyResolver
                     .For(Context.System)
-                    .Props<ServerActor>(msg.ServerId, msg.Credentials);
+                    .Props<ServerActor>(serverId, msg.Credentials);
                 var serverRef = Context.ActorOf(serverProps);
 
-                servers.Add(msg.ServerId, (msg.Credentials, State.IDLE, serverRef));
+                servers.Add(serverId, (msg.Credentials, State.IDLE, serverRef));
                 
                 _logger.Info(
                     "[{ServerId}] Server was added", 
-                    msg.ServerId.Value);
+                    serverId.Value);
                 
-                Sender.Tell(Result.Success(new ServerAdded(msg.ServerId)));
+                Sender.Tell(Result.Success(new ServerAdded(serverId)));
             }
         });
 

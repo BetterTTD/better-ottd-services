@@ -6,13 +6,13 @@ using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using Domain.Models;
 using Domain.ValueObjects;
-using Networking.Enums;
-using Networking.Messages;
-using Networking.Messages.Inbound;
-using Networking.Messages.Inbound.ServerProtocol;
-using Networking.Messages.Inbound.ServerWelcome;
-using Networking.Messages.Outbound.Poll;
-using Networking.Messages.Outbound.UpdateFrequency;
+using OpenTTD.Networking.Enums;
+using OpenTTD.Networking.Messages;
+using OpenTTD.Networking.Messages.Inbound;
+using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
+using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
+using OpenTTD.Networking.Messages.Outbound.Poll;
+using OpenTTD.Networking.Messages.Outbound.UpdateFrequency;
 
 namespace OpenTTD.Actors.Server;
 

@@ -1,5 +1,5 @@
 using Domain.ValueObjects;
-using Networking.Enums;
+using OpenTTD.Networking.Enums;
 
 namespace Domain.Entities;
 

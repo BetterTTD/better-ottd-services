@@ -3,16 +3,16 @@ using Common;
 using Domain.Entities;
 using Domain.Models;
 using Domain.ValueObjects;
-using Networking.Messages;
-using Networking.Messages.Inbound.ServerClientError;
-using Networking.Messages.Inbound.ServerClientInfo;
-using Networking.Messages.Inbound.ServerClientQuit;
-using Networking.Messages.Inbound.ServerClientUpdate;
-using Networking.Messages.Inbound.ServerCompanyInfo;
-using Networking.Messages.Inbound.ServerCompanyRemove;
-using Networking.Messages.Inbound.ServerCompanyUpdate;
-using Networking.Messages.Inbound.ServerProtocol;
-using Networking.Messages.Inbound.ServerWelcome;
+using OpenTTD.Networking.Messages;
+using OpenTTD.Networking.Messages.Inbound.ServerClientError;
+using OpenTTD.Networking.Messages.Inbound.ServerClientInfo;
+using OpenTTD.Networking.Messages.Inbound.ServerClientQuit;
+using OpenTTD.Networking.Messages.Inbound.ServerClientUpdate;
+using OpenTTD.Networking.Messages.Inbound.ServerCompanyInfo;
+using OpenTTD.Networking.Messages.Inbound.ServerCompanyRemove;
+using OpenTTD.Networking.Messages.Inbound.ServerCompanyUpdate;
+using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
+using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 
 namespace Domain;
 

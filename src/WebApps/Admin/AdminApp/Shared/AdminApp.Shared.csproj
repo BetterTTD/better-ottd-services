@@ -11,6 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared\Networking\Networking.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\OpenTTD.Networking\OpenTTD.Networking.csproj" />
   </ItemGroup>
 </Project>

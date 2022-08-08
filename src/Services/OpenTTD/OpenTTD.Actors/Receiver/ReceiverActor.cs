@@ -3,8 +3,8 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using Domain.ValueObjects;
-using Networking.Common;
-using Networking.Messages;
+using OpenTTD.Networking.Common;
+using OpenTTD.Networking.Messages;
 
 namespace OpenTTD.Actors.Receiver;
 

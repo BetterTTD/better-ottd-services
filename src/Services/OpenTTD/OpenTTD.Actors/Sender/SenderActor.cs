@@ -2,8 +2,8 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Domain.ValueObjects;
-using Networking.Messages;
-using Networking.Messages.Outbound.Ping;
+using OpenTTD.Networking.Messages;
+using OpenTTD.Networking.Messages.Outbound.Ping;
 
 namespace OpenTTD.Actors.Sender;
 

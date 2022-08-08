@@ -1,4 +1,4 @@
-using Networking.Enums;
+using OpenTTD.Networking.Enums;
 
 namespace AdminApp.Shared;
                                   

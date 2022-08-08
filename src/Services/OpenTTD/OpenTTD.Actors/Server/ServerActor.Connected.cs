@@ -2,8 +2,8 @@ using Common;
 using OpenTTD.Actors.Receiver;
 using Domain.Models;
 using Domain.ValueObjects;
-using Networking.Enums;
-using Networking.Messages.Inbound;
+using OpenTTD.Networking.Messages.Inbound;
+using OpenTTD.Networking.Enums;
 
 namespace OpenTTD.Actors.Server;
 

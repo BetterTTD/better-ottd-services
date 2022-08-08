@@ -60,7 +60,7 @@ RUN mkdir -p /config && \
 
 COPY --from=builder /app /app
 
-COPY OpenTTD/openttd.cfg /config/openttd.cfg
+COPY Services/OpenTTD/openttd.cfg /config/openttd.cfg
 
 RUN chown -R openttd:openttd /config /app
 

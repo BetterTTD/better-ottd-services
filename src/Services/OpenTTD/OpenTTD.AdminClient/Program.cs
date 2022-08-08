@@ -23,6 +23,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddOptions();
+    services.AddControllers();
 
     services
         .AddAdminPortNetworking()
@@ -38,8 +39,8 @@ void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)
 {
     if (env.IsDevelopment())
     {
-        //app.UseSwagger();
-        //app.UseSwaggerUI();
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
     else
     {
@@ -55,7 +56,7 @@ void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)
 
 void ConfigureRoutes(IEndpointRouteBuilder router)
 {
-    
+    router.MapControllers();
 }
 
 var builder = WebApplication.CreateBuilder(args);

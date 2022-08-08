@@ -5,18 +5,12 @@ using Akka.Util;
 using OpenTTD.Actors.Coordinator;
 using Domain.Models;
 using Domain.ValueObjects;
+using OpenTTD.Domain;
+using OpenTTD.Domain.Abstractions;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public interface IActorSystemService
-{
-    public Task<ServerId> AskSystemToAddServerAsync(ServerCredentials credentials, CancellationToken ct);
-    public void TellServerToConnect(ServerId serverId);
-    public void TellServerToDisconnect(ServerId serverId);
-    public void TellSystemToRemoveServer(ServerId serverId);
-}
-
-public sealed class AkkaHostedSystemService : IHostedService, IActorSystemService
+public sealed class AkkaHostedSystemService : IHostedService, IServersSystemService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;

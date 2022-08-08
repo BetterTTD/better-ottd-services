@@ -26,8 +26,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     services.AddDomain();
     services.AddOttdDataAccessModule(cfg.GetConnectionString(OttdDbConnectionString.Key));
         
-    services.AddHostedService<AkkaHostedService>();
-    services.AddSingleton<IActorService, AkkaHostedService>();
+    services.AddHostedService<AkkaHostedSystemService>();
+    services.AddSingleton<IActorSystemService, AkkaHostedSystemService>();
 }
 
 void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)

@@ -1,6 +1,6 @@
+using Domain.ValueObjects;
+using MediatR;
+
 namespace OpenTTD.AdminClient.Domain.Commands.ConnectServer;
 
-public class ConnectServerCommand
-{
-    
-}
+public sealed record ConnectServerCommand(ServerId ServerId) : IRequest<ServerId>;

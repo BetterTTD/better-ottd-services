@@ -8,15 +8,15 @@ using Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public interface IActorService
+public interface IActorSystemService
 {
-    public Task<ServerId> AddServer(ServerCredentials credentials, CancellationToken ct);
-    public void ServerConnect(ServerId serverId);
-    public void ServerDisconnect(ServerId serverId);
-    public void RemoveServer(ServerId serverId);
+    public Task<ServerId> AskSystemToAddServerAsync(ServerCredentials credentials, CancellationToken ct);
+    public void TellServerToConnect(ServerId serverId);
+    public void TellServerToDisconnect(ServerId serverId);
+    public void TellSystemToRemoveServer(ServerId serverId);
 }
 
-public sealed class AkkaHostedService : IHostedService, IActorService
+public sealed class AkkaHostedSystemService : IHostedService, IActorSystemService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;
@@ -24,7 +24,7 @@ public sealed class AkkaHostedService : IHostedService, IActorService
     private ActorSystem _actorSystem = null!;
     private IActorRef _coordinator = null!;
 
-    public AkkaHostedService(IServiceProvider serviceProvider, IHostApplicationLifetime appLifetime)
+    public AkkaHostedSystemService(IServiceProvider serviceProvider, IHostApplicationLifetime appLifetime)
     {
         _serviceProvider = serviceProvider;
         _appLifetime = appLifetime;
@@ -82,7 +82,7 @@ public sealed class AkkaHostedService : IHostedService, IActorService
         }
     }
 
-    public async Task<ServerId> AddServer(ServerCredentials credentials, CancellationToken ct)
+    public async Task<ServerId> AskSystemToAddServerAsync(ServerCredentials credentials, CancellationToken ct)
     {
         var msg = new ServerAdd(credentials);
             
@@ -96,17 +96,17 @@ public sealed class AkkaHostedService : IHostedService, IActorService
         return result.Value.Id;
     }
 
-    public void ServerConnect(ServerId serverId)
+    public void TellServerToConnect(ServerId serverId)
     {
         _coordinator.Tell(new ServerConnect(serverId));
     }
 
-    public void ServerDisconnect(ServerId serverId)
+    public void TellServerToDisconnect(ServerId serverId)
     {
         _coordinator.Tell(new ServerDisconnect(serverId));
     }
 
-    public void RemoveServer(ServerId serverId)
+    public void TellSystemToRemoveServer(ServerId serverId)
     {
         _coordinator.Tell(new ServerRemove(serverId));
     }

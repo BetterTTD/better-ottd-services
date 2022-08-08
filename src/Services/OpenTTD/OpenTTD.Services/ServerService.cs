@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using OpenTTD.DataAccess;
 using OpenTTD.DataAccess.Models;
 using OpenTTD.Services.Abstractions;
-using ServerName = OpenTTD.DataAccess.Models.ServerName;
 
 namespace OpenTTD.Services;
 

@@ -1,11 +1,7 @@
 ﻿using System.Net;
+using Domain.ValueObjects;
 
 namespace OpenTTD.DataAccess.Models;
-
-public sealed record ServerName(string Value);
-public sealed record ServerPassword(string Value);
-public sealed record ServerPort(int Value);
-public sealed record ServerVersion(string Value);
 
 public class Server : DbModel<Guid>
 {

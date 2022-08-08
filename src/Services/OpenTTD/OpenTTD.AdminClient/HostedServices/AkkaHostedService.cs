@@ -5,7 +5,6 @@ using Akka.Util;
 using OpenTTD.Actors.Coordinator;
 using Domain.Models;
 using Domain.ValueObjects;
-using OpenTTD.Domain;
 using OpenTTD.Domain.Abstractions;
 
 namespace OpenTTD.AdminClient.HostedServices;

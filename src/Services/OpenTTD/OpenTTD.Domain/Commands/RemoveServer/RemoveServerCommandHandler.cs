@@ -2,7 +2,6 @@ using CSharpFunctionalExtensions;
 using Domain.ValueObjects;
 using MediatR;
 using OpenTTD.Domain.Abstractions;
-using OpenTTD.Services;
 using OpenTTD.Services.Abstractions;
 
 namespace OpenTTD.Domain.Commands.RemoveServer;

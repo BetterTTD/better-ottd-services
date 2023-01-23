@@ -27,48 +27,35 @@ namespace OpenTTD.Networking;
 
 public static class Module
 {
-    public static IServiceCollection AddAdminPortNetworking(this IServiceCollection services)
-    {
-        services.AddMessageTransformers();
-        services.AddPacketTransformers();
-        
-        services.AddTransient<IPacketService, PacketService>();
-        
-        return services;
-    }
+    public static IServiceCollection AddAdminPortNetworking(this IServiceCollection services) => services
+        .AddMessageTransformers()
+        .AddPacketTransformers()
+        .AddTransient<IPacketService, PacketService>();
 
-    private static IServiceCollection AddMessageTransformers(this IServiceCollection services)
-    {
-        services.AddTransient<IMessageTransformer, PingTransformer>();
-        services.AddTransient<IMessageTransformer, JoinTransformer>();
-        services.AddTransient<IMessageTransformer, PollTransformer>();
-        services.AddTransient<IMessageTransformer, RconTransformer>();
-        services.AddTransient<IMessageTransformer, UpdateFrequencyTransformer>();
+    private static IServiceCollection AddMessageTransformers(this IServiceCollection services) => services
+        .AddTransient<IMessageTransformer, PingTransformer>()
+        .AddTransient<IMessageTransformer, JoinTransformer>()
+        .AddTransient<IMessageTransformer, PollTransformer>()
+        .AddTransient<IMessageTransformer, RconTransformer>()
+        .AddTransient<IMessageTransformer, UpdateFrequencyTransformer>();
 
-        return services;
-    }
+    private static IServiceCollection AddPacketTransformers(this IServiceCollection services) => services
+        .AddTransient<IPacketTransformer, ServerClientErrorTransformer>()
+        .AddTransient<IPacketTransformer, ServerClientInfoTransformer>()
+        .AddTransient<IPacketTransformer, ServerClientJoinTransformer>()
+        .AddTransient<IPacketTransformer, ServerClientQuitTransformer>()
+        .AddTransient<IPacketTransformer, ServerClientUpdateTransformer>()
 
-    private static IServiceCollection AddPacketTransformers(this IServiceCollection services)
-    {
-        services.AddTransient<IPacketTransformer, ServerClientErrorTransformer>();
-        services.AddTransient<IPacketTransformer, ServerClientInfoTransformer>();
-        services.AddTransient<IPacketTransformer, ServerClientJoinTransformer>();
-        services.AddTransient<IPacketTransformer, ServerClientQuitTransformer>();
-        services.AddTransient<IPacketTransformer, ServerClientUpdateTransformer>();
-        
-        services.AddTransient<IPacketTransformer, ServerCompanyInfoTransformer>();
-        services.AddTransient<IPacketTransformer, ServerCompanyNewTransformer>();
-        services.AddTransient<IPacketTransformer, ServerCompanyRemoveTransformer>();
-        services.AddTransient<IPacketTransformer, ServerCompanyUpdateTransformer>();
-        
-        services.AddTransient<IPacketTransformer, ServerWelcomeTransformer>();
-        services.AddTransient<IPacketTransformer, ServerProtocolTransformer>();
-        
-        services.AddTransient<IPacketTransformer, ServerChatTransformer>();
-        services.AddTransient<IPacketTransformer, ServerConsoleTransformer>();
-        services.AddTransient<IPacketTransformer, ServerPongTransformer>();
-        services.AddTransient<IPacketTransformer, ServerRconTransformer>();
+        .AddTransient<IPacketTransformer, ServerCompanyInfoTransformer>()
+        .AddTransient<IPacketTransformer, ServerCompanyNewTransformer>()
+        .AddTransient<IPacketTransformer, ServerCompanyRemoveTransformer>()
+        .AddTransient<IPacketTransformer, ServerCompanyUpdateTransformer>()
 
-        return services;
-    }
+        .AddTransient<IPacketTransformer, ServerWelcomeTransformer>()
+        .AddTransient<IPacketTransformer, ServerProtocolTransformer>()
+
+        .AddTransient<IPacketTransformer, ServerChatTransformer>()
+        .AddTransient<IPacketTransformer, ServerConsoleTransformer>()
+        .AddTransient<IPacketTransformer, ServerPongTransformer>()
+        .AddTransient<IPacketTransformer, ServerRconTransformer>();
 }

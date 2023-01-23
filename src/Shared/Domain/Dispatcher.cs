@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.Net;
 using Common;
 using Domain.Entities;
@@ -18,7 +19,10 @@ namespace Domain;
 
 public interface IServerDispatcher
 {
+    [Pure]
     Server Create(ServerId serverId, ServerWelcomeMessage welcome, ServerProtocolMessage protocol);
+    
+    [Pure]
     Server Dispatch(IMessage message, Server server);
 }
 
@@ -200,7 +204,6 @@ public sealed class ServerDispatcher : IServerDispatcher
                 .ToList()
         }),
 
-        // Default arm
         _ => server
     };
 }

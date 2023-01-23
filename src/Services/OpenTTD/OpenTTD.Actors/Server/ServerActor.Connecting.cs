@@ -70,6 +70,8 @@ public sealed partial class ServerActor
                 }.Select(x => new PollMessage(x.Key, x.Value)))
                 .Union(new Dictionary<UpdateType, UpdateFrequency>
                 {
+                    { UpdateType.ADMIN_UPDATE_CMD_LOGGING , UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC},
+                    { UpdateType.ADMIN_UPDATE_CONSOLE, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { UpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { UpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { UpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
@@ -77,7 +79,9 @@ public sealed partial class ServerActor
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));
 
-            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network));
+            var server = _dispatcher.Create(model.Id, state.MaybeWelcome.Value, model.MaybeProtocol.Value);
+            
+            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network, server));
         }),
 
         var ((id, credentials), _) => F.Run(() =>

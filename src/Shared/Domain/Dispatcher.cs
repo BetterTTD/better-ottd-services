@@ -55,7 +55,12 @@ public sealed class ServerDispatcher : IServerDispatcher
     {
         ServerClientErrorMessage msg => F.Run(() =>
         {
-            var company = server.Companies.First(c => c.Clients.Any(cl => cl.Id.Value == msg.ClientId));
+            var company = server.Companies.FirstOrDefault(c => c.Clients.Any(cl => cl.Id.Value == msg.ClientId));
+            if (company is null)
+            {
+                return server;
+            }
+            
             var updated = company with
             {
                 Clients = company.Clients

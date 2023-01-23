@@ -9,7 +9,9 @@ using Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
-public sealed record NetworkActors(IActorRef Sender, IActorRef Receiver);
+public sealed record NetworkActors(
+    IActorRef Sender, 
+    IActorRef Receiver);
 
 public enum State
 {
@@ -19,7 +21,9 @@ public enum State
     ERROR
 }
 
-public abstract record Model(ServerId Id, ServerCredentials Credentials);
+public abstract record Model(
+    ServerId Id, 
+    ServerCredentials Credentials);
 public abstract record NetworkModel(
     ServerId Id, 
     ServerCredentials Credentials, 

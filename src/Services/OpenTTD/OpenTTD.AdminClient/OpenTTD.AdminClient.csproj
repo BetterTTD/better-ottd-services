@@ -24,7 +24,6 @@
       <ProjectReference Include="..\..\..\Shared\OpenTTD.Networking\OpenTTD.Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
       <ProjectReference Include="..\OpenTTD.DataAccess\OpenTTD.DataAccess.csproj" />
-      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
     </ItemGroup>
 
 </Project>

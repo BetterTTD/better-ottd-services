@@ -5,11 +5,10 @@ using Akka.Util;
 using OpenTTD.Actors.Coordinator;
 using Domain.Models;
 using Domain.ValueObjects;
-using OpenTTD.Domain.Abstractions;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public sealed class AkkaHostedSystemService : IHostedService, IServersSystemService
+public sealed class AkkaHostedSystemService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;

@@ -8,8 +8,8 @@ public sealed partial class ServerActor
 {
     private sealed record Error(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials)
     {
-        public Exception Exception { get; init; } = null!;
-        public string Message { get; init; } = "Unknown error";
+        public required Exception Exception { get; init; }
+        public required string Message { get; init; } = "Unknown error";
     };
 
     private sealed record ErrorOccurred;

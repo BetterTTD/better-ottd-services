@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Akka" Version="1.4.40" />
-        <PackageReference Include="Akka.DependencyInjection" Version="1.4.40" />
-        <PackageReference Include="Akka.Logger.Serilog" Version="1.4.26" />
+        <PackageReference Include="Akka" Version="1.4.48" />
+        <PackageReference Include="Akka.DependencyInjection" Version="1.4.48" />
+        <PackageReference Include="Akka.Logger.Serilog" Version="1.4.42" />
     </ItemGroup>
 
     <ItemGroup>

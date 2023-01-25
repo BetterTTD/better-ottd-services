@@ -21,7 +21,8 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
         {
             try
             {
-                _logger.Debug("[{Guid}] Sending a packet of type {PacketType}", 
+                _logger.Debug(
+                    "[{Guid}] Sending a packet of type {PacketType}", 
                     serverId.Value, msg.Message.PacketType);
                 
                 var packet = packetService.CreatePacket(msg.Message);
@@ -31,7 +32,8 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
             }
             catch (Exception exn)
             {
-                _logger.Error(exn, "[{Guid}] Received an error while sending a packet of type {PacketType}",
+                _logger.Error(exn, 
+                    "[{Guid}] Received an error while sending a packet of type {PacketType}",
                     serverId.Value, msg.Message.PacketType);
             }
         });

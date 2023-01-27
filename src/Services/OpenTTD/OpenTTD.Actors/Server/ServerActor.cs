@@ -51,7 +51,7 @@ public sealed partial class ServerActor : FSM<State, Model>
         
         OnTransition((prev, next) =>
         {
-            if (prev == State.IDLE && next == State.IDLE)
+            if (prev == next)
             {
                 return;
             }

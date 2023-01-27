@@ -55,7 +55,7 @@ public sealed partial class ServerActor
                 });
             }
             
-            _logger.Info("[{Guid}] Connection established successfully", serverId.Value);
+            _logger.Info("[{ServerId}] Connection established successfully", serverId.Value);
 
             var stream = _client.GetStream();
 

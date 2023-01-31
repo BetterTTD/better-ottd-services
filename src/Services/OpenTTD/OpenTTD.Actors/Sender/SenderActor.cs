@@ -7,8 +7,6 @@ using OpenTTD.Networking.Messages.Outbound.Ping;
 
 namespace OpenTTD.Actors.Sender;
 
-public sealed record SendMessage(IMessage Message);
-
 public sealed class SenderActor : ReceiveActor, IWithTimers
 {
     public ITimerScheduler Timers { get; set; } = default!;

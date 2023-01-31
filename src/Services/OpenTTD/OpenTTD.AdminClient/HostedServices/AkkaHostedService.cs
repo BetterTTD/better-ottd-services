@@ -2,6 +2,7 @@ using System.Net;
 using Akka.Actor;
 using Akka.DependencyInjection;
 using Akka.Util;
+using Confluent.Kafka;
 using OpenTTD.Actors.Coordinator;
 using Domain.Models;
 using Domain.ValueObjects;
@@ -16,7 +17,9 @@ public sealed class AkkaHostedSystemService : IHostedService
     private ActorSystem _actorSystem = null!;
     private IActorRef _coordinator = null!;
 
-    public AkkaHostedSystemService(IServiceProvider serviceProvider, IHostApplicationLifetime appLifetime)
+    public AkkaHostedSystemService(
+        IServiceProvider serviceProvider, 
+        IHostApplicationLifetime appLifetime)
     {
         _serviceProvider = serviceProvider;
         _appLifetime = appLifetime;
@@ -30,7 +33,7 @@ public sealed class AkkaHostedSystemService : IHostedService
             .And(DependencyResolverSetup.Create(_serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);
-
+        
         var coordinatorProps = DependencyResolver.For(_actorSystem).Props<CoordinatorActor>();
         _coordinator = _actorSystem.ActorOf(coordinatorProps, "coordinator");
 

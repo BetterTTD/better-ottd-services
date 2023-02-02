@@ -1,5 +1,5 @@
-﻿using Domain.ValueObjects;
-using OpenTTD.Actors.Base;
+﻿using OpenTTD.Actors.Base;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 

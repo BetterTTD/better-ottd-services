@@ -2,7 +2,9 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
-using Domain.ValueObjects;
+using MediatR;
+using OpenTTD.Domain.Events;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Common;
 using OpenTTD.Networking.Messages;
 
@@ -12,7 +14,7 @@ public sealed class ReceiverActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService)
+    public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService, IMediator mediator)
     {
         ReceiveAsync<ReceiveMsg>(async _ =>
         {
@@ -24,14 +26,17 @@ public sealed class ReceiverActor : ReceiveActor
                 var packet = await WaitForPacketAsync(stream, cts.Token);
                 var message = packetService.ReadPacket(packet);
                 
+                _logger.Debug("[{ServerId}] Received a package of type {}", serverId.Value, message.PacketType);
+
                 Self.Tell(new ReceiveMsg(), Sender);
-                _logger.Debug("[{Guid}] Received a packet of type {PacketType}", serverId.Value, message.PacketType);
+
+                await mediator.Publish(new NetworkMessageReceived(serverId, message));
 
                 Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
             }
             catch (Exception exn)
             {
-                _logger.Error(exn, "[{Guid}] Received an error while receiving a packet.", serverId.Value);
+                _logger.Error(exn, "[{ServerId}] Received an error while receiving a packet.", serverId.Value);
                 Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
             }
         });

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Domain;
+namespace OpenTTD.Domain;
 
 public static class DomainModule
 {

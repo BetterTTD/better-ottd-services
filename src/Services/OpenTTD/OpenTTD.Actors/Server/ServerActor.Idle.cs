@@ -5,8 +5,8 @@ using Akka.Util;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using Common;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 using OpenTTD.Networking.Messages.Outbound.Join;
@@ -28,7 +28,7 @@ public sealed partial class ServerActor
                     try
                     {
                         var address = credentials.NetworkAddress;
-                        _logger.Info("[{Guid}] Establishing connection with address {Address}", serverId.Value, address);
+                        _logger.Debug("[{ServerId}] Establishing connection with address {Address}", serverId.Value, address);
                         await _client.ConnectAsync(address.IpAddress, address.Port);
                         return Result.Success(new ConnectionEstablished());
                     }
@@ -55,7 +55,7 @@ public sealed partial class ServerActor
                 });
             }
             
-            _logger.Info("[{ServerId}] Connection established successfully", serverId.Value);
+            _logger.Debug("[{ServerId}] Connection established successfully", serverId.Value);
 
             var stream = _client.GetStream();
 

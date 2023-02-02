@@ -3,9 +3,12 @@ using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Common;
-using Domain;
-using Domain.Models;
-using Domain.ValueObjects;
+using MediatR;
+using OpenTTD.Domain;
+using OpenTTD.Domain.Enums;
+using OpenTTD.Domain.Events;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
@@ -20,7 +23,7 @@ public enum State
     CONNECTED,
     ERROR
 }
-
+public class temp {}
 public abstract record Model(
     ServerId Id, 
     ServerCredentials Credentials);
@@ -32,13 +35,15 @@ public abstract record NetworkModel(
 public sealed partial class ServerActor : FSM<State, Model>
 {
     private readonly IServerDispatcher _dispatcher;
+    private readonly IMediator _mediator;
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
     private readonly TcpClient _client = new();
 
-    public ServerActor(ServerId id, ServerCredentials credentials, IServerDispatcher dispatcher)
+    public ServerActor(ServerId id, ServerCredentials credentials, IServerDispatcher dispatcher, IMediator mediator)
     {
         _dispatcher = dispatcher;
+        _mediator = mediator;
 
         StartWith(State.IDLE, new Idle(id, credentials));
         
@@ -56,7 +61,7 @@ public sealed partial class ServerActor : FSM<State, Model>
                 return;
             }
             
-            _logger.Info("[{Guid}] Changing state from {Prev} to {Next}", id.Value, prev, next);
+            _logger.Debug("[{ServerId}] Changing state from {Prev} to {Next}", id.Value, prev, next);
             
             if (next is State.ERROR or State.IDLE && StateData is NetworkModel model)
             {
@@ -68,8 +73,8 @@ public sealed partial class ServerActor : FSM<State, Model>
             {
                 Self.Tell(new ErrorOccurred(), Sender);
             }
-            
-            Context.Parent.Tell(new ServerStateChanged(id, next));
+
+            _mediator.Publish(new ServerStateChanged(id, MapServerState(prev), MapServerState(next)));
         });
         
         Initialize();
@@ -92,5 +97,14 @@ public sealed partial class ServerActor : FSM<State, Model>
         }),
         
         _ => throw new InvalidOperationException()
+    };
+
+    private static ServerState MapServerState(State state) => state switch
+    {
+        State.IDLE => ServerState.IDLE,
+        State.CONNECTING => ServerState.CONNECTING,
+        State.CONNECTED => ServerState.CONNECTED,
+        State.ERROR => ServerState.ERROR,
+        _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
     };
 }

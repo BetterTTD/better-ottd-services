@@ -4,8 +4,8 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using OpenTTD.Actors.Server;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 
@@ -46,7 +46,7 @@ public sealed class CoordinatorActor : ReceiveActor
 
                 servers.Add(serverId, (msg.Credentials, State.IDLE, serverRef));
                 
-                _logger.Info(
+                _logger.Debug(
                     "[{ServerId}] Server was added", 
                     serverId.Value);
                 
@@ -66,7 +66,7 @@ public sealed class CoordinatorActor : ReceiveActor
                     return;
                 }
                 
-                _logger.Info(
+                _logger.Debug(
                     "[{ServerId}] Server will be connected", 
                     msg.ServerId.Value);
                 data.Ref.Tell(new Connect());
@@ -92,7 +92,7 @@ public sealed class CoordinatorActor : ReceiveActor
                 }
                 
                 data.Ref.Tell(new Disconnect());
-                _logger.Info(
+                _logger.Debug(
                     "[{ServerId}] Server will be disconnected", 
                     msg.ServerId.Value);
             }
@@ -112,7 +112,7 @@ public sealed class CoordinatorActor : ReceiveActor
 
                 servers.Remove(msg.ServerId);
                 
-                _logger.Info(
+                _logger.Debug(
                     "[{ServerId}] Server was added", 
                     msg.ServerId.Value);
             }
@@ -120,24 +120,6 @@ public sealed class CoordinatorActor : ReceiveActor
             {
                 _logger.Warning(
                     "[{ServerId}] Server was not found while remove", 
-                    msg.ServerId.Value);
-            }
-        });
-
-        Receive<ServerStateChanged>(msg =>
-        {
-            if (servers.TryGetValue(msg.ServerId, out var data))
-            {
-                servers[msg.ServerId] = (data.Credentials, msg.State, data.Ref);
-                
-                _logger.Info(
-                    "[{ServerId}] Server state was modified to {State}", 
-                    msg.ServerId.Value, msg.State);
-            }
-            else
-            {
-                _logger.Warning(
-                    "[{ServerId}] Server was not found while changing state", 
                     msg.ServerId.Value);
             }
         });

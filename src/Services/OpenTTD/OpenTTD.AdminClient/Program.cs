@@ -1,7 +1,10 @@
+using System.Reflection;
 using Confluent.Kafka;
-using Domain;
+using MediatR;
 using OpenTTD.Networking;
 using OpenTTD.AdminClient.HostedServices;
+using OpenTTD.Domain;
+using OpenTTD.Domain.Events;
 using Serilog;
 
 void ConfigureLogging(ILoggingBuilder builder)
@@ -42,6 +45,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
             .Build();
     });
 
+    services.AddMediatR(typeof(Program), typeof(DomainModule));
     services.AddLogging();
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();

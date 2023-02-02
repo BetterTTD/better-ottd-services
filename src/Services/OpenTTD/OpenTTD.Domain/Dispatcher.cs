@@ -1,9 +1,9 @@
 using System.Diagnostics.Contracts;
 using System.Net;
 using Common;
-using Domain.Entities;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.Domain.Entities;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Inbound.ServerClientError;
 using OpenTTD.Networking.Messages.Inbound.ServerClientInfo;
@@ -15,7 +15,7 @@ using OpenTTD.Networking.Messages.Inbound.ServerCompanyUpdate;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
 using OpenTTD.Networking.Messages.Inbound.ServerWelcome;
 
-namespace Domain;
+namespace OpenTTD.Domain;
 
 public interface IServerDispatcher
 {

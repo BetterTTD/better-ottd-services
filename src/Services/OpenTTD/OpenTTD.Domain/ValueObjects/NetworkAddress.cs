@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Domain.ValueObjects;
+namespace OpenTTD.Domain.ValueObjects;
 
 public sealed record NetworkAddress(IPAddress IpAddress, int Port)
 {

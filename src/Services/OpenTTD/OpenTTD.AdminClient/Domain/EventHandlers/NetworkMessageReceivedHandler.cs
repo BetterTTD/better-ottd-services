@@ -1,0 +1,23 @@
+﻿using MediatR;
+using OpenTTD.Domain.Events;
+
+namespace OpenTTD.AdminClient.EventHandlers;
+
+public sealed class NetworkMessageReceivedHandler : INotificationHandler<NetworkMessageReceived>
+{
+    private readonly ILogger<NetworkMessageReceivedHandler> _logger;
+
+    public NetworkMessageReceivedHandler(ILogger<NetworkMessageReceivedHandler> logger)
+    {
+        _logger = logger;
+    }
+
+    public Task Handle(NetworkMessageReceived notification, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation(
+            "[ServerId:{ServerId}] Received message: {Message}", 
+            notification.Id.Value, notification.Message.ToString());
+        
+        return Task.CompletedTask;
+    }
+}

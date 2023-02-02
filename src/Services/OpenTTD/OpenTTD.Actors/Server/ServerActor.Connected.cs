@@ -1,7 +1,7 @@
 using Common;
 using OpenTTD.Actors.Receiver;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages.Inbound.ServerChat;
@@ -14,7 +14,7 @@ public sealed partial class ServerActor
         ServerId Id,
         ServerCredentials Credentials, 
         NetworkActors Network,
-        Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
+        global::OpenTTD.Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
@@ -35,8 +35,6 @@ public sealed partial class ServerActor
                 return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
             }
 
-            _logger.Debug(msg.MsgResult.Value.ToString());
-            
             model = model with { Server = _dispatcher.Dispatch(msg.MsgResult.Value, model.Server) };
 
             if (msg.MsgResult.Value is ServerChatMessage chatMsg)

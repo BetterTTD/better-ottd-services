@@ -1,6 +1,6 @@
 ﻿using OpenTTD.Networking.Enums;
 
-namespace Domain.Models;
+namespace OpenTTD.Domain.Models;
 
 public sealed record ServerNetwork
 {

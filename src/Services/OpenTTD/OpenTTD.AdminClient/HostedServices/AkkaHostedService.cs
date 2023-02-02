@@ -2,14 +2,14 @@ using System.Net;
 using Akka.Actor;
 using Akka.DependencyInjection;
 using Akka.Util;
-using Confluent.Kafka;
 using OpenTTD.Actors.Coordinator;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.AdminClient.Services;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public sealed class AkkaHostedSystemService : IHostedService
+public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHostApplicationLifetime _appLifetime;
@@ -29,7 +29,7 @@ public sealed class AkkaHostedSystemService : IHostedService
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
-            .WithConfig("akka { loglevel=DEBUG, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
+            .WithConfig("akka { loglevel=INFO, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
             .And(DependencyResolverSetup.Create(_serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);
@@ -54,6 +54,33 @@ public sealed class AkkaHostedSystemService : IHostedService
             .Run(CoordinatedShutdown.ClrExitReason.Instance);
     }
 
+    public async Task<Result<ServerId>> AskToAddServerAsync(ServerCredentials credentials, CancellationToken cts)
+    {
+        var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(credentials), cancellationToken: cts);
+
+        return result.IsSuccess
+            ? Result.Success(result.Value.Id)
+            : Result.Failure<ServerId>(result.Exception);
+    }
+
+    public Task TellServerToConnectAsync(ServerId id, CancellationToken cts)
+    {
+        _coordinator.Tell(new ServerConnect(id));
+        return Task.CompletedTask;
+    }
+
+    public Task TellServerToDisconnectAsync(ServerId id, CancellationToken cts)
+    {
+        _coordinator.Tell(new ServerDisconnect(id));
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveServerAsync(ServerId id, CancellationToken cts)
+    {
+        _coordinator.Tell(new ServerRemove(id));
+        return Task.CompletedTask;
+    }
+    
     private async void Test(CancellationToken cancellationToken)
     {
         try
@@ -75,34 +102,5 @@ public sealed class AkkaHostedSystemService : IHostedService
             Console.WriteLine(enx);
             throw;
         }
-    }
-
-    public async Task<ServerId> AskSystemToAddServerAsync(ServerCredentials credentials, CancellationToken ct)
-    {
-        var msg = new ServerAdd(credentials);
-            
-        var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: ct);
-
-        if (!result.IsSuccess)
-        {
-            throw new InvalidOperationException();
-        }
-        
-        return result.Value.Id;
-    }
-
-    public void TellServerToConnect(ServerId serverId)
-    {
-        _coordinator.Tell(new ServerConnect(serverId));
-    }
-
-    public void TellServerToDisconnect(ServerId serverId)
-    {
-        _coordinator.Tell(new ServerDisconnect(serverId));
-    }
-
-    public void TellSystemToRemoveServer(ServerId serverId)
-    {
-        _coordinator.Tell(new ServerRemove(serverId));
     }
 }

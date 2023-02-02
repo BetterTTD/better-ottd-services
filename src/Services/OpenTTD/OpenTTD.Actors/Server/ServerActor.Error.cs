@@ -1,6 +1,6 @@
 using Common;
-using Domain.Models;
-using Domain.ValueObjects;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
@@ -18,7 +18,7 @@ public sealed partial class ServerActor
     {
         (Error model, _) => F.Run(() =>
         {
-            _logger.Error(model.Exception, model.Message);
+            _logger.Error(model.Exception, $"[{model.Id.Value}] {model.Message}");
 
             return Stay();
         }),

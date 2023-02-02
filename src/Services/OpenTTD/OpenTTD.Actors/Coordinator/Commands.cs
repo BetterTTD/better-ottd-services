@@ -1,6 +1,6 @@
-﻿using Domain.Models;
-using Domain.ValueObjects;
-using OpenTTD.Actors.Base;
+﻿using OpenTTD.Actors.Base;
+using OpenTTD.Domain.Models;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
 

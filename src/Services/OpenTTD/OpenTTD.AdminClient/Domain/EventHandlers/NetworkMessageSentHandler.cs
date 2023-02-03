@@ -16,7 +16,7 @@ public sealed class NetworkMessageSentHandler : INotificationHandler<NetworkMess
     {
         _logger.LogInformation(
             "[ServerId:{ServerId}] Sent message: {Message}", 
-            notification.Id.Value, notification.Message.ToString());
+            notification.ServerId.Value, notification.Message.ToString());
         
         return Task.CompletedTask;
     }

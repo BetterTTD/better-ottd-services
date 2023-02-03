@@ -14,7 +14,7 @@ public sealed partial class ServerActor
         ServerId Id,
         ServerCredentials Credentials, 
         NetworkActors Network,
-        global::OpenTTD.Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
+        Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {

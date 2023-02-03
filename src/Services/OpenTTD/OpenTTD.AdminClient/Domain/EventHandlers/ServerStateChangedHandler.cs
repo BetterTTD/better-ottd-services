@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using OpenTTD.Domain.Events;
 
-namespace OpenTTD.AdminClient.EventHandlers;
+namespace OpenTTD.AdminClient.Domain.EventHandlers;
 
 public sealed class ServerStateChangedHandler : INotificationHandler<ServerStateChanged>
 {
@@ -16,7 +16,7 @@ public sealed class ServerStateChangedHandler : INotificationHandler<ServerState
     {
         _logger.LogInformation(
             "[ServerId:{ServerId}] State changed from: '{From}' to: '{To}'", 
-            notification.Id.Value, notification.FromState.ToString(), notification.ToState.ToString());
+            notification.ServerId.Value, notification.FromState.ToString(), notification.ToState.ToString());
         
         return Task.CompletedTask;
     }

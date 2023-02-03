@@ -37,7 +37,7 @@ public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorServic
         var coordinatorProps = DependencyResolver.For(_actorSystem).Props<CoordinatorActor>();
         _coordinator = _actorSystem.ActorOf(coordinatorProps, "coordinator");
 
-        _actorSystem.WhenTerminated.ContinueWith(_ => { _appLifetime.StopApplication(); }, cancellationToken);
+        _actorSystem.WhenTerminated.ContinueWith(_ => _appLifetime.StopApplication(), cancellationToken);
 
         Test(cancellationToken);
         
@@ -57,7 +57,7 @@ public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorServic
     public async Task<Result<ServerId>> AskToAddServerAsync(ServerCredentials credentials, CancellationToken cts)
     {
         var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(credentials), cancellationToken: cts);
-
+        
         return result.IsSuccess
             ? Result.Success(result.Value.Id)
             : Result.Failure<ServerId>(result.Exception);

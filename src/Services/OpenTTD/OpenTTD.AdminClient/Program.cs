@@ -1,19 +1,17 @@
-using System.Reflection;
 using Confluent.Kafka;
 using MediatR;
 using OpenTTD.Networking;
 using OpenTTD.AdminClient.HostedServices;
+using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain;
-using OpenTTD.Domain.Events;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
-void ConfigureLogging(ILoggingBuilder builder)
+void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)
 {
-    builder.ClearProviders();
-    builder.AddSerilog(Log.Logger = new LoggerConfiguration()
-        .MinimumLevel.Debug()
-        .WriteTo.Console()
-        .CreateLogger());
+    loggerCfg
+        .ReadFrom.Configuration(cfg)
+        .ReadFrom.Services(sp);
 }
 
 void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnvironment env)
@@ -46,12 +44,13 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     });
 
     services.AddMediatR(typeof(Program), typeof(DomainModule));
-    services.AddLogging();
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddOptions();
     services.AddControllers();
 
+    services.AddSingleton<ICoordinatorService, AkkaHostedSystemService>();
+    
     services
         .AddAdminPortNetworking()
         .AddDomain();
@@ -84,7 +83,10 @@ void ConfigureRoutes(IEndpointRouteBuilder router)
 }
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigureLogging(builder.Logging);
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog(
+    (_, sp, logCfg) => ConfigureLogging(sp, logCfg, builder.Configuration), 
+    writeToProviders: true);
 ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
 
 var app = builder.Build();

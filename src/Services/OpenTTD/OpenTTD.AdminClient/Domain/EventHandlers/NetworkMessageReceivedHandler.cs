@@ -16,7 +16,7 @@ public sealed class NetworkMessageReceivedHandler : INotificationHandler<Network
     {
         _logger.LogInformation(
             "[ServerId:{ServerId}] Received message: {Message}", 
-            notification.Id.Value, notification.Message.ToString());
+            notification.ServerId.Value, notification.Message.ToString());
         
         return Task.CompletedTask;
     }

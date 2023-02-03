@@ -8,19 +8,15 @@ namespace OpenTTD.AdminClient.Domain.CommandHandlers;
 
 public sealed class AddServerCommandHandler : IRequestHandler<AddServer, Result<ServerId>>
 {
-    private readonly ILogger<AddServerCommandHandler> _logger;
     private readonly ICoordinatorService _coordinator;
 
-    public AddServerCommandHandler(ILogger<AddServerCommandHandler> logger, ICoordinatorService coordinator)
+    public AddServerCommandHandler(ICoordinatorService coordinator)
     {
-        _logger = logger;
         _coordinator = coordinator;
     }
 
     public async Task<Result<ServerId>> Handle(AddServer request, CancellationToken cancellationToken)
     {
-        var result = await _coordinator.AskToAddServerAsync(request.Credentials, cancellationToken);
-
-        return result;
+        return await _coordinator.AskToAddServerAsync(request.Credentials, cancellationToken);
     }
 }

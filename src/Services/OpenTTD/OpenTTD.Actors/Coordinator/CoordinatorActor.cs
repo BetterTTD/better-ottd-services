@@ -3,6 +3,7 @@ using Akka.DependencyInjection;
 using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
+using MediatR;
 using OpenTTD.Actors.Server;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
@@ -13,7 +14,7 @@ public sealed class CoordinatorActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    public CoordinatorActor()
+    public CoordinatorActor(IMediator mediator)
     {
         Dictionary<ServerId, (ServerCredentials Credentials, State ServerState, IActorRef Ref)> servers = new();
         

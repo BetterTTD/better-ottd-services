@@ -16,7 +16,7 @@ public sealed class ServerStateChangedHandler : INotificationHandler<ServerState
     {
         _logger.LogInformation(
             "[ServerId:{ServerId}] State changed from: '{From}' to: '{To}'", 
-            notification.ServerId.Value, notification.FromState.ToString(), notification.ToState.ToString());
+            notification.ServerId.Value, notification.FromState, notification.ToState);
         
         return Task.CompletedTask;
     }

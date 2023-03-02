@@ -22,9 +22,9 @@ namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record PreConnecting(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
+    private sealed record InitialConnecting(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
 
-    private sealed record PostConnecting(
+    private sealed record Connecting(
         ServerId Id,
         ServerCredentials Credentials,
         NetworkActors Network,
@@ -33,7 +33,7 @@ public sealed partial class ServerActor
 
     private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (PreConnecting (var serverId, var credentials), Connect) => F.Run(() =>
+        (InitialConnecting (var serverId, var credentials), Connect) => F.Run(() =>
         {
             Task.Run(async () =>
             {
@@ -58,7 +58,7 @@ public sealed partial class ServerActor
             return Stay();
         }),
 
-        (PreConnecting (var serverId, var credentials), Result<Unit> result) => F.Run(() =>
+        (InitialConnecting (var serverId, var credentials), Result<Unit> result) => F.Run(() =>
         {
             if (!result.IsSuccess)
             {
@@ -93,7 +93,7 @@ public sealed partial class ServerActor
                 Password = credentials.Password
             }));
 
-            var connectingState = new PostConnecting(
+            var connectingState = new Connecting(
                 serverId, credentials, network,
                 Option<ServerProtocolMessage>.None,
                 Option<ServerWelcomeMessage>.None);
@@ -101,7 +101,7 @@ public sealed partial class ServerActor
             return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        (PostConnecting model, ReceivedMsg msg) => F.Run(() =>
+        (Connecting model, ReceivedMsg msg) => F.Run(() =>
         {
             var result = msg.MsgResult;
             if (!result.IsSuccess)

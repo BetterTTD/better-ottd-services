@@ -22,7 +22,7 @@ public sealed partial class ServerActor
         {
             Self.Tell(new Connect());
             
-            return GoTo(State.CONNECTING).Using(new PreConnecting(model.Id, model.Credentials));
+            return GoTo(State.CONNECTING).Using(new InitialConnecting(model.Id, model.Credentials));
         }),
         
         (Error model, _) => F.Run(() =>

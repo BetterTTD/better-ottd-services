@@ -14,7 +14,7 @@ public sealed partial class ServerActor
         (Idle (var id, var credentials), Connect cmd) => F.Run(() =>
         {
             Self.Tell(cmd);
-            return GoTo(State.CONNECTING).Using(new PreConnecting(id, credentials));
+            return GoTo(State.CONNECTING).Using(new InitialConnecting(id, credentials));
         }),
 
         var ((id, credentials), _) => F.Run(() => GoTo(State.ERROR).Using(new Error(id, credentials)

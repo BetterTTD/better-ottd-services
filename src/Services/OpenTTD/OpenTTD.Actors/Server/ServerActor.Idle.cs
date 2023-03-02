@@ -5,6 +5,7 @@ using Akka.Util;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
 using Common;
+using MediatR;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound.ServerProtocol;
@@ -16,46 +17,29 @@ namespace OpenTTD.Actors.Server;
 public sealed partial class ServerActor
 {
     private sealed record Idle(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
-    
-    private sealed record ConnectionEstablished;
 
     private State<State, Model> IdleHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
         (Idle(var serverId, var credentials), Connect) => F.Run(() =>
         {
-            Task.Run(async () =>
-                {
-                    try
-                    {
-                        var address = credentials.NetworkAddress;
-                        _logger.Debug("[{ServerId}] Establishing connection with address {Address}", serverId.Value, address);
-                        await _client.ConnectAsync(address.IpAddress, address.Port);
-                        return Result.Success(new ConnectionEstablished());
-                    }
-                    catch (SocketException exn)
-                    {
-                        return Result.Failure<ConnectionEstablished>(exn);
-                    }
-                })
-                .PipeTo(Self, Sender);
-
+            TryToConnect(serverId, credentials);
             return Stay();
         }),
 
-        (Idle(var serverId, var credentials), Result<ConnectionEstablished> result) => F.Run(() =>
+        (Idle(var serverId, var credentials), Result<Unit> result) => F.Run(() =>
         {
             if (!result.IsSuccess)
             {
-                Self.Tell(new ErrorOccurred(), Sender);
-
                 return GoTo(State.ERROR).Using(new Error(serverId, credentials)
                 {
                     Exception = result.Exception,
-                    Message = "Connection could not be established"
+                    Message = $"Connection could not be established with address: {credentials.NetworkAddress}"
                 });
             }
             
-            _logger.Debug("[{ServerId}] Connection established successfully", serverId.Value);
+            _logger.Debug(
+                "[ServerId:{ServerId}] Connection with address {Address} established successfully", 
+                serverId.Value, credentials.NetworkAddress);
 
             var stream = _client.GetStream();
 
@@ -85,17 +69,32 @@ public sealed partial class ServerActor
             return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        var ((id, credentials), _) => F.Run(() =>
+        var ((id, credentials), _) => F.Run(() => GoTo(State.ERROR).Using(new Error(id, credentials)
         {
-            Self.Tell(new ErrorOccurred(), Sender);
-
-            return GoTo(State.ERROR).Using(new Error(id, credentials)
-            {
-                Exception = new InvalidOperationException(),
-                Message = "Invalid state data"
-            });
-        }),
+            Exception = new InvalidOperationException(),
+            Message = "Invalid state data"
+        })),
         
         _ => throw new InvalidOperationException()
     };
+
+    private void TryToConnect(ServerId serverId, ServerCredentials credentials) => Task.Run(async () =>
+    {
+        try
+        {
+            var address = credentials.NetworkAddress;
+
+            _logger.Debug(
+                "[ServerId:{ServerId}] Establishing connection with address {Address}",
+                serverId.Value, address);
+
+            await _client.ConnectAsync(address.IpAddress, address.Port);
+
+            return Result.Success(Unit.Value);
+        }
+        catch (SocketException exn)
+        {
+            return Result.Failure<Unit>(exn);
+        }
+    }).PipeTo(Self, Sender);
 }

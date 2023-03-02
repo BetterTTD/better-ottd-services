@@ -38,7 +38,7 @@ public sealed partial class ServerActor
                     Message = result.Exception.Message
                 });
             }
-            
+
             if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
             {
                 return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
@@ -80,21 +80,17 @@ public sealed partial class ServerActor
                 .ForEach(x => state.Network.Sender.Tell(x));
 
             var server = _dispatcher.Create(model.Id, state.MaybeWelcome.Value, model.MaybeProtocol.Value);
-            
+
             return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network, server));
         }),
 
         var ((id, credentials), _) => F.Run(() =>
-        {
-            Self.Tell(new ErrorOccurred(), Sender);
-
-            return GoTo(State.ERROR).Using(new Error(id, credentials)
+            GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"
-            });
-        }),
-        
+            })),
+
         _ => throw new InvalidOperationException()
     };
 }

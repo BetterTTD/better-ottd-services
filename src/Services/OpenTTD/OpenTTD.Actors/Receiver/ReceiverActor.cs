@@ -20,13 +20,13 @@ public sealed class ReceiverActor : ReceiveActor
         {
             try
             {
-                _logger.Debug("[{Guid}] Receiving a package...", serverId.Value);
+                _logger.Debug("[ServerId:{ServerId}] Receiving a package...", serverId.Value);
 
-                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
                 var packet = await WaitForPacketAsync(stream, cts.Token);
                 var message = packetService.ReadPacket(packet);
-                
-                _logger.Debug("[{ServerId}] Received a package of type {}", serverId.Value, message.PacketType);
+
+                _logger.Debug("[ServerId:{ServerId}] Received a package of type {}", serverId.Value, message.PacketType);
 
                 Self.Tell(new ReceiveMsg(), Sender);
 
@@ -34,9 +34,14 @@ public sealed class ReceiverActor : ReceiveActor
 
                 Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
             }
+            catch (OperationCanceledException exn)
+            {
+                _logger.Error(exn, "[ServerId:{ServerId}] Timeout handled", serverId.Value);
+                Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
+            }
             catch (Exception exn)
             {
-                _logger.Error(exn, "[{ServerId}] Received an error while receiving a packet.", serverId.Value);
+                _logger.Error(exn, "[ServerId:{ServerId}] Received an error while receiving a packet", serverId.Value);
                 Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
             }
         });

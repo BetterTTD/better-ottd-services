@@ -2,8 +2,10 @@ using System.Net.Sockets;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using Akka.Util;
 using Common;
 using MediatR;
+using OpenTTD.Actors.Receiver;
 using OpenTTD.Domain;
 using OpenTTD.Domain.Enums;
 using OpenTTD.Domain.Events;
@@ -77,23 +79,22 @@ public sealed partial class ServerActor : FSM<State, Model>
         
         Initialize();
     }
-    
+
     private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        ({ } model, Disconnect) => F.Run(() => 
+        ({ } model, Disconnect) => F.Run(() =>
             GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials))),
 
-        var ((id, credentials), _) => F.Run(() =>
-        {
-            Self.Tell(new ErrorOccurred(), Sender);
+        ({ } model, ReceivedMsg) => F.Run(() =>
+            Stay().Using(model)),
 
-            return GoTo(State.ERROR).Using(new Error(id, credentials)
+        var ((id, credentials), _) => F.Run(() =>
+            GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = $"{nameof(DefaultHandler)} Unhandled message"
-            });
-        }),
-        
+            })),
+
         _ => throw new InvalidOperationException()
     };
 

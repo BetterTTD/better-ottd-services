@@ -4,7 +4,6 @@ using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound;
 using OpenTTD.Networking.Enums;
-using OpenTTD.Networking.Messages.Inbound.ServerChat;
 
 namespace OpenTTD.Actors.Server;
 
@@ -37,31 +36,16 @@ public sealed partial class ServerActor
 
             model = model with { Server = _dispatcher.Dispatch(msg.MsgResult.Value, model.Server) };
 
-            if (msg.MsgResult.Value is ServerChatMessage chatMsg)
-            {
-                var client = model.Server.Companies
-                    .SelectMany(c => c.Clients)
-                    .First(cl => cl.Id == new ClientId(chatMsg.ClientId));
-                
-                _logger.Debug(
-                    "[{ServerId}] [{MessageType}] {ClientName}: {ClientMessage}", 
-                    model.Id.Value, nameof(ServerChatMessage), client.Name, chatMsg.Message);
-            }
-            
             return Stay().Using(model);
         }),
-        
-        var ((id, credentials), _) => F.Run(() =>
-        {
-            Self.Tell(new ErrorOccurred(), Sender);
 
-            return GoTo(State.ERROR).Using(new Error(id, credentials)
+        var ((id, credentials), _) => F.Run(() =>
+            GoTo(State.ERROR).Using(new Error(id, credentials)
             {
                 Exception = new InvalidOperationException(),
                 Message = "Invalid state data"
-            });
-        }),
-        
+            })),
+
         _ => throw new InvalidOperationException()
     };
 }

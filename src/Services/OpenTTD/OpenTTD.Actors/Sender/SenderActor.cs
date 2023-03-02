@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Logger.Serilog;
+using Akka.Util;
 using MediatR;
 using OpenTTD.Domain.Events;
 using OpenTTD.Domain.ValueObjects;
@@ -22,20 +23,24 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
             try
             {
                 _logger.Debug(
-                    "[{ServerId}] Sending a packet of type {PacketType}", 
+                    "[ServerId:{ServerId}] Sending a packet of type {PacketType}", 
                     serverId.Value, msg.Message.PacketType);
                 
                 var packet = packetService.CreatePacket(msg.Message);
                 packet.PrepareToSend();
 
                 await stream.WriteAsync(packet.Buffer.AsMemory(0, packet.Size));
+                
+                _logger.Debug(
+                    "[ServerId:{ServerId}] Packet of type {PacketType} was sent successfully", 
+                    serverId.Value, msg.Message.PacketType);
 
                 await mediator.Publish(new NetworkMessageSent(serverId, msg.Message));
             }
             catch (Exception exn)
             {
                 _logger.Error(exn, 
-                    "[{ServerId}] Received an error while sending a packet of type {PacketType}",
+                    "[ServerId:{ServerId}] Received an error while sending a packet of type {PacketType}",
                     serverId.Value, msg.Message.PacketType);
             }
         });

@@ -18,6 +18,13 @@ public sealed partial class ServerActor
 
     private State<State, Model> ErrorHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
+        (Error model, Reconnect) => F.Run(() =>
+        {
+            Self.Tell(new Connect());
+            
+            return GoTo(State.CONNECTING).Using(new PreConnecting(model.Id, model.Credentials));
+        }),
+        
         (Error model, _) => F.Run(() =>
         {
             _logger.Error(model.Exception, $"[ServerId:{model.Id.Value}] {model.Message}");
@@ -25,13 +32,12 @@ public sealed partial class ServerActor
             _mediator.Publish(new ServerError(model.Id, model.Exception, model.Message));
 
             Task.Run(async () =>
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    return new Connect();
-                })
-                .PipeTo(Self, Sender);
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                return new Reconnect();
+            }).PipeTo(Self, Sender);
             
-            return GoTo(State.CONNECTING).Using(new PreConnecting(model.Id, model.Credentials));
+            return Stay();
         }),
 
         _ => throw new InvalidOperationException()

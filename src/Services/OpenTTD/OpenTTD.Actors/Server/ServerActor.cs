@@ -37,6 +37,7 @@ public abstract record NetworkModel(
 public sealed partial class ServerActor : FSM<State, Model>
 {
     private readonly IServerDispatcher _dispatcher;
+    private readonly IMediator _mediator;
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
     private readonly TcpClient _client = new();
@@ -44,6 +45,7 @@ public sealed partial class ServerActor : FSM<State, Model>
     public ServerActor(ServerId id, ServerCredentials credentials, IServerDispatcher dispatcher, IMediator mediator)
     {
         _dispatcher = dispatcher;
+        _mediator = mediator;
 
         StartWith(State.IDLE, new Idle(id, credentials));
         

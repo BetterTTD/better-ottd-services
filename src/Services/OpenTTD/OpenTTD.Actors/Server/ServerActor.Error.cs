@@ -1,5 +1,6 @@
 using Akka.Actor;
 using Common;
+using OpenTTD.Domain.Events;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 
@@ -17,15 +18,11 @@ public sealed partial class ServerActor
 
     private State<State, Model> ErrorHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (Error(var id, var credentials), Connect) => F.Run(() =>
-        {
-            TryToConnect(id, credentials);
-            return GoTo(State.IDLE).Using(new Idle(id, credentials));
-        }),
-
         (Error model, _) => F.Run(() =>
         {
             _logger.Error(model.Exception, $"[ServerId:{model.Id.Value}] {model.Message}");
+
+            _mediator.Publish(new ServerError(model.Id, model.Exception, model.Message));
 
             Task.Run(async () =>
                 {
@@ -34,7 +31,7 @@ public sealed partial class ServerActor
                 })
                 .PipeTo(Self, Sender);
             
-            return Stay();
+            return GoTo(State.CONNECTING).Using(new PreConnecting(model.Id, model.Credentials));
         }),
 
         _ => throw new InvalidOperationException()

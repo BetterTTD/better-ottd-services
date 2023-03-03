@@ -87,9 +87,6 @@ public sealed partial class ServerActor : FSM<State, Model>
         ({ } model, Disconnect) => F.Run(() =>
             GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials))),
 
-        ({ } model, ReceivedMsg) => F.Run(() =>
-            Stay().Using(model)),
-
         var ((id, credentials), _) => F.Run(() =>
             GoTo(State.ERROR).Using(new Error(id, credentials)
             {

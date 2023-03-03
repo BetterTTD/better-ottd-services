@@ -1,5 +1,6 @@
 using Akka.Actor;
 using Common;
+using OpenTTD.Actors.Receiver;
 using OpenTTD.Domain.Models;
 using OpenTTD.Domain.ValueObjects;
 
@@ -16,6 +17,8 @@ public sealed partial class ServerActor
             Self.Tell(cmd);
             return GoTo(State.CONNECTING).Using(new InitialConnecting(id, credentials));
         }),
+
+        (Idle model, ReceivedMsg) => F.Run(() => Stay().Using(model)),
 
         var ((id, credentials), _) => F.Run(() => GoTo(State.ERROR).Using(new Error(id, credentials)
         {

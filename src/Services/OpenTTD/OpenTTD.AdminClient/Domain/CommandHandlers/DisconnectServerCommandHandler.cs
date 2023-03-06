@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using Akka.Util;
+using OpenTTD.AdminClient.Domain.Abstractions;
 using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain.Commands;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Domain.CommandHandlers;
 
-public sealed class DisconnectServerCommandHandler : INotificationHandler<DisconnectServer>
+public sealed class DisconnectServerCommandHandler : ICommandHandler<DisconnectServer, ServerId>
 {
     private readonly ICoordinatorService _coordinator;
     private readonly ILogger<DisconnectServerCommandHandler> _logger;
@@ -17,12 +19,14 @@ public sealed class DisconnectServerCommandHandler : INotificationHandler<Discon
         _logger = logger;
     }
 
-    public async Task Handle(DisconnectServer notification, CancellationToken cancellationToken)
+    public async Task<Result<ServerId>> Handle(DisconnectServer cmd, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "[CMD:{CmdName}] Data {Notification}", 
-            nameof(DisconnectServerCommandHandler), notification);
+            nameof(DisconnectServerCommandHandler), cmd);
 
-        await _coordinator.TellServerToDisconnectAsync(notification.Id, cancellationToken);
+        await _coordinator.TellServerToDisconnectAsync(cmd.Id, cancellationToken);
+        
+        return Result.Success(cmd.Id);
     }
 }

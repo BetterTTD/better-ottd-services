@@ -1,12 +1,13 @@
 ﻿using Akka.Util;
 using MediatR;
+using OpenTTD.AdminClient.Domain.Abstractions;
 using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain.Commands;
 using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Domain.CommandHandlers;
 
-public sealed class AddServerCommandHandler : IRequestHandler<AddServer, Result<ServerId>>
+public sealed class AddServerCommandHandler : ICommandHandler<AddServer, ServerId>
 {
     private readonly ILogger<AddServerCommandHandler> _logger;
     private readonly ICoordinatorService _coordinator;
@@ -17,12 +18,12 @@ public sealed class AddServerCommandHandler : IRequestHandler<AddServer, Result<
         _coordinator = coordinator;
     }
 
-    public async Task<Result<ServerId>> Handle(AddServer request, CancellationToken cancellationToken)
+    public async Task<Result<ServerId>> Handle(AddServer cmd, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "[CMD:{CmdName}] Data {Request}", 
-            nameof(AddServer), request);
+            nameof(AddServer), cmd);
 
-        return await _coordinator.AskToAddServerAsync(request.Credentials, cancellationToken);
+        return await _coordinator.AskToAddServerAsync(cmd.Credentials, cancellationToken);
     }
 }

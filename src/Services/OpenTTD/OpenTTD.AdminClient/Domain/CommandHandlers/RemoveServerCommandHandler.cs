@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using Akka.Util;
+using OpenTTD.AdminClient.Domain.Abstractions;
 using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain.Commands;
+using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Domain.CommandHandlers;
 
-public sealed class RemoveServerCommandHandler : INotificationHandler<RemoveServer>
+public sealed class RemoveServerCommandHandler : ICommandHandler<RemoveServer, ServerId>
 {
     private readonly ICoordinatorService _coordinator;
     private readonly ILogger<RemoveServerCommandHandler> _logger;
@@ -15,12 +17,14 @@ public sealed class RemoveServerCommandHandler : INotificationHandler<RemoveServ
         _logger = logger;
     }
 
-    public async Task Handle(RemoveServer notification, CancellationToken cancellationToken)
+    public async Task<Result<ServerId>> Handle(RemoveServer cmd, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "[CMD:{CmdName}] Data {Notification}", 
-            nameof(RemoveServerCommandHandler), notification);
+            nameof(RemoveServerCommandHandler), cmd);
 
-        await _coordinator.RemoveServerAsync(notification.Id, cancellationToken);
+        await _coordinator.RemoveServerAsync(cmd.Id, cancellationToken);
+        
+        return Result.Success(cmd.Id);
     }
 }

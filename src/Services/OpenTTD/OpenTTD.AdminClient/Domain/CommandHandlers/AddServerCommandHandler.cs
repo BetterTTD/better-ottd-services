@@ -1,5 +1,4 @@
 ﻿using Akka.Util;
-using MediatR;
 using OpenTTD.AdminClient.Domain.Abstractions;
 using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain.Commands;

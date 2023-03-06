@@ -5,7 +5,6 @@ using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
 using OpenTTD.Domain;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
 
 void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)
 {

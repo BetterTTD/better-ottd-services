@@ -115,6 +115,8 @@ public sealed class ServerDispatcher : IServerDispatcher
         
         ServerClientUpdateMessage msg => F.Run(() =>
         {
+            Console.WriteLine(msg.CompanyId);
+            
             var company = server.Companies.First(c => c.Id.Value == msg.CompanyId);
             var client = company.Clients.First(cl => cl.Id.Value == msg.ClientId) with
             {

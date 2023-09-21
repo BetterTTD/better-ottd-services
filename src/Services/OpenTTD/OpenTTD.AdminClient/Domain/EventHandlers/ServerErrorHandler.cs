@@ -15,8 +15,8 @@ public sealed class ServerErrorHandler : INotificationHandler<ServerError>
     public Task Handle(ServerError notification, CancellationToken cancellationToken)
     {
         _logger.LogError(notification.Exception,
-            "[ServerId:{ServerId}] Received an error: {Error}", 
-            notification.ServerId.Value, notification.Message);
+            "[{Handler}] [ServerId:{ServerId}] Received an error: {Error}", 
+            nameof(ServerErrorHandler), notification.ServerId.Value, notification.Message);
 
         return Task.CompletedTask;
     }

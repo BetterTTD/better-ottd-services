@@ -27,7 +27,7 @@ public sealed partial class ServerActor
         
         (Error model, _) => F.Run(() =>
         {
-            _logger.Error(model.Exception, $"[ServerId:{model.Id.Value}] {model.Message}");
+            _logger.Error(model.Exception, $"[{nameof(ServerActor)}] [ServerId:{model.Id.Value}] {model.Message}");
 
             _mediator.Publish(new ServerError(model.Id, model.Exception, model.Message));
 

@@ -29,7 +29,7 @@ public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorServic
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
-            .WithConfig("akka { loglevel=INFO, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
+            .WithConfig("akka { loglevel=DEBUG, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
             .And(DependencyResolverSetup.Create(_serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);

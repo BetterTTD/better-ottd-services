@@ -12,8 +12,7 @@ public sealed partial class ServerActor
     private sealed record Connected(
         ServerId Id,
         ServerCredentials Credentials, 
-        NetworkActors Network,
-        Domain.Entities.Server Server) : NetworkModel(Id, Credentials, Network);
+        NetworkActors Network) : NetworkModel(Id, Credentials, Network);
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
@@ -33,8 +32,6 @@ public sealed partial class ServerActor
             {
                 return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
             }
-
-            model = model with { Server = _dispatcher.Dispatch(msg.MsgResult.Value, model.Server) };
 
             return Stay().Using(model);
         }),

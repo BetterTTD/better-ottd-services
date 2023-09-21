@@ -15,8 +15,8 @@ public sealed class NetworkMessageReceivedHandler : INotificationHandler<Network
     public Task Handle(NetworkMessageReceived notification, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "[ServerId:{ServerId}] Received message: {Message}", 
-            notification.ServerId.Value, notification.Message);
+            "[{Handler}] [ServerId:{ServerId}] Received message: {Message}", 
+            nameof(NetworkMessageReceivedHandler), notification.ServerId.Value, notification.Message);
         
         return Task.CompletedTask;
     }

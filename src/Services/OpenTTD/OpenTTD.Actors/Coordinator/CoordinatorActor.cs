@@ -31,8 +31,8 @@ public sealed class CoordinatorActor : ReceiveActor
             if (maybeServerId is not null)
             {
                 _logger.Warning(
-                    "[{ServerId}] Server already added", 
-                    maybeServerId.Value);
+                    "[{Actor}] [{ServerId}] Server already added", 
+                    nameof(CoordinatorActor), maybeServerId.Value);
                 
                 Sender.Tell(Result.Success(new ServerAdded(maybeServerId)));
             }
@@ -48,8 +48,8 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers.Add(serverId, (msg.Credentials, State.IDLE, serverRef));
                 
                 _logger.Debug(
-                    "[{ServerId}] Server was added", 
-                    serverId.Value);
+                    "[{Actor}] [{ServerId}] Server was added", 
+                    nameof(CoordinatorActor), serverId.Value);
                 
                 Sender.Tell(Result.Success(new ServerAdded(serverId)));
             }
@@ -62,21 +62,21 @@ public sealed class CoordinatorActor : ReceiveActor
                 if (data.ServerState is State.CONNECTED or State.CONNECTING)
                 {
                     _logger.Warning(
-                        "[{ServerId}] Server is connected but connect called", 
-                        msg.ServerId.Value);
+                        "[{Actor}] [{ServerId}] Server is connected but connect called", 
+                        nameof(CoordinatorActor), msg.ServerId.Value);
                     return;
                 }
                 
                 _logger.Debug(
-                    "[{ServerId}] Server will be connected", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server will be connected", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
                 data.Ref.Tell(new Connect());
             }
             else
             {
                 _logger.Warning(
-                    "[{ServerId}] Server was not found while connecting", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server was not found while connecting", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
             }
         });
         
@@ -87,21 +87,21 @@ public sealed class CoordinatorActor : ReceiveActor
                 if (data.ServerState is not State.CONNECTED)
                 {
                     _logger.Warning(
-                        "[{ServerId}] Server is not connected but disconnect called", 
-                        msg.ServerId.Value);
+                        "[{Actor}] [{ServerId}] Server is not connected but disconnect called", 
+                        nameof(CoordinatorActor), msg.ServerId.Value);
                     return;
                 }
                 
                 data.Ref.Tell(new Disconnect());
                 _logger.Debug(
-                    "[{ServerId}] Server will be disconnected", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server will be disconnected", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
             }
             else
             {
                 _logger.Warning(
-                    "[{ServerId}] Server was not found while disconnecting", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server was not found while disconnecting", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
             }
         });
         
@@ -114,14 +114,14 @@ public sealed class CoordinatorActor : ReceiveActor
                 servers.Remove(msg.ServerId);
                 
                 _logger.Debug(
-                    "[{ServerId}] Server was added", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server was added", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
             }
             else
             {
                 _logger.Warning(
-                    "[{ServerId}] Server was not found while remove", 
-                    msg.ServerId.Value);
+                    "[{Actor}] [{ServerId}] Server was not found while remove", 
+                    nameof(CoordinatorActor), msg.ServerId.Value);
             }
         });
     }

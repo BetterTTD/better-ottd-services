@@ -42,8 +42,8 @@ public sealed partial class ServerActor
                     var address = credentials.NetworkAddress;
 
                     _logger.Debug(
-                        "[ServerId:{ServerId}] Establishing connection with address {Address}",
-                        serverId.Value, address);
+                        "[{Actor}] [ServerId:{ServerId}] Establishing connection with address {Address}",
+                        nameof(ServerActor), serverId.Value, address);
 
                     await _client.ConnectAsync(address.IpAddress, address.Port);
 
@@ -70,8 +70,8 @@ public sealed partial class ServerActor
             }
 
             _logger.Debug(
-                "[ServerId:{ServerId}] Connection with address {Address} established successfully",
-                serverId.Value, credentials.NetworkAddress);
+                "[{Actor}] [ServerId:{ServerId}] Connection with address {Address} established successfully",
+                nameof(ServerActor), serverId.Value, credentials.NetworkAddress);
 
             var stream = _client.GetStream();
 
@@ -153,9 +153,7 @@ public sealed partial class ServerActor
                 .Select(x => new SendMessage(x))
                 .ForEach(x => state.Network.Sender.Tell(x));
 
-            var server = _dispatcher.Create(model.Id, state.MaybeWelcome.Value, model.MaybeProtocol.Value);
-
-            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network, server));
+            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network));
         }),
 
         var ((id, credentials), _) => F.Run(() =>

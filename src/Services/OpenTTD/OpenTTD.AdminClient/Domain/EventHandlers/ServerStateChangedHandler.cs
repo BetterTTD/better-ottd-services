@@ -15,8 +15,8 @@ public sealed class ServerStateChangedHandler : INotificationHandler<ServerState
     public Task Handle(ServerStateChanged notification, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "[ServerId:{ServerId}] State changed from: '{From}' to: '{To}'", 
-            notification.ServerId.Value, notification.FromState, notification.ToState);
+            "[{Handler}] [ServerId:{ServerId}] State changed from: '{From}' to: '{To}'", 
+            nameof(ServerStateChangedHandler), notification.ServerId.Value, notification.FromState, notification.ToState);
         
         return Task.CompletedTask;
     }

@@ -1,7 +1,7 @@
 FROM alpine AS builder
 
 ARG OPENGFX_VERSION="7.1"
-ARG OPENTTD_VERSION="13.0"
+ARG OPENTTD_VERSION="13.4"
 
 RUN mkdir -p /config \
     && mkdir /tmp/src

@@ -14,8 +14,8 @@ services:
       dockerfile: Services/OpenTTD/Dockerfile
   
   redis:
-    image: redislabs/redismod
-    container_name: bttd.redis
+    image: arm64v8/redis
+    container_name: bttd.redis  
     networks:
       - tg
 

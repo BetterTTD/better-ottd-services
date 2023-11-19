@@ -16,6 +16,7 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.Http" Version="8.0.0" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
+        <PackageReference Include="StackExchange.Redis" Version="2.7.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
@@ -29,6 +30,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\EventBusRedis\EventBusRedis.csproj" />
+      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
+      <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
       <ProjectReference Include="..\..\..\Shared\OpenTTD.Networking\OpenTTD.Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
     </ItemGroup>

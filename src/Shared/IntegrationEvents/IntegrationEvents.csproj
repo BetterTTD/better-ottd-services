@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
+      <ProjectReference Include="..\..\Services\OpenTTD\OpenTTD.AdminClientDomain\OpenTTD.AdminClientDomain.csproj" />
+    </ItemGroup>
+
+</Project>

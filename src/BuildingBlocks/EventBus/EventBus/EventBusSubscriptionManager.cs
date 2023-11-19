@@ -5,12 +5,7 @@ namespace EventBus;
 
 public class EventBusSubscriptionManager : IEventBusSubscriptionManager
 {
-    private readonly Dictionary<string, List<Type>> _eventSubscriptions;
-
-    public EventBusSubscriptionManager()
-    {
-        _eventSubscriptions = new Dictionary<string, List<Type>>();
-    }
+    private readonly Dictionary<string, List<Type>> _eventSubscriptions = new();
 
     public void Clear() => _eventSubscriptions.Clear();
 

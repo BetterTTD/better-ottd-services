@@ -1,29 +1,31 @@
-﻿using Confluent.Kafka;
 using EventBus.Abstractions;
 using EventBus.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
-namespace EventBusKafka;
+namespace EventBusRedis;
 
-public class KafkaEventBus : IEventBus
+public sealed class RedisEventBus : IEventBus
 {
     private readonly IEventBusSubscriptionManager _subscriptionManager;
-    private readonly ILogger<KafkaEventBus> _logger;
-    private readonly KafkaConnection _kafkaConnection;
+    private readonly ILogger<RedisEventBus> _logger;
+    private readonly RedisConnection _redisConnection;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public KafkaEventBus(
+    public RedisEventBus(
         IEventBusSubscriptionManager subscriptionManager, 
-        ILogger<KafkaEventBus> logger,
-        KafkaConnection kafkaConnection, 
+        ILogger<RedisEventBus> logger,
+        RedisConnection redisConnection, 
         IServiceProvider serviceProvider)
     {
         _subscriptionManager = subscriptionManager;
         _logger = logger;
-        _kafkaConnection = kafkaConnection;
+        _redisConnection = redisConnection;
         _serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
     }
+
 
     public async Task PublishAsync<T>(T @event) where T : IntegrationEvent
     {
@@ -31,13 +33,13 @@ public class KafkaEventBus : IEventBus
 
         try
         {
-            var producer = _kafkaConnection.ProducerBuilder<T>();
-            await producer.ProduceAsync(eventType, new Message<Null, T> { Value = @event });
-            producer.Flush();
+            var producer = _redisConnection.ProducerBuilder();
+            var json = JsonConvert.SerializeObject(@event);
+            await producer.PublishAsync(eventType, json);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occured during publishing the event to topic {eventType}", eventType);
+            _logger.LogError(ex, "Error occured during publishing the event to channel {eventType}", eventType);
         }
     }
 
@@ -46,31 +48,30 @@ public class KafkaEventBus : IEventBus
         where TH : IIntegrationEventHandler<T>
     {
         var eventName = typeof(T).Name;
-        var consumer = _kafkaConnection.ConsumerBuilder<T>();
+        var consumer = _redisConnection.ConsumerBuilder();
         
         _subscriptionManager.AddSubscription<T, TH>();
 
-        consumer.Subscribe(eventName);
-
-        await Task.Run(async () =>
+        await consumer.SubscribeAsync(eventName, (_, redisEvent) =>
         {
-            while (true)
+            Task.Run(async () =>
             {
                 try
                 {
-                    var consumerResult = consumer.Consume();
-                    await ProcessEvent(consumerResult.Message.Value);
+                    var @event = JsonConvert.DeserializeObject<T>(redisEvent);
+                    await ProcessEvent(@event);
                 }
-                catch (ConsumeException exn)
+                catch (Exception exn)
                 {
-                    _logger.LogError(exn, 
-                        "Error `{ErrorReason}` occured during consuming the event from topic {eventName}", 
-                        exn.Error.Reason, eventName);
+                    _logger.LogError(exn,
+                        "Error `{ErrorReason}` occured during consuming the event from topic {eventName}",
+                        exn.Message, eventName);
                 }
-            }
-        }).ConfigureAwait(false);
-    }
+            }).ConfigureAwait(false);
 
+        }, CommandFlags.FireAndForget);
+    }
+    
     private async Task ProcessEvent<T>(T value) where T : IntegrationEvent
     {
         if (!_subscriptionManager.HasEvent<T>())

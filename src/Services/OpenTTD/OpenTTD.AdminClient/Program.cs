@@ -42,7 +42,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
             .Build();
     });
 
-    services.AddMediatR(typeof(Program), typeof(DomainModule));
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddOptions();
@@ -51,8 +50,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     services.AddSingleton<ICoordinatorService, AkkaHostedSystemService>();
     
     services
-        .AddAdminPortNetworking()
-        .AddDomain();
+        .AddAdminPortNetworking();
         
     services.AddHostedService<AkkaHostedSystemService>();
 }

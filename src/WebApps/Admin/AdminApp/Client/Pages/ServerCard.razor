@@ -1,0 +1,59 @@
+@*@code {
+    [Parameter]
+    public required AdminApp.Shared.Server Server { get; set; }
+
+    private string CardBackgroundStyle => Server.State == ServerState.Connected 
+        ? $"background-image:url('{GetBackgroundImage(Server.Map!.Landscape)}');background-size:cover;"
+        : "";
+
+    private string GetBackgroundImage(Landscape landscape) => landscape switch {
+        Landscape.Temperate => "images/landscape_temperate.png",
+        Landscape.Arctic => "images/landscape_arctic.png",
+        Landscape.Tropic => "images/landscape_tropic.png",
+        Landscape.Toyland => "images/landscape_toyland.png",
+        _ => throw new ArgumentOutOfRangeException(nameof(landscape), landscape, null)
+    };
+
+    private string GetCardColorClass(AdminApp.Shared.Server server) => server.State switch
+    {
+        ServerState.Idle => "idle",
+        ServerState.Error => "error",
+        ServerState.Connecting => "connecting",
+        ServerState.Connected => "connected",
+        _ => throw new ArgumentOutOfRangeException(nameof(server.State), server.State, null)
+    };
+
+    private string GetStatusName(ServerState state) => state switch
+    {
+        ServerState.Idle => "Idle",
+        ServerState.Error => "Error",
+        ServerState.Connecting => "Connecting",
+        ServerState.Connected => "Connected",
+        _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+    };
+}
+
+<div class="card text-dark card-has-bg click-col @GetCardColorClass(Server)"
+     style="@CardBackgroundStyle">
+    @if (Server.State == ServerState.Connected)
+    {
+        <img class="card-img d-none" src="@GetBackgroundImage(Server.Map!.Landscape)" alt="">    
+    }
+    <div class="card-img-overlay @GetCardColorClass(Server) d-flex flex-column">
+        <div class="card-body">
+            <small class="card-meta mb-2">@Server.Address</small>
+            <h3 class="card-title mt-0 text-dark">@Server.Name</h3>
+            <h4 class="card-text"><i class="fa fa-heartbeat" aria-hidden="true"></i> @GetStatusName(Server.State)</h4>
+            @if (Server.State is ServerState.Connected)
+            {
+                <h4 class="card-text"><i class="fa fa-globe" aria-hidden="true"></i> @Server.Map!.Landscape</h4>
+                <h4 class="card-text">
+                    <i class="fa fa-building-o" aria-hidden="true"></i> @Server.CompaniesCount
+                    /
+                    <i class="fa fa-user" aria-hidden="true"></i> @Server.ClientsCount
+                </h4>
+            }
+        </div>
+    </div>
+</div>
+*@

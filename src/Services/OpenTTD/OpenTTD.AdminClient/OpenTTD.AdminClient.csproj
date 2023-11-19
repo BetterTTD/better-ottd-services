@@ -34,8 +34,4 @@
       <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domain\QueryHandlers" />
-    </ItemGroup>
-
 </Project>

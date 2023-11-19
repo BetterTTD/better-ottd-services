@@ -13,11 +13,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\AdminApp.Shared.csproj" />
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+    <Resource Include="wwwroot\images\landscape_arctic.png" />
+    <Resource Include="wwwroot\images\landscape_temperate.png" />
+    <Resource Include="wwwroot\images\landscape_toyland.png" />
+    <Resource Include="wwwroot\images\landscape_tropic.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\ServerCardViewModel.cs">
+      <DependentUpon>ServerCard.razor</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

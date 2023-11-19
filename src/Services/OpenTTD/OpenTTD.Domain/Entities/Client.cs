@@ -9,5 +9,4 @@ public sealed record Client : Entity<ClientId>
     public string Name { get; init; } = "Unknown";
     public byte Language { get; init; }
     public long JoinDate { get; init; }
-    public Company Company { get; init; } = Company.Spectator;
 }

@@ -6,7 +6,7 @@ public enum ComponentState
 {
     Loading,
     Data,
-    Error
+    NoData
 }
 
 public abstract class BaseComponent<TViewModel> : ComponentBase
@@ -15,17 +15,13 @@ public abstract class BaseComponent<TViewModel> : ComponentBase
 
     protected TViewModel? ViewModel { get; set; }
 
-    protected string? Error { get; set; }
-
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
         
-        await RefreshAsync();
-        
-        if (ViewModel is null || Error is not null)
+        if (ViewModel is null)
         {
-            State = ComponentState.Error;
+            State = ComponentState.NoData;
         }
 
         if (ViewModel is not null)
@@ -43,5 +39,8 @@ public abstract class BaseComponent<TViewModel> : ComponentBase
 
     protected abstract Task InitializeAsync();
 
-    protected abstract Task RefreshAsync();
+    protected void RefreshAsync()
+    {
+        StateHasChanged();   
+    }
 }

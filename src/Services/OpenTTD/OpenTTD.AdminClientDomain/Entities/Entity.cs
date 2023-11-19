@@ -1,4 +1,4 @@
-namespace OpenTTD.Domain.Entities;
+namespace OpenTTD.AdminClientDomain.Entities;
 
 public abstract record Entity<TKey>
 {

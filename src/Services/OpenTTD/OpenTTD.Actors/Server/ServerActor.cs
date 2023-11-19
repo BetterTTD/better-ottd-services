@@ -4,11 +4,10 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Common;
 using MediatR;
-using OpenTTD.Domain;
-using OpenTTD.Domain.Enums;
-using OpenTTD.Domain.Events;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.Enums;
+using OpenTTD.AdminClientDomain.Events;
+using OpenTTD.AdminClientDomain.Models;
+using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 

@@ -1,7 +1,7 @@
 using Common;
 using OpenTTD.Actors.Receiver;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.Models;
+using OpenTTD.AdminClientDomain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound;
 using OpenTTD.Networking.Enums;
 

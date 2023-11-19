@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace OpenTTD.Domain.Events;
+namespace OpenTTD.AdminClientDomain.Events;
 
 public abstract record BaseEvent : INotification
 {

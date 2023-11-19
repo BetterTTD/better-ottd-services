@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OpenTTD.Domain\OpenTTD.Domain.csproj" />
+      <ProjectReference Include="..\OpenTTD.AdminClientDomain\OpenTTD.AdminClientDomain.csproj" />
     </ItemGroup>
 
 </Project>

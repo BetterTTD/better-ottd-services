@@ -1,7 +1,7 @@
 using System.Net;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.ValueObjects;
 
-namespace OpenTTD.Domain.Entities;
+namespace OpenTTD.AdminClientDomain.Entities;
 
 public sealed record Client : Entity<ClientId>
 {

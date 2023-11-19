@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using OpenTTD.Domain.Events;
+using OpenTTD.AdminClientDomain.Events;
 
 namespace OpenTTD.AdminClient.Domain.EventHandlers;
 

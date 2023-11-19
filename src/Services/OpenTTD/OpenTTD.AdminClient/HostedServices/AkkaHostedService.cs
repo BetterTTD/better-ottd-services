@@ -4,8 +4,8 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using OpenTTD.Actors.Coordinator;
 using OpenTTD.AdminClient.Services;
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.Models;
+using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
 

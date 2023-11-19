@@ -2,8 +2,8 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using MediatR;
-using OpenTTD.Domain.Events;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.Events;
+using OpenTTD.AdminClientDomain.ValueObjects;
 using OpenTTD.Networking.Messages;
 using OpenTTD.Networking.Messages.Outbound.Ping;
 

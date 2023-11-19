@@ -1,9 +1,7 @@
 using Confluent.Kafka;
-using MediatR;
 using OpenTTD.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
-using OpenTTD.Domain;
 using Serilog;
 
 void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)

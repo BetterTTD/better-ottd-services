@@ -37,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameServerGateway", "GameSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServerGateway.API", "Services\GameServerGateway\GameServerGateway.API\GameServerGateway.API.csproj", "{55A49A3C-EEFD-4BA1-8400-3F8EC45D7690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.Domain", "Services\OpenTTD\OpenTTD.Domain\OpenTTD.Domain.csproj", "{8565AEA5-624E-479E-BCC7-20AD29563EAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClientDomain", "Services\OpenTTD\OpenTTD.AdminClientDomain\OpenTTD.AdminClientDomain.csproj", "{8565AEA5-624E-479E-BCC7-20AD29563EAB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{E5A325EB-AD19-43D5-A35F-DD2C49234D51}"
 EndProject

@@ -1,4 +1,4 @@
-namespace OpenTTD.Domain.Enums;
+namespace OpenTTD.AdminClientDomain.Enums;
 
 public enum ServerState
 {

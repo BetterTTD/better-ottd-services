@@ -1,7 +1,7 @@
 ﻿using Akka.Util;
 using MediatR;
 
-namespace OpenTTD.Domain.Commands;
+namespace OpenTTD.AdminClientDomain.Commands;
 
 public interface ICommand<T> : IRequest<Result<T>>
 {

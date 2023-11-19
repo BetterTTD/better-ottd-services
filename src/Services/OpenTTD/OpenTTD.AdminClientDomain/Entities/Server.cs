@@ -1,7 +1,7 @@
-using OpenTTD.Domain.Models;
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.Models;
+using OpenTTD.AdminClientDomain.ValueObjects;
 
-namespace OpenTTD.Domain.Entities;
+namespace OpenTTD.AdminClientDomain.Entities;
 
 public sealed record Server : Entity<ServerId>
 {

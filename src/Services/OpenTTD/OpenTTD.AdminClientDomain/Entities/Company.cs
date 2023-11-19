@@ -1,7 +1,7 @@
-using OpenTTD.Domain.ValueObjects;
+using OpenTTD.AdminClientDomain.ValueObjects;
 using OpenTTD.Networking.Enums;
 
-namespace OpenTTD.Domain.Entities;
+namespace OpenTTD.AdminClientDomain.Entities;
 
 public sealed record Company : Entity<CompanyId>
 {

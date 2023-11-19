@@ -1,4 +1,3 @@
-using Confluent.Kafka;
 using OpenTTD.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
@@ -13,33 +12,6 @@ void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfi
 
 void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnvironment env)
 {
-    services.AddSingleton(p =>
-    {
-        void LogHandler(IProducer<string, string> _, LogMessage msg)
-        {
-            if (msg.Level < SyslogLevel.Notice)
-            {
-                Console.WriteLine($"Error occurred: {msg.Level}: {msg.Message}");
-            }
-        }
-
-        var producer = new ProducerConfig
-        {
-            BootstrapServers = "localhost:9092",
-            MessageTimeoutMs = 500,
-            RetryBackoffMs = 100,
-            MessageSendMaxRetries = 5,
-            DeliveryReportFields = "key, value, timestamp",
-            EnableDeliveryReports = true,
-            EnableIdempotence = false,
-            Acks = Acks.Leader
-        };
-
-        return new ProducerBuilder<string, string>(producer)
-            .SetLogHandler(LogHandler)
-            .Build();
-    });
-
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddOptions();

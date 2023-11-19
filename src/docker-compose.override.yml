@@ -7,6 +7,10 @@ services:
       - "3982:3982/udp"
       - "3977:3977/tcp"
         
+  redis:
+    ports:
+      - '6379:6379'
+      
   seq:
     ports:
       - "5341:80"

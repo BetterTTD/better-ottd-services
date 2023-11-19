@@ -1,6 +1,8 @@
+using MediatR;
 using OpenTTD.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
+using OpenTTD.AdminClientDomain.Entities;
 using Serilog;
 
 void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)
@@ -23,6 +25,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
         .AddAdminPortNetworking();
         
     services.AddHostedService<AkkaHostedSystemService>();
+
+    services.AddMediatR(typeof(Server).Assembly);
 }
 
 void ConfigureApplication(IApplicationBuilder app, IHostEnvironment env)

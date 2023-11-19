@@ -3,7 +3,7 @@ version: "3.8"
 name: "betterttd"
 
 services:
-  
+        
   server:
     image: openttd.server
     container_name: bttd.server
@@ -13,6 +13,12 @@ services:
       context: .
       dockerfile: Services/OpenTTD/Dockerfile
   
+  redis:
+    image: redislabs/redismod
+    container_name: bttd.redis
+    networks:
+      - tg
+
   seq:
     image: datalust/seq:latest
     container_name: bttd.seq

@@ -1,8 +1,8 @@
 ﻿using OpenTTD.Networking.Enums;
 
-namespace OpenTTD.AdminClientDomain.Models;
+namespace OpenTTD.AdminClientDomain.ValueObjects;
 
-public sealed record ServerNetwork
+public sealed record Network
 {
     public byte Version { get; init; }
     public string Revision { get; set; } = "Unknown";

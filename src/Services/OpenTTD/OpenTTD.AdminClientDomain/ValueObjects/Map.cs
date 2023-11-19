@@ -1,6 +1,6 @@
 using OpenTTD.Networking.Enums;
 
-namespace OpenTTD.AdminClientDomain.Models;
+namespace OpenTTD.AdminClientDomain.ValueObjects;
 
 public sealed record Map
 {

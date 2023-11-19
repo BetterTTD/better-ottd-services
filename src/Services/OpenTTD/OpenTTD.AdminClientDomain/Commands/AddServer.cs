@@ -1,6 +1,5 @@
-﻿using OpenTTD.AdminClientDomain.Models;
-using OpenTTD.AdminClientDomain.ValueObjects;
+﻿using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.AdminClientDomain.Commands;
 
-public sealed record AddServer(ServerCredentials Credentials) : ICommand<ServerId>;
+public sealed record AddServer(ServerNetwork Network) : ICommand<ServerId>;

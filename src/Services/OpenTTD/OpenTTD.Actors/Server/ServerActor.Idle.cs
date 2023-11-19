@@ -1,14 +1,13 @@
 using Akka.Actor;
 using Common;
 using OpenTTD.Actors.Receiver;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record Idle(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
+    private sealed record Idle(ServerId Id, ServerNetwork Network) : Model(Id, Network);
 
     private State<State, Model> IdleHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {

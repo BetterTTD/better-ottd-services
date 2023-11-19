@@ -5,7 +5,6 @@ using Akka.Logger.Serilog;
 using Akka.Util;
 using MediatR;
 using OpenTTD.Actors.Server;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.Actors.Coordinator;
@@ -16,15 +15,15 @@ public sealed class CoordinatorActor : ReceiveActor
     
     public CoordinatorActor(IMediator mediator)
     {
-        Dictionary<ServerId, (ServerCredentials Credentials, State ServerState, IActorRef Ref)> servers = new();
+        Dictionary<ServerId, (ServerNetwork Credentials, State ServerState, IActorRef Ref)> servers = new();
         
         Receive<ServerAdd>(msg =>
         {
             var maybeServerId = servers
                 .Where(s =>
-                    s.Value.Credentials.Name == msg.Credentials.Name ||
-                    Equals(s.Value.Credentials.NetworkAddress.IpAddress, msg.Credentials.NetworkAddress.IpAddress) &&
-                    s.Value.Credentials.NetworkAddress.Port == msg.Credentials.NetworkAddress.Port)
+                    s.Value.Credentials.Name == msg.Network.Name ||
+                    Equals(s.Value.Credentials.NetworkAddress.IpAddress, msg.Network.NetworkAddress.IpAddress) &&
+                    s.Value.Credentials.NetworkAddress.Port == msg.Network.NetworkAddress.Port)
                 .Select(x => x.Key)
                 .FirstOrDefault();
             
@@ -42,10 +41,10 @@ public sealed class CoordinatorActor : ReceiveActor
 
                 var serverProps = DependencyResolver
                     .For(Context.System)
-                    .Props<ServerActor>(serverId, msg.Credentials);
+                    .Props<ServerActor>(serverId, msg.Network);
                 var serverRef = Context.ActorOf(serverProps);
 
-                servers.Add(serverId, (msg.Credentials, State.IDLE, serverRef));
+                servers.Add(serverId, (msg.Network, State.IDLE, serverRef));
                 
                 _logger.Debug(
                     "[{Actor}] [{ServerId}] Server was added", 

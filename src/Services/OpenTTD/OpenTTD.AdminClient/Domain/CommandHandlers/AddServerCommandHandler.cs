@@ -23,6 +23,6 @@ public sealed class AddServerCommandHandler : ICommandHandler<AddServer, ServerI
             "[CMD:{CmdName}] Data {Request}", 
             nameof(AddServer), cmd);
 
-        return await _coordinator.AskToAddServerAsync(cmd.Credentials, cancellationToken);
+        return await _coordinator.AskToAddServerAsync(cmd.Network, cancellationToken);
     }
 }

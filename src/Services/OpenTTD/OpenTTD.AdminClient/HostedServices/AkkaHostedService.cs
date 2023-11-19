@@ -4,7 +4,6 @@ using Akka.DependencyInjection;
 using Akka.Util;
 using OpenTTD.Actors.Coordinator;
 using OpenTTD.AdminClient.Services;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
@@ -54,9 +53,9 @@ public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorServic
             .Run(CoordinatedShutdown.ClrExitReason.Instance);
     }
 
-    public async Task<Result<ServerId>> AskToAddServerAsync(ServerCredentials credentials, CancellationToken cts)
+    public async Task<Result<ServerId>> AskToAddServerAsync(ServerNetwork network, CancellationToken cts)
     {
-        var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(credentials), cancellationToken: cts);
+        var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(network), cancellationToken: cts);
         
         return result.IsSuccess
             ? Result.Success(result.Value.Id)
@@ -85,12 +84,12 @@ public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorServic
     {
         try
         {
-            var msg = new ServerAdd(new ServerCredentials
+            var msg = new ServerAdd(new ServerNetwork
             {
-                NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), 3977),
-                Name = "TG Admin",
-                Version = "1.0",
-                Password = "12345"
+                NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), new ServerPort(3977)),
+                Name = new ServerName("TG Admin"),
+                Version = new ServerVersion("1.0"),
+                Password = new ServerPassword("12345")
             });
             
             var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);

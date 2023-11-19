@@ -7,7 +7,6 @@ using Common;
 using MediatR;
 using OpenTTD.Actors.Receiver;
 using OpenTTD.Actors.Sender;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 using OpenTTD.Networking.Enums;
 using OpenTTD.Networking.Messages;
@@ -22,30 +21,30 @@ namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record InitialConnecting(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials);
+    private sealed record InitialConnecting(ServerId Id, ServerNetwork Network) : Model(Id, Network);
 
     private sealed record Connecting(
         ServerId Id,
-        ServerCredentials Credentials,
-        NetworkActors Network,
+        ServerNetwork Network,
+        NetworkActors NetworkActors,
         Option<ServerProtocolMessage> MaybeProtocol,
-        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Id, Credentials, Network);
+        Option<ServerWelcomeMessage> MaybeWelcome) : NetworkModel(Id, Network, NetworkActors);
 
     private State<State, Model> ConnectingHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (InitialConnecting (var serverId, var credentials), Connect) => F.Run(() =>
+        (InitialConnecting (var serverId, var networkInfo), Connect) => F.Run(() =>
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    var address = credentials.NetworkAddress;
+                    var address = networkInfo.NetworkAddress;
 
                     _logger.Debug(
                         "[{Actor}] [ServerId:{ServerId}] Establishing connection with address {Address}",
                         nameof(ServerActor), serverId.Value, address);
 
-                    await _client.ConnectAsync(address.IpAddress, address.Port);
+                    await _client.ConnectAsync(address.IpAddress, address.Port.Value);
 
                     return Result.Success(Unit.Value);
                 }
@@ -88,9 +87,9 @@ public sealed partial class ServerActor
 
             network.Sender.Tell(new SendMessage(new JoinMessage
             {
-                AdminName = credentials.Name,
-                AdminVersion = credentials.Version,
-                Password = credentials.Password
+                AdminName = credentials.Name.Value,
+                AdminVersion = credentials.Version.Value,
+                Password = credentials.Password.Value
             }));
 
             var connectingState = new Connecting(
@@ -106,7 +105,7 @@ public sealed partial class ServerActor
             var result = msg.MsgResult;
             if (!result.IsSuccess)
             {
-                return GoTo(State.ERROR).Using(new Error(model.Id, model.Credentials)
+                return GoTo(State.ERROR).Using(new Error(model.Id, model.Network)
                 {
                     Exception = result.Exception,
                     Message = result.Exception.Message
@@ -115,7 +114,7 @@ public sealed partial class ServerActor
 
             if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
             {
-                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
+                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Network));
             }
 
             var state = result.Value switch
@@ -151,9 +150,9 @@ public sealed partial class ServerActor
                     { UpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
                 }.Select(x => new UpdateFrequencyMessage(x.Key, x.Value)))
                 .Select(x => new SendMessage(x))
-                .ForEach(x => state.Network.Sender.Tell(x));
+                .ForEach(x => state.NetworkActors.Sender.Tell(x));
 
-            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Credentials, state.Network));
+            return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Network, state.NetworkActors));
         }),
 
         var ((id, credentials), _) => F.Run(() =>

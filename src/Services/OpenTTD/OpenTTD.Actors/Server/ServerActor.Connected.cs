@@ -1,6 +1,5 @@
 using Common;
 using OpenTTD.Actors.Receiver;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 using OpenTTD.Networking.Messages.Inbound;
 using OpenTTD.Networking.Enums;
@@ -11,8 +10,8 @@ public sealed partial class ServerActor
 {
     private sealed record Connected(
         ServerId Id,
-        ServerCredentials Credentials, 
-        NetworkActors Network) : NetworkModel(Id, Credentials, Network);
+        ServerNetwork ServerNetwork, 
+        NetworkActors NetworkActors) : NetworkModel(Id, ServerNetwork, NetworkActors);
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
@@ -21,7 +20,7 @@ public sealed partial class ServerActor
             var result = msg.MsgResult;
             if (!result.IsSuccess)
             {
-                return GoTo(State.ERROR).Using(new Error(model.Id, model.Credentials)
+                return GoTo(State.ERROR).Using(new Error(model.Id, model.Network)
                 {
                     Exception = result.Exception,
                     Message = result.Exception.Message
@@ -30,7 +29,7 @@ public sealed partial class ServerActor
 
             if (msg.MsgResult.Value is GenericMessage { PacketType: PacketType.ADMIN_PACKET_SERVER_SHUTDOWN })
             {
-                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials));
+                return GoTo(State.IDLE).Using(new Idle(model.Id, model.Network));
             }
 
             return Stay().Using(model);

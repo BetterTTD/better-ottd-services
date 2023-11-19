@@ -6,7 +6,6 @@ using Common;
 using MediatR;
 using OpenTTD.AdminClientDomain.Enums;
 using OpenTTD.AdminClientDomain.Events;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
@@ -25,11 +24,12 @@ public enum State
 
 public abstract record Model(
     ServerId Id, 
-    ServerCredentials Credentials);
+    ServerNetwork Network);
+
 public abstract record NetworkModel(
     ServerId Id, 
-    ServerCredentials Credentials, 
-    NetworkActors Network) : Model(Id, Credentials);
+    ServerNetwork Network, 
+    NetworkActors NetworkActors) : Model(Id, Network);
 
 public sealed partial class ServerActor : FSM<State, Model>
 {
@@ -38,11 +38,11 @@ public sealed partial class ServerActor : FSM<State, Model>
 
     private readonly TcpClient _client = new();
 
-    public ServerActor(ServerId id, ServerCredentials credentials, IMediator mediator)
+    public ServerActor(ServerId id, ServerNetwork network, IMediator mediator)
     {
         _mediator = mediator;
 
-        StartWith(State.IDLE, new Idle(id, credentials));
+        StartWith(State.IDLE, new Idle(id, network));
         
         When(State.IDLE, IdleHandler);
         When(State.CONNECTING, ConnectingHandler);
@@ -62,8 +62,8 @@ public sealed partial class ServerActor : FSM<State, Model>
             
             if (next is State.ERROR or State.IDLE && StateData is NetworkModel model)
             {
-                model.Network.Receiver.Tell(PoisonPill.Instance);
-                model.Network.Sender.Tell(PoisonPill.Instance);
+                model.NetworkActors.Receiver.Tell(PoisonPill.Instance);
+                model.NetworkActors.Sender.Tell(PoisonPill.Instance);
             }
 
             if (next is State.ERROR)
@@ -80,7 +80,7 @@ public sealed partial class ServerActor : FSM<State, Model>
     private State<State, Model> DefaultHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
         ({ } model, Disconnect) => F.Run(() =>
-            GoTo(State.IDLE).Using(new Idle(model.Id, model.Credentials))),
+            GoTo(State.IDLE).Using(new Idle(model.Id, model.Network))),
 
         var ((id, credentials), _) => F.Run(() =>
             GoTo(State.ERROR).Using(new Error(id, credentials)

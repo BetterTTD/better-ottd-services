@@ -1,14 +1,13 @@
 using Akka.Actor;
 using Common;
 using OpenTTD.AdminClientDomain.Events;
-using OpenTTD.AdminClientDomain.Models;
 using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.Actors.Server;
 
 public sealed partial class ServerActor
 {
-    private sealed record Error(ServerId Id, ServerCredentials Credentials) : Model(Id, Credentials)
+    private sealed record Error(ServerId Id, ServerNetwork Network) : Model(Id, Network)
     {
         public required Exception Exception { get; init; }
         public required string Message { get; init; } = "Unknown error";
@@ -22,7 +21,7 @@ public sealed partial class ServerActor
         {
             Self.Tell(new Connect());
             
-            return GoTo(State.CONNECTING).Using(new InitialConnecting(model.Id, model.Credentials));
+            return GoTo(State.CONNECTING).Using(new InitialConnecting(model.Id, model.Network));
         }),
         
         (Error model, _) => F.Run(() =>

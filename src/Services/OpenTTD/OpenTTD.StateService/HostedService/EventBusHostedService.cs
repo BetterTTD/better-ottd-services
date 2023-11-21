@@ -1,18 +1,15 @@
 using EventBus.Abstractions;
+using IntegrationEvents;
+using OpenTTD.StateService.Handlers;
 
-namespace OpenTTD.StateService;
+namespace OpenTTD.StateService.HostedService;
 
-public sealed class EventBusHostedService : IHostedService
+public sealed class EventBusHostedService(IEventBus eventBus) : IHostedService
 {
-    private readonly IEventBus _eventBus;
-
-    public EventBusHostedService(IEventBus eventBus)
-    {
-        _eventBus = eventBus;
-    }
-
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        eventBus.SubscribeAsync<ServerMessageReceivedEvent, ServerMessageReceivedEventHandler>();
+        
         return Task.CompletedTask;
     }
 

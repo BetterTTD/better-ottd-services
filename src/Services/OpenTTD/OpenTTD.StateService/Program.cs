@@ -2,6 +2,8 @@ using EventBus;
 using EventBus.Abstractions;
 using EventBusRedis;
 using IntegrationEvents;
+using OpenTTD.StateService.Handlers;
+using OpenTTD.StateService.HostedService;
 using Serilog;
 using StackExchange.Redis;
 
@@ -34,7 +36,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
         .AddSingleton<RedisConnection>()
         .AddSingleton<IEventBusSubscriptionManager, EventBusSubscriptionManager>();
 
-    services.AddEventHandler<ServerMessageReceivedEvent, IIntegrationEventHandler<ServerMessageReceivedEvent>>();
+    services.AddEventHandler<ServerMessageReceivedEvent, ServerMessageReceivedEventHandler>();
+
+    services.AddHostedService<EventBusHostedService>();
     
     services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 }

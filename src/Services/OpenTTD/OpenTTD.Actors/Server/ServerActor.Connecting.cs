@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 using Akka.Actor;
 using Akka.DependencyInjection;
+using Akka.Event;
 using Akka.Util;
 using Akka.Util.Internal;
 using Common;

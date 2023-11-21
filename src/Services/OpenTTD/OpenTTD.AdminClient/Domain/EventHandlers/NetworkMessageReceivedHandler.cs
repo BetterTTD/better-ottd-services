@@ -23,7 +23,7 @@ public sealed class NetworkMessageReceivedHandler : INotificationHandler<Network
             "[{Handler}] [ServerId:{ServerId}] Received message: {Message}", 
             nameof(NetworkMessageReceivedHandler), notification.ServerId.Value, notification.Message);
 
-        var @event = new TestEvent
+        var @event = new ServerMessageReceivedEvent
         {
             ServerId = notification.ServerId,
             Type = notification.Message.PacketType,

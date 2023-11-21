@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusRedis", "BuildingBl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEvents", "Shared\IntegrationEvents\IntegrationEvents.csproj", "{FF8DD5A4-822E-4A15-AFE7-8788827B87A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.StateService", "Services\OpenTTD\OpenTTD.StateService\OpenTTD.StateService.csproj", "{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{FF8DD5A4-822E-4A15-AFE7-8788827B87A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF8DD5A4-822E-4A15-AFE7-8788827B87A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF8DD5A4-822E-4A15-AFE7-8788827B87A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +145,7 @@ Global
 		{646D9A39-3110-40AC-8AE9-FD40DC5DD144} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 		{89D68932-C279-4086-9679-4850202C75BF} = {5DA3A27D-538C-4DC2-B595-5614588069C9}
 		{FF8DD5A4-822E-4A15-AFE7-8788827B87A8} = {632B2863-CDE3-4E94-B4D6-3F52520A9297}
+		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B01EB61-45F2-4DF5-97A2-4101DA40ACF4}

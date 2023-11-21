@@ -8,6 +8,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+      <Content Update="appsettings.Development.json">
+        <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Serilog" Version="3.1.1" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
@@ -21,20 +30,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="appsettings.Development.json">
-        <DependentUpon>appsettings.json</DependentUpon>
-      </Content>
-      <Content Include="..\..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBusRedis\EventBusRedis.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
       <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
-      <ProjectReference Include="..\..\..\Shared\OpenTTD.Networking\OpenTTD.Networking.csproj" />
-      <ProjectReference Include="..\OpenTTD.Actors\OpenTTD.Actors.csproj" />
     </ItemGroup>
 
 </Project>

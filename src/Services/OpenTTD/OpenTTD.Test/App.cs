@@ -1,6 +1,8 @@
 using EventBus.Abstractions;
 using IntegrationEvents;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using OpenTTD.Networking.Messages;
 
 namespace OpenTTD.Test;
 
@@ -15,7 +17,7 @@ public sealed class App : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _eventBus.SubscribeAsync<TestEvent, TestEventHandler>();
+        _eventBus.SubscribeAsync<ServerMessageReceivedEvent, ServerMessageReceivedEventHandler>();
 
         Console.Read();
         
@@ -28,9 +30,9 @@ public sealed class App : IHostedService
     }
 }
 
-public class TestEventHandler : IIntegrationEventHandler<TestEvent>
+public class ServerMessageReceivedEventHandler : IIntegrationEventHandler<ServerMessageReceivedEvent>
 {
-    public Task Handle(TestEvent @event)
+    public Task Handle(ServerMessageReceivedEvent @event)
     {
         Console.WriteLine(@event);
         

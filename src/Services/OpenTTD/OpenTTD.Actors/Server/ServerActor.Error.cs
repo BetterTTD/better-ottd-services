@@ -1,4 +1,5 @@
 using Akka.Actor;
+using Akka.Event;
 using Common;
 using OpenTTD.AdminClientDomain.Events;
 using OpenTTD.AdminClientDomain.ValueObjects;

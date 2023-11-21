@@ -1,9 +1,7 @@
 using EventBus;
 using EventBus.Abstractions;
 using EventBusRedis;
-using OpenTTD.Networking;
-using OpenTTD.AdminClient.HostedServices;
-using OpenTTD.AdminClient.Services;
+using IntegrationEvents;
 using Serilog;
 using StackExchange.Redis;
 
@@ -35,14 +33,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
         .AddSingleton<IEventBus, RedisEventBus>()
         .AddSingleton<RedisConnection>()
         .AddSingleton<IEventBusSubscriptionManager, EventBusSubscriptionManager>();
-    
-    services.AddSingleton<ICoordinatorService, AkkaHostedSystemService>();
-    
-    services
-        .AddAdminPortNetworking();
-        
-    services.AddHostedService<AkkaHostedSystemService>();
 
+    services.AddEventHandler<ServerMessageReceivedEvent, IIntegrationEventHandler<ServerMessageReceivedEvent>>();
+    
     services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 }
 

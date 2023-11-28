@@ -7,24 +7,13 @@ using StackExchange.Redis;
 
 namespace EventBusRedis;
 
-public sealed class RedisEventBus : IEventBus
-{
-    private readonly IEventBusSubscriptionManager _subscriptionManager;
-    private readonly ILogger<RedisEventBus> _logger;
-    private readonly RedisConnection _redisConnection;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public RedisEventBus(
-        IEventBusSubscriptionManager subscriptionManager, 
+public sealed class RedisEventBus(IEventBusSubscriptionManager subscriptionManager,
         ILogger<RedisEventBus> logger,
-        RedisConnection redisConnection, 
+        RedisConnection redisConnection,
         IServiceProvider serviceProvider)
-    {
-        _subscriptionManager = subscriptionManager;
-        _logger = logger;
-        _redisConnection = redisConnection;
-        _serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-    }
+    : IEventBus
+{
+    private readonly IServiceScopeFactory _serviceScopeFactory = ServiceProviderServiceExtensions.GetRequiredService<IServiceScopeFactory>(serviceProvider);
 
 
     public async Task PublishAsync<T>(T @event) where T : IntegrationEvent
@@ -33,13 +22,13 @@ public sealed class RedisEventBus : IEventBus
 
         try
         {
-            var producer = _redisConnection.ProducerBuilder();
+            var producer = redisConnection.ProducerBuilder();
             var json = JsonConvert.SerializeObject(@event);
             await producer.PublishAsync(eventType, json);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occured during publishing the event to channel {eventType}", eventType);
+            logger.LogError(ex, "Error occured during publishing the event to channel {eventType}", eventType);
         }
     }
 
@@ -48,9 +37,9 @@ public sealed class RedisEventBus : IEventBus
         where TH : IIntegrationEventHandler<T>
     {
         var eventName = typeof(T).Name;
-        var consumer = _redisConnection.ConsumerBuilder();
+        var consumer = redisConnection.ConsumerBuilder();
         
-        _subscriptionManager.AddSubscription<T, TH>();
+        subscriptionManager.AddSubscription<T, TH>();
 
         await consumer.SubscribeAsync(eventName, (_, redisEvent) =>
         {
@@ -63,7 +52,7 @@ public sealed class RedisEventBus : IEventBus
                 }
                 catch (Exception exn)
                 {
-                    _logger.LogError(exn,
+                    logger.LogError(exn,
                         "Error `{ErrorReason}` occured during consuming the event from topic {eventName}",
                         exn.Message, eventName);
                 }
@@ -74,14 +63,14 @@ public sealed class RedisEventBus : IEventBus
     
     private async Task ProcessEvent<T>(T value) where T : IntegrationEvent
     {
-        if (!_subscriptionManager.HasEvent<T>())
+        if (!subscriptionManager.HasEvent<T>())
         {
             return;
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
         
-        var subscriptions = _subscriptionManager.GetHandlersForEvent<T>();
+        var subscriptions = subscriptionManager.GetHandlersForEvent<T>();
         foreach (var subscription in subscriptions)
         {
             var handler = scope.ServiceProvider.GetRequiredService(subscription);

@@ -2,14 +2,9 @@ using EventBus.Abstractions;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public class EventBusHostedService : IHostedService
+public class EventBusHostedService(IEventBusSubscriptionManager subscriptionManager) : IHostedService
 {
-    private readonly IEventBusSubscriptionManager _subscriptionManager;
-
-    public EventBusHostedService(IEventBusSubscriptionManager subscriptionManager)
-    {
-        _subscriptionManager = subscriptionManager;
-    }
+    private readonly IEventBusSubscriptionManager _subscriptionManager = subscriptionManager;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {

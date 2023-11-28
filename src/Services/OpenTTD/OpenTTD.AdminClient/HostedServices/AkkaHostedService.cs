@@ -8,35 +8,26 @@ using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.AdminClient.HostedServices;
 
-public sealed class AkkaHostedSystemService : IHostedService, ICoordinatorService
+public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
+        IHostApplicationLifetime appLifetime)
+    : IHostedService, ICoordinatorService
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IHostApplicationLifetime _appLifetime;
-
     private ActorSystem _actorSystem = null!;
     private IActorRef _coordinator = null!;
-
-    public AkkaHostedSystemService(
-        IServiceProvider serviceProvider, 
-        IHostApplicationLifetime appLifetime)
-    {
-        _serviceProvider = serviceProvider;
-        _appLifetime = appLifetime;
-    }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
             .WithConfig("akka { loglevel=DEBUG, loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}")
-            .And(DependencyResolverSetup.Create(_serviceProvider));
+            .And(DependencyResolverSetup.Create(serviceProvider));
 
         _actorSystem = ActorSystem.Create("ottd", actorSystemSetup);
         
         var coordinatorProps = DependencyResolver.For(_actorSystem).Props<CoordinatorActor>();
         _coordinator = _actorSystem.ActorOf(coordinatorProps, "coordinator");
 
-        _actorSystem.WhenTerminated.ContinueWith(_ => _appLifetime.StopApplication(), cancellationToken);
+        _actorSystem.WhenTerminated.ContinueWith(_ => appLifetime.StopApplication(), cancellationToken);
 
         Test(cancellationToken);
         

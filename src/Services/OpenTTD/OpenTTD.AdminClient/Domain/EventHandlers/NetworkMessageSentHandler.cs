@@ -3,18 +3,11 @@ using OpenTTD.AdminClientDomain.Events;
 
 namespace OpenTTD.AdminClient.Domain.EventHandlers;
 
-public sealed class NetworkMessageSentHandler : INotificationHandler<NetworkMessageSent>
+public sealed class NetworkMessageSentHandler(ILogger<NetworkMessageSentHandler> logger) : INotificationHandler<NetworkMessageSent>
 {
-    private readonly ILogger<NetworkMessageSentHandler> _logger;
-
-    public NetworkMessageSentHandler(ILogger<NetworkMessageSentHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public Task Handle(NetworkMessageSent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "[{Handler}] [ServerId:{ServerId}] Sent message: {Message}", 
             nameof(NetworkMessageSentHandler), notification.ServerId.Value, notification.Message);
         

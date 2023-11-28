@@ -5,17 +5,10 @@ using OpenTTD.Networking.Messages.Outbound;
 
 namespace OpenTTD.Networking.Messages;
 
-public sealed class PacketService : IPacketService
+public sealed class PacketService(IEnumerable<IPacketTransformer> packetTransformers,
+        IEnumerable<IMessageTransformer> messageTransformers)
+    : IPacketService
 {
-    private readonly IEnumerable<IPacketTransformer> _packetTransformers;
-    private readonly IEnumerable<IMessageTransformer> _messageTransformers;
-
-    public PacketService(
-        IEnumerable<IPacketTransformer> packetTransformers,
-        IEnumerable<IMessageTransformer> messageTransformers) =>
-        (_packetTransformers, _messageTransformers) =
-        (packetTransformers, messageTransformers);
-
     public IMessage ReadPacket(Packet packet)
     {
         var type = packet.ReadByte();
@@ -27,13 +20,13 @@ public sealed class PacketService : IPacketService
 
     public Packet CreatePacket(IMessage message)
     {
-        var transformer = _messageTransformers.FirstOrDefault(mt => mt.PacketType == message.PacketType);
+        var transformer = messageTransformers.FirstOrDefault(mt => mt.PacketType == message.PacketType);
         return transformer!.Transform(message);
     }
 
     private IMessage TransformPacket(PacketType packetType, Packet packet)
     {
-        var transformer = _packetTransformers.FirstOrDefault(pt => pt.PacketType == packetType);
+        var transformer = packetTransformers.FirstOrDefault(pt => pt.PacketType == packetType);
 
         return transformer is not null
             ? transformer.Transform(packet)

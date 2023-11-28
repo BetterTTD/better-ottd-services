@@ -3,18 +3,11 @@ using OpenTTD.AdminClientDomain.Events;
 
 namespace OpenTTD.AdminClient.Domain.EventHandlers;
 
-public sealed class ServerErrorHandler : INotificationHandler<ServerError>
+public sealed class ServerErrorHandler(ILogger<ServerErrorHandler> logger) : INotificationHandler<ServerError>
 {
-    private readonly ILogger<ServerErrorHandler> _logger;
-
-    public ServerErrorHandler(ILogger<ServerErrorHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public Task Handle(ServerError notification, CancellationToken cancellationToken)
     {
-        _logger.LogError(notification.Exception,
+        logger.LogError(notification.Exception,
             "[{Handler}] [ServerId:{ServerId}] Received an error: {Error}", 
             nameof(ServerErrorHandler), notification.ServerId.Value, notification.Message);
 

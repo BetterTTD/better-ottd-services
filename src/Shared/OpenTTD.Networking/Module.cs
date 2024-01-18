@@ -30,7 +30,8 @@ public static class Module
     public static IServiceCollection AddAdminPortNetworking(this IServiceCollection services) => services
         .AddMessageTransformers()
         .AddPacketTransformers()
-        .AddTransient<IPacketService, PacketService>();
+        .AddTransient<IPacketService, PacketService>()
+        .AddTransient<IMessageDeserializer, MessageDeserializer>();
 
     private static IServiceCollection AddMessageTransformers(this IServiceCollection services) => services
         .AddTransient<IMessageTransformer, PingTransformer>()

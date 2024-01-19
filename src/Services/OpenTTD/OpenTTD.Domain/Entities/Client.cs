@@ -9,20 +9,17 @@ public sealed class Client(ClientId id, Company company) : Entity<ClientId>(id)
 
     public bool IsAdminClient => Id.IsAdminClientId;
 
-    public void AttachToCompany(Company newCompany)
+    public void ChangeCompany(Company toCompany)
     {
-        if (Company.IsSpectator && IsAdminClient)
+        if (IsAdminClient)
         {
             throw new InvalidOperationException("Admin client can be assigned only to Spectator company");
         }
         
-        Company = newCompany;
-    }
-    
-    public void ChangeCompany(Company toCompany)
-    {
         Company.DetachClient(Id);
         
-        toCompany.AttachClient(this);
+        Company = toCompany;
+        
+        Company.AttachClient(this);
     }
 }

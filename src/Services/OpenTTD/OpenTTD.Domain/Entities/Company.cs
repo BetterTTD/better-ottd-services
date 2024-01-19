@@ -18,11 +18,6 @@ public sealed class Company(CompanyId id) : Entity<CompanyId>(id)
             throw new InvalidOperationException($"Client with ID {client.Id} already exists");
         }
 
-        if (client.Company != this)
-        {
-            client.AttachToCompany(this);    
-        }
-        
         _clients.Add(client);
     }
 
@@ -32,9 +27,14 @@ public sealed class Company(CompanyId id) : Entity<CompanyId>(id)
 
         if (client is null)
         {
-            throw new InvalidOperationException($"Client with ID {clientId} was not found");
+            throw new ArgumentException($"Client with ID {clientId} was not found");
         }
 
+        if (IsSpectator && client.IsAdminClient)
+        {
+            throw new InvalidOperationException("Admin client can't be moved out of Spectator company");
+        }
+        
         _clients.Remove(client);
     }
 }

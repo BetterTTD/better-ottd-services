@@ -7,8 +7,11 @@ public sealed class Server : Entity<ServerId>
 {
     private readonly List<Company> _companies = [];
 
-    public Server(ServerId id) : base(id)
+    public Server(ServerId id, ServerAddress address, ServerName name) : base(id)
     {
+        Address = address;
+        Name = name;
+        
         var spectatorCompany = new Company(CompanyId.CreateSpectatorCompanyId());
         OpenNewCompany(spectatorCompany);
         
@@ -35,7 +38,9 @@ public sealed class Server : Entity<ServerId>
         .ToList()
         .AsReadOnly();
 
-    public static Server CreateServer(ServerId serverId, ServerAddress serverAddress) => new(serverId);
+    public ServerAddress Address { get; private init; }
+
+    public ServerName Name { get; private init; }
     
     public void OpenNewCompany(Company company)
     {

@@ -16,7 +16,7 @@ public class ServerTests
         
         // Act
         
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
 
         // Assert
         
@@ -33,7 +33,7 @@ public class ServerTests
         
         // Act
         
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         
         // Assert
 
@@ -53,7 +53,7 @@ public class ServerTests
         // Assign
 
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.Create(companyId));
         var client = new Client(ClientId.Create(clientId), company);
         
@@ -80,7 +80,7 @@ public class ServerTests
         // Assign
         
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.CreateSpectatorCompanyId());
         
         // Assert
@@ -96,7 +96,7 @@ public class ServerTests
         // Assign
 
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         
         var company = new Company(CompanyId.Create(companyId));
         
@@ -117,7 +117,7 @@ public class ServerTests
         // Assign
 
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.Create(companyId));
         var client = new Client(ClientId.Create(clientId), company);
         
@@ -148,7 +148,7 @@ public class ServerTests
         // Assign
 
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         
         // Assert
 
@@ -163,7 +163,7 @@ public class ServerTests
         // Assign
 
         var serverId = new ServerId(Guid.Empty);
-        var server = new Server(serverId);
+        var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.Create(companyId));
         
         // Assert

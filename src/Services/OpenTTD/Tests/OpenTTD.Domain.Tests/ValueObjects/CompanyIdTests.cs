@@ -1,7 +1,9 @@
 using OpenTTD.Domain.ValueObjects;
 
-namespace OpenTTD.Domain.Tests;
+namespace OpenTTD.Domain.Tests.ValueObjects;
 
+[TestFixture]
+[TestOf(typeof(CompanyId))]
 public class CompanyIdTests
 {
     [Test]

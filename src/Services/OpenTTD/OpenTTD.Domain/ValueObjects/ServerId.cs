@@ -5,6 +5,8 @@ namespace OpenTTD.Domain.ValueObjects;
 public sealed class ServerId(Guid value) : ValueObject<ServerId>, IComparable<ServerId>
 {
     public Guid Value { get; } = value;
+
+    public static ServerId GenerateNew() => new(Guid.NewGuid());
     
     protected override bool EqualsCore(ServerId other) => Value == other.Value;
 

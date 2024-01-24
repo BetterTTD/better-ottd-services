@@ -1,8 +1,10 @@
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.ValueObjects;
 
-namespace OpenTTD.Domain.Tests;
+namespace OpenTTD.Domain.Tests.Entities;
 
+[TestFixture]
+[TestOf(typeof(Client))]
 public class ClientTests
 {
     [Test]
@@ -56,6 +58,7 @@ public class ClientTests
 
         Assert.Throws<InvalidOperationException>(() => client.ChangeCompany(company));
     }
+    
     [Test]
     public void ChangeCompany_WhenClientIsNotAdmin_ShouldChange(
         [Random(1u, 254u, 1)] uint companyId, 

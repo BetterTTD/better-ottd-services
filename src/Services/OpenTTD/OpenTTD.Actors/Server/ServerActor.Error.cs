@@ -12,7 +12,7 @@ public sealed partial class ServerActor
     {
         public required Exception Exception { get; init; }
         public required string Message { get; init; } = "Unknown error";
-    };
+    }
 
     private sealed record ErrorOccurred;
 

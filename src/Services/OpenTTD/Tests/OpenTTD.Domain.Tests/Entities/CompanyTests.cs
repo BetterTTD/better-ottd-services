@@ -1,8 +1,10 @@
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.ValueObjects;
 
-namespace OpenTTD.Domain.Tests;
+namespace OpenTTD.Domain.Tests.Entities;
 
+[TestFixture]
+[TestOf(typeof(Company))]
 public class CompanyTests
 {
     [Test]

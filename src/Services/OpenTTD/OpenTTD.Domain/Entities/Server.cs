@@ -33,8 +33,10 @@ public sealed class Server : Entity<ServerId>
         .Where(c => c.IsSpectator)
         .SelectMany(c => c.Clients)
         .ToList()
-        .AsReadOnly(); 
+        .AsReadOnly();
 
+    public static Server CreateServer(ServerId serverId, ServerAddress serverAddress) => new(serverId);
+    
     public void OpenNewCompany(Company company)
     {
         if (_companies.Any(c => c.Id == company.Id))

@@ -10,7 +10,7 @@ public sealed record Company : Entity<CompanyId>
     public Color Color { get; init; }
     public bool HasPassword { get; init; }
     public long CreationDate { get; init; }
-    public List<Client> Clients { get; init; } = new();
+    public List<Client> Clients { get; init; } = [];
 
     public static Company Spectator => new()
     {
@@ -20,6 +20,6 @@ public sealed record Company : Entity<CompanyId>
         Color = Color.END,
         HasPassword = false,
         CreationDate = 0,
-        Clients = new List<Client>()
+        Clients = []
     };
 }

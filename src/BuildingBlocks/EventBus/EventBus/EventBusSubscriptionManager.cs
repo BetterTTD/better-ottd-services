@@ -19,7 +19,7 @@ public class EventBusSubscriptionManager : IEventBusSubscriptionManager
            
         if (!HasEvent<T>())
         {
-            _eventSubscriptions.Add(eventName, new List<Type>());
+            _eventSubscriptions.Add(eventName, []);
         }
 
         if (_eventSubscriptions[eventName].Any(si => si == typeof(TH)))

@@ -76,7 +76,7 @@ public sealed class RedisEventBus(IEventBusSubscriptionManager subscriptionManag
             var handler = scope.ServiceProvider.GetRequiredService(subscription);
             var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(typeof(T));
 
-            var task = (Task?)concreteType.GetMethod("Handle")?.Invoke(handler, new object[] { value });
+            var task = (Task?)concreteType.GetMethod("Handle")?.Invoke(handler, [value]);
             if (task != null)
             {
                 await task;

@@ -10,5 +10,5 @@ public sealed record Server : Entity<ServerId>
     public long Date { get; init; }
     public bool IsDedicated { get; init; }
     public Map Map { get; init; } = new();
-    public List<Company> Companies { get; init; } = new() { Company.Spectator };
+    public List<Company> Companies { get; init; } = [Company.Spectator];
 }

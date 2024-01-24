@@ -8,4 +8,4 @@ public sealed record ServerNetwork
     public ServerName Name { get; init; } = new(string.Empty);
     public ServerVersion Version { get; init; } = new(string.Empty);
     public ServerPassword Password { get; init; } = new(string.Empty);
-};
+}

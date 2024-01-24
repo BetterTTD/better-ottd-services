@@ -1,11 +1,18 @@
+using System.Net;
 using CSharpFunctionalExtensions;
 using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Domain.Entities;
 
-public sealed class Client(ClientId id, Company company) : Entity<ClientId>(id)
+public sealed class Client(ClientId id, Company company, IPAddress ipAddress) : Entity<ClientId>(id)
 {
     public Company Company { get; private set; } = company;
+    public IPAddress IpAddress { get; private set; } = ipAddress;
+    
+    // Todo: Update later
+    public string Name { get; init; } = "Unknown";
+    public byte Language { get; init; }
+    public long JoinDate { get; init; }
 
     public bool IsAdminClient => Id.IsAdminClientId;
 

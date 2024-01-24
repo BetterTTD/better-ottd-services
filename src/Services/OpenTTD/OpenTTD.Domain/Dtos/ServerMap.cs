@@ -1,8 +1,8 @@
-using OpenTTD.Networking.Enums;
+using OpenTTD.Domain.Enums;
 
-namespace OpenTTD.AdminClientDomain.ValueObjects;
+namespace OpenTTD.Domain.Dtos;
 
-public sealed record Map
+public sealed record ServerMap
 {
     public string Name { get; init; } = "Unknown";
     public Landscape Landscape { get; init; }

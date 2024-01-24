@@ -1,3 +1,4 @@
+using System.Net;
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.ValueObjects;
 
@@ -17,7 +18,7 @@ public class ClientTests
         
         // Act
 
-        var client = new Client(id, spectator);
+        var client = new Client(id, spectator, IPAddress.None);
         
         // Assert
         
@@ -35,7 +36,7 @@ public class ClientTests
         
         // Act
 
-        var client = new Client(clientId, spectator);
+        var client = new Client(clientId, spectator, IPAddress.None);
         
         // Assert
         
@@ -49,7 +50,7 @@ public class ClientTests
         // Assign
 
         var spectator = new Company(CompanyId.CreateSpectatorCompanyId());
-        var client = new Client(ClientId.CreateForAdmin(), spectator);
+        var client = new Client(ClientId.CreateForAdmin(), spectator, IPAddress.None);
         var company = new Company(CompanyId.Create(companyId));
         
         spectator.AttachClient(client);
@@ -67,7 +68,7 @@ public class ClientTests
         // Assign
 
         var spectator = new Company(CompanyId.CreateSpectatorCompanyId());
-        var client = new Client(ClientId.Create(clientId), spectator);
+        var client = new Client(ClientId.Create(clientId), spectator, IPAddress.None);
         var company = new Company(CompanyId.Create(companyId));
         
         spectator.AttachClient(client);

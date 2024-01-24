@@ -1,3 +1,4 @@
+using System.Net;
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.ValueObjects;
 
@@ -11,7 +12,7 @@ public class ServerTests
     public void WhenCreated_ShouldHaveOnlySpectatorCompany()
     {
         // Assign
-        
+
         var serverId = new ServerId(Guid.Empty);
         
         // Act
@@ -19,11 +20,14 @@ public class ServerTests
         var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
 
         // Assert
-        
-        Assert.That(server.Companies, Has.One.Items);
-        Assert.That(server.SpectatorCompany, Is.Not.Null);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(server.Companies, Has.One.Items);
+            Assert.That(server.SpectatorCompany, Is.Not.Null);
+        });
     }
-    
+
     [Test]
     public void WhenCreated_ShouldHaveOnlyAdminClient()
     {
@@ -55,7 +59,7 @@ public class ServerTests
         var serverId = new ServerId(Guid.Empty);
         var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.Create(companyId));
-        var client = new Client(ClientId.Create(clientId), company);
+        var client = new Client(ClientId.Create(clientId), company, IPAddress.None);
         
         // Act
         
@@ -119,7 +123,7 @@ public class ServerTests
         var serverId = new ServerId(Guid.Empty);
         var server = new Server(serverId, ServerAddress.Default(), ServerName.Default());
         var company = new Company(CompanyId.Create(companyId));
-        var client = new Client(ClientId.Create(clientId), company);
+        var client = new Client(ClientId.Create(clientId), company, IPAddress.None);
         
         company.AttachClient(client);
         server.OpenNewCompany(company);

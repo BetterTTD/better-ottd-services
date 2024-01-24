@@ -4,7 +4,7 @@ using OpenTTD.Networking.Enums;
 
 namespace IntegrationEvents;
 
-public sealed record ServerMessageReceivedEvent : IntegrationEvent
+public sealed record ServerMessageReceivedIntegrationEvent : IntegrationEvent
 {
     public required ServerId ServerId { get; set; }
     public required PacketType Type { get; set; }

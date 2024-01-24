@@ -13,7 +13,7 @@ var host = Host
         .AddScoped<IEventBus, RedisEventBus>()
         .AddScoped<RedisConnection>()
         .AddScoped<IEventBusSubscriptionManager, EventBusSubscriptionManager>()
-        .AddEventHandler<ServerMessageReceivedEvent, ServerMessageReceivedEventHandler>()
+        .AddEventHandler<ServerMessageReceivedIntegrationEvent, ServerMessageReceivedEventHandler>()
         .AddSingleton<IConnectionMultiplexer>(sp =>
         {
             const string connectionString = "localhost:6379";

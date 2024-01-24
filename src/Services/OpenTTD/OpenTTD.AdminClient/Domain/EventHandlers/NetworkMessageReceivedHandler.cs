@@ -15,7 +15,7 @@ public sealed class NetworkMessageReceivedHandler(ILogger<NetworkMessageReceived
             "[{Handler}] [ServerId:{ServerId}] Received message: {Message}", 
             nameof(NetworkMessageReceivedHandler), notification.ServerId.Value, notification.Message);
 
-        var @event = new ServerMessageReceivedEvent
+        var @event = new ServerMessageReceivedIntegrationEvent
         {
             ServerId = notification.ServerId,
             Type = notification.Message.PacketType,

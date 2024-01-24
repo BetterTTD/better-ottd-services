@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using OpenTTD.Domain.Enums;
 using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Domain.Entities;
@@ -10,6 +11,13 @@ public sealed class Company(CompanyId id) : Entity<CompanyId>(id)
     public IReadOnlyList<Client> Clients => _clients.AsReadOnly();
 
     public bool IsSpectator => Id.IsSpectator;
+    
+    // TODO: Implement later
+    public string Name { get; init; } = "Unknown";
+    public string ManagerName { get; init; } = "Unknown";
+    public CompanyColor CompanyColor { get; init; }
+    public bool HasPassword { get; init; }
+    public long CreationDate { get; init; }
 
     public void AttachClient(Client client)
     {

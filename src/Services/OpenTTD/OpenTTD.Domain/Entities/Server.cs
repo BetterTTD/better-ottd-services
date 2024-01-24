@@ -1,4 +1,7 @@
+using System.Net;
 using CSharpFunctionalExtensions;
+using OpenTTD.Domain.Dtos;
+using OpenTTD.Domain.Enums;
 using OpenTTD.Domain.ValueObjects;
 
 namespace OpenTTD.Domain.Entities;
@@ -15,7 +18,7 @@ public sealed class Server : Entity<ServerId>
         var spectatorCompany = new Company(CompanyId.CreateSpectatorCompanyId());
         OpenNewCompany(spectatorCompany);
         
-        var adminClient = new Client(ClientId.CreateForAdmin(), SpectatorCompany);
+        var adminClient = new Client(ClientId.CreateForAdmin(), SpectatorCompany, IPAddress.None);
         SpectatorCompany.AttachClient(adminClient);
     }
     
@@ -23,6 +26,7 @@ public sealed class Server : Entity<ServerId>
     
     public Company SpectatorCompany => _companies
         .Single(c => c.IsSpectator);
+    
     public Client AdminClient => _companies
         .SelectMany(c => c.Clients)
         .Single(cl => cl.IsAdminClient);
@@ -38,10 +42,19 @@ public sealed class Server : Entity<ServerId>
         .ToList()
         .AsReadOnly();
 
-    public ServerAddress Address { get; private init; }
+    public ServerAddress Address { get; private set; }
 
-    public ServerName Name { get; private init; }
-    
+    public ServerName Name { get; private set; }
+
+    // Todo: Update later
+    public ServerState State { get; set; }
+    public ServerVersion Version { get; set; } = new("1.0");
+    public ServerMap Map { get; set; } = new();
+    public ServerNetworkConfiguration NetworkConfiguration { get; set; } = new();
+    public long Date { get; set; }
+    public bool IsDedicated { get; set; }
+    public void ChangeName(ServerName newName) => Name = newName;
+
     public void OpenNewCompany(Company company)
     {
         if (_companies.Any(c => c.Id == company.Id))

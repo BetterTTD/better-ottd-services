@@ -1,3 +1,4 @@
+using System.Net;
 using OpenTTD.Domain.Entities;
 using OpenTTD.Domain.ValueObjects;
 
@@ -31,7 +32,7 @@ public class CompanyTests
         // Assign
 
         var spectatorCompany = new Company(CompanyId.CreateSpectatorCompanyId());
-        var spectatorClient = new Client(ClientId.Create(clientId), spectatorCompany);
+        var spectatorClient = new Client(ClientId.Create(clientId), spectatorCompany, IPAddress.None);
         
         var company = new Company(CompanyId.Create(companyId));
 
@@ -56,7 +57,7 @@ public class CompanyTests
         // Assign
 
         var company = new Company(CompanyId.Create(companyId));
-        var client = new Client(ClientId.Create(clientId), company);
+        var client = new Client(ClientId.Create(clientId), company, IPAddress.None);
         
         company.AttachClient(client);
         
@@ -72,7 +73,7 @@ public class CompanyTests
     {
         // Assign
         var company = new Company(CompanyId.Create(companyId));
-        var client = new Client(ClientId.Create(clientId), company);
+        var client = new Client(ClientId.Create(clientId), company, IPAddress.None);
         company.AttachClient(client);
         
         // Act
@@ -90,7 +91,7 @@ public class CompanyTests
         // Assign
         
         var spectatorCompany = new Company(CompanyId.CreateSpectatorCompanyId());
-        var adminClient = new Client(ClientId.CreateForAdmin(), spectatorCompany);
+        var adminClient = new Client(ClientId.CreateForAdmin(), spectatorCompany, IPAddress.None);
         
         spectatorCompany.AttachClient(adminClient);
         
@@ -107,7 +108,7 @@ public class CompanyTests
         // Assign
         
         var company = new Company(CompanyId.Create(companyId));
-        var client = new Client(ClientId.Create(clientId), company);
+        var client = new Client(ClientId.Create(clientId), company, IPAddress.None);
 
         // Assert
 

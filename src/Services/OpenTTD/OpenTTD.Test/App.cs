@@ -8,7 +8,7 @@ public sealed class App(IEventBus eventBus) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        eventBus.SubscribeAsync<ServerMessageReceivedEvent, ServerMessageReceivedEventHandler>();
+        eventBus.SubscribeAsync<ServerMessageReceivedIntegrationEvent, ServerMessageReceivedEventHandler>();
 
         Console.Read();
         
@@ -21,11 +21,11 @@ public sealed class App(IEventBus eventBus) : IHostedService
     }
 }
 
-public class ServerMessageReceivedEventHandler : IIntegrationEventHandler<ServerMessageReceivedEvent>
+public class ServerMessageReceivedEventHandler : IIntegrationEventHandler<ServerMessageReceivedIntegrationEvent>
 {
-    public Task Handle(ServerMessageReceivedEvent @event)
+    public Task Handle(ServerMessageReceivedIntegrationEvent integrationEvent)
     {
-        Console.WriteLine(@event);
+        Console.WriteLine(integrationEvent);
         
         return Task.CompletedTask;
     }

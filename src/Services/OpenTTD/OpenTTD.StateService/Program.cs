@@ -3,6 +3,7 @@ using EventBus.Abstractions;
 using EventBusRedis;
 using IntegrationEvents;
 using OpenTTD.Networking;
+using OpenTTD.StateService.DataAccess;
 using OpenTTD.StateService.HostedService;
 using OpenTTD.StateService.IntegrationHandlers;
 using Serilog;
@@ -36,8 +37,14 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
         .AddSingleton<IEventBus, RedisEventBus>()
         .AddSingleton<RedisConnection>()
         .AddSingleton<IEventBusSubscriptionManager, EventBusSubscriptionManager>()
-        .AddScoped<IMessageDeserializer, MessageDeserializer>();
+        .AddScoped<IMessageDeserializer, MessageDeserializer>()
+        .AddServerDb();
 
+    services
+        .Configure<ServerDbConnectionString>(x =>
+            x.Value = cfg.GetConnectionString(nameof(ServerDbConnectionString)) ??
+                      throw new ArgumentNullException(x.Value, "Server DB connection string is null"));
+    
     services.AddEventHandler<ServerMessageReceivedIntegrationEvent, ServerMessageReceivedIntegrationEventHandler>();
 
     services.AddHostedService<EventBusHostedService>();

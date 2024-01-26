@@ -5,5 +5,5 @@ namespace OpenTTD.StateService.DataAccess;
 
 public partial class ServerContext
 {
-    public DbSet<ServerEntity> Entities { get; set; } = null!;
+    public DbSet<ServerEntity> Servers { get; set; } = null!;
 }

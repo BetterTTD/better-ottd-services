@@ -6,10 +6,10 @@ namespace OpenTTD.StateService.DataAccess;
 
 public partial class ServerContext(
     ILoggerFactory loggerFactory, 
-    IOptions<OttdConnectionString> connectionString)
+    IOptions<ServerDbConnectionString> connectionString)
     : DbContext
 {
-    private readonly OttdConnectionString _connectionString = connectionString.Value;
+    private readonly ServerDbConnectionString _connectionString = connectionString.Value;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

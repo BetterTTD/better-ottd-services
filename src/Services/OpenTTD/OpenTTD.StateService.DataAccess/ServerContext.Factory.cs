@@ -8,8 +8,8 @@ public class ServerContextFactory : IDesignTimeDbContextFactory<ServerContext>
 {
     public ServerContext CreateDbContext(string[] args) => new(
         new LoggerFactory(),
-        new OptionsWrapper<OttdConnectionString>(
-            new OttdConnectionString
+        new OptionsWrapper<ServerDbConnectionString>(
+            new ServerDbConnectionString
             {
                 Value = "Host=localhost;Port=5432;Database=OpenTTDDB;Username=sa;Password=p@ssw0rd;"
             }

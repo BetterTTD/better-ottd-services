@@ -14,3 +14,7 @@ services:
   seq:
     ports:
       - "5341:80"
+        
+  postgres:
+    ports:
+      - "5432:5432"

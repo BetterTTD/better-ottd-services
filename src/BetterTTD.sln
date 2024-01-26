@@ -61,6 +61,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7600CD3A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.Domain.Tests", "Services\OpenTTD\Tests\OpenTTD.Domain.Tests\OpenTTD.Domain.Tests.csproj", "{4BAC8799-7149-411A-A5FB-1BCB8F4ABDF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.StateService.DataAccess", "Services\OpenTTD\OpenTTD.StateService.DataAccess\OpenTTD.StateService.DataAccess.csproj", "{8C961B92-154E-4E02-9937-F91598852EE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{4BAC8799-7149-411A-A5FB-1BCB8F4ABDF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BAC8799-7149-411A-A5FB-1BCB8F4ABDF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BAC8799-7149-411A-A5FB-1BCB8F4ABDF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C961B92-154E-4E02-9937-F91598852EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C961B92-154E-4E02-9937-F91598852EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C961B92-154E-4E02-9937-F91598852EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C961B92-154E-4E02-9937-F91598852EE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +169,7 @@ Global
 		{78A5AD3A-04CC-4EAD-AF50-DBE10CA24E62} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 		{7600CD3A-B014-47FB-954B-841FB0E8F1BF} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 		{4BAC8799-7149-411A-A5FB-1BCB8F4ABDF9} = {7600CD3A-B014-47FB-954B-841FB0E8F1BF}
+		{8C961B92-154E-4E02-9937-F91598852EE0} = {99D5C630-95A2-4924-B3F2-E7E16E265F7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B01EB61-45F2-4DF5-97A2-4101DA40ACF4}

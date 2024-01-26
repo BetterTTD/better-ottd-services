@@ -2,7 +2,7 @@
 using IntegrationEvents;
 using MediatR;
 using Newtonsoft.Json;
-using OpenTTD.AdminClientDomain.Events;
+using OpenTTD.AdminClient.Domain.Events;
 
 namespace OpenTTD.AdminClient.Domain.EventHandlers;
 

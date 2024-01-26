@@ -1,7 +1,7 @@
 using EventBus;
 using EventBus.Abstractions;
 using EventBusRedis;
-using OpenTTD.Networking;
+using OpenTTD.AdminClient.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
 using Serilog;

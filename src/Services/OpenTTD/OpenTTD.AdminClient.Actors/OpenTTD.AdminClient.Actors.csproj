@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Akka" Version="1.5.14" />
+        <PackageReference Include="Akka.DependencyInjection" Version="1.5.14" />
+        <PackageReference Include="Akka.Logger.Serilog" Version="1.5.12.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Server\ServerActor.Idle.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Connecting.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Connected.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Server\ServerActor.Error.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OpenTTD.AdminClient.Domain\OpenTTD.AdminClient.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

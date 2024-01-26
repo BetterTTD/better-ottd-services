@@ -1,5 +1,5 @@
 ﻿using Akka.Util;
-using OpenTTD.AdminClientDomain.ValueObjects;
+using OpenTTD.AdminClient.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Services;
 

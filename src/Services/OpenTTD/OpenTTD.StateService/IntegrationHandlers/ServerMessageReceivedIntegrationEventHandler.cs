@@ -1,6 +1,6 @@
 using EventBus.Abstractions;
 using IntegrationEvents;
-using OpenTTD.Networking;
+using OpenTTD.AdminClient.Networking;
 
 namespace OpenTTD.StateService.IntegrationHandlers;
 

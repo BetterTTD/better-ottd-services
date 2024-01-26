@@ -1,8 +1,8 @@
 ﻿using Akka.Util;
 using OpenTTD.AdminClient.Domain.Abstractions;
+using OpenTTD.AdminClient.Domain.Commands;
+using OpenTTD.AdminClient.Domain.ValueObjects;
 using OpenTTD.AdminClient.Services;
-using OpenTTD.AdminClientDomain.Commands;
-using OpenTTD.AdminClientDomain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Domain.CommandHandlers;
 

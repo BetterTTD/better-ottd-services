@@ -1,4 +1,4 @@
-﻿using OpenTTD.AdminClientDomain.Commands;
+﻿using OpenTTD.AdminClient.Domain.Commands;
 
 namespace OpenTTD.AdminClient.Domain.Abstractions;
 

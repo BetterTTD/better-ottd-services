@@ -1,5 +1,5 @@
 using EventBus.Events;
-using OpenTTD.AdminClientDomain.ValueObjects;
+using OpenTTD.AdminClient.Domain.ValueObjects;
 
 namespace IntegrationEvents;
 

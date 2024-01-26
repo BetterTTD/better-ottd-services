@@ -1,6 +1,6 @@
 using EventBus.Events;
-using OpenTTD.AdminClientDomain.Enums;
-using OpenTTD.AdminClientDomain.ValueObjects;
+using OpenTTD.AdminClient.Domain.Enums;
+using OpenTTD.AdminClient.Domain.ValueObjects;
 
 namespace IntegrationEvents;
 

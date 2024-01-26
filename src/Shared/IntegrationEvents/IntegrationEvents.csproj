@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
-      <ProjectReference Include="..\..\Services\OpenTTD\OpenTTD.AdminClientDomain\OpenTTD.AdminClientDomain.csproj" />
+      <ProjectReference Include="..\..\Services\OpenTTD\OpenTTD.AdminClient.Domain\OpenTTD.AdminClient.Domain.csproj" />
     </ItemGroup>
 
 </Project>

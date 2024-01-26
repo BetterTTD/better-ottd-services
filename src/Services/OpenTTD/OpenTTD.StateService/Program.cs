@@ -2,7 +2,7 @@ using EventBus;
 using EventBus.Abstractions;
 using EventBusRedis;
 using IntegrationEvents;
-using OpenTTD.Networking;
+using OpenTTD.AdminClient.Networking;
 using OpenTTD.StateService.DataAccess;
 using OpenTTD.StateService.HostedService;
 using OpenTTD.StateService.IntegrationHandlers;

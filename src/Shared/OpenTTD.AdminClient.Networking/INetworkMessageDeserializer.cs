@@ -4,7 +4,7 @@ using OpenTTD.AdminClient.Networking.Messages;
 
 namespace OpenTTD.AdminClient.Networking;
 
-public interface IMessageDeserializer
+public interface INetworkMessageDeserializer
 {
     [Pure]
     public IMessage Deserialize(PacketType type, string json);

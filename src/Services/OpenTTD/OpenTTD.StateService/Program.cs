@@ -1,3 +1,4 @@
+using MassTransit;
 using OpenTTD.AdminClient.Networking;
 using OpenTTD.StateService.DataAccess;
 using Serilog;
@@ -27,8 +28,23 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
         return ConnectionMultiplexer.Connect(connectionString);
     });
 
+    services.AddMassTransit(busCfg =>
+    {
+        busCfg.SetKebabCaseEndpointNameFormatter();
+        busCfg.AddConsumers(typeof(Program).Assembly);
+        busCfg.UsingRabbitMq((ctx, rabbitCfg) =>
+        {
+            rabbitCfg.ConfigureEndpoints(ctx);
+            rabbitCfg.Host("localhost", "/", h =>
+            {
+                h.Username("sa");
+                h.Password("p@ssw0rd");
+            });
+        });
+    });
+
     services
-        .AddScoped<IMessageDeserializer, MessageDeserializer>()
+        .AddScoped<INetworkMessageDeserializer, NetworkMessageDeserializer>()
         .AddServerDb();
 
     services

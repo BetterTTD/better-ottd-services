@@ -31,7 +31,7 @@ public static class Module
         .AddMessageTransformers()
         .AddPacketTransformers()
         .AddTransient<IPacketService, PacketService>()
-        .AddTransient<IMessageDeserializer, MessageDeserializer>();
+        .AddTransient<INetworkMessageDeserializer, NetworkMessageDeserializer>();
 
     private static IServiceCollection AddMessageTransformers(this IServiceCollection services) => services
         .AddTransient<IMessageTransformer, PingTransformer>()

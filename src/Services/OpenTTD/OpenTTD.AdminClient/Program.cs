@@ -1,3 +1,4 @@
+using MassTransit;
 using OpenTTD.AdminClient.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
@@ -18,9 +19,20 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     services.AddControllers();
 
     services.AddSingleton<ICoordinatorService, AkkaHostedSystemService>();
+
+    services.AddMassTransit(x =>
+    {
+        x.UsingRabbitMq((ctx, configurator) =>
+        {
+            configurator.Host("localhost", "/", h =>
+            {
+                h.Username("sa");
+                h.Password("p@ssw0rd");
+            });
+        });
+    });
     
-    services
-        .AddAdminPortNetworking();
+    services.AddAdminPortNetworking();
         
     services.AddHostedService<AkkaHostedSystemService>();
 

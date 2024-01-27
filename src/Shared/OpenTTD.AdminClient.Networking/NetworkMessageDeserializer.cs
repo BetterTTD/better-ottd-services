@@ -24,7 +24,7 @@ using OpenTTD.AdminClient.Networking.Messages.Outbound.UpdateFrequency;
 
 namespace OpenTTD.AdminClient.Networking;
 
-public sealed class MessageDeserializer : IMessageDeserializer
+public sealed class NetworkMessageDeserializer : INetworkMessageDeserializer
 {
     [Pure]
     public IMessage Deserialize(PacketType type, string json) => (type switch

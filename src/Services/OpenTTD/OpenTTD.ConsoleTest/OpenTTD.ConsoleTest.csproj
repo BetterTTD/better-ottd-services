@@ -13,8 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\BuildingBlocks\EventBusRedis\EventBusRedis.csproj" />
-      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
       <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
     </ItemGroup>
 

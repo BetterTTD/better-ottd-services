@@ -1,11 +1,7 @@
-using EventBus;
-using EventBus.Abstractions;
-using EventBusRedis;
 using OpenTTD.AdminClient.Networking;
 using OpenTTD.AdminClient.HostedServices;
 using OpenTTD.AdminClient.Services;
 using Serilog;
-using StackExchange.Redis;
 
 void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)
 {
@@ -21,21 +17,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     services.AddOptions();
     services.AddControllers();
 
-    services.AddSingleton<IConnectionMultiplexer>(sp =>
-    {
-        var connectionString = cfg.GetConnectionString("RedisConnectionString");
-        if (connectionString is null)
-        {
-            throw new ArgumentNullException(connectionString);
-        }
-        return ConnectionMultiplexer.Connect(connectionString);
-    });
-
-    services
-        .AddSingleton<IEventBus, RedisEventBus>()
-        .AddSingleton<RedisConnection>()
-        .AddSingleton<IEventBusSubscriptionManager, EventBusSubscriptionManager>();
-    
     services.AddSingleton<ICoordinatorService, AkkaHostedSystemService>();
     
     services

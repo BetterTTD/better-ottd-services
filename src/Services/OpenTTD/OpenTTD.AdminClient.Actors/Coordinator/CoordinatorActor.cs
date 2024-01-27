@@ -37,7 +37,7 @@ public sealed class CoordinatorActor : ReceiveActor
             }
             else
             {
-                var serverId = new ServerId(Guid.NewGuid());
+                var serverId = msg.Id;
 
                 var serverProps = DependencyResolver
                     .For(Context.System)

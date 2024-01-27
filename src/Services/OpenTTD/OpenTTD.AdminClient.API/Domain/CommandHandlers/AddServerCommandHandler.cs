@@ -15,6 +15,6 @@ public sealed class AddServerCommandHandler(ILogger<AddServerCommandHandler> log
             "[CMD:{CmdName}] Data {Request}", 
             nameof(AddServer), cmd);
 
-        return await coordinator.AskToAddServerAsync(cmd.Network, cancellationToken);
+        return await coordinator.AskToAddServerAsync(cmd.id, cmd.Network, cancellationToken);
     }
 }

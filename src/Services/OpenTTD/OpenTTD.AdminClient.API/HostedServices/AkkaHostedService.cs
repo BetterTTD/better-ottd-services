@@ -44,9 +44,9 @@ public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
             .Run(CoordinatedShutdown.ClrExitReason.Instance);
     }
 
-    public async Task<Result<ServerId>> AskToAddServerAsync(ServerNetwork network, CancellationToken cts)
+    public async Task<Result<ServerId>> AskToAddServerAsync(ServerId id, ServerNetwork network, CancellationToken cts)
     {
-        var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(network), cancellationToken: cts);
+        var result = await _coordinator.Ask<Result<ServerAdded>>(new ServerAdd(id ,network), cancellationToken: cts);
         
         return result.IsSuccess
             ? Result.Success(result.Value.Id)
@@ -75,13 +75,15 @@ public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
     {
         try
         {
-            var msg = new ServerAdd(new ServerNetwork
-            {
-                NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), new ServerPort(3977)),
-                Name = new ServerName("TG Admin"),
-                Version = new ServerVersion("1.0"),
-                Password = new ServerPassword("12345")
-            });
+            var msg = new ServerAdd(
+                new ServerId(Guid.NewGuid()),
+                new ServerNetwork
+                {
+                    NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), new ServerPort(3977)),
+                    Name = new ServerName("TG Admin"),
+                    Version = new ServerVersion("1.0"),
+                    Password = new ServerPassword("12345")
+                });
             
             var result = await _coordinator.Ask<Result<ServerAdded>>(msg, cancellationToken: cancellationToken);
 

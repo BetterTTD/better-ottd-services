@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using OpenTTD.AdminClient.Domain.Events;
 
-namespace OpenTTD.AdminClient.Domain.EventHandlers;
+namespace OpenTTD.AdminClient.API.Domain.EventHandlers;
 
 public sealed class NetworkMessageSentHandler(ILogger<NetworkMessageSentHandler> logger) : INotificationHandler<NetworkMessageSent>
 {

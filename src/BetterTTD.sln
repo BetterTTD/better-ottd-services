@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClient.Network
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClient.Actors", "Services\OpenTTD\OpenTTD.AdminClient.Actors\OpenTTD.AdminClient.Actors.csproj", "{116D8E45-8961-497E-A750-DCEF5862EBEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClient", "Services\OpenTTD\OpenTTD.AdminClient\OpenTTD.AdminClient.csproj", "{609E9FCD-01B9-4B63-8078-AE100132CE93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClient.API", "Services\OpenTTD\OpenTTD.AdminClient.API\OpenTTD.AdminClient.API.csproj", "{609E9FCD-01B9-4B63-8078-AE100132CE93}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameServerGateway", "GameServerGateway", "{77D549F2-BAEE-4409-8B59-3DFC68B4BB5D}"
 EndProject
@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.ConsoleTest", "Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEvents", "Shared\IntegrationEvents\IntegrationEvents.csproj", "{FF8DD5A4-822E-4A15-AFE7-8788827B87A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.StateService", "Services\OpenTTD\OpenTTD.StateService\OpenTTD.StateService.csproj", "{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.StateService.API", "Services\OpenTTD\OpenTTD.StateService.API\OpenTTD.StateService.API.csproj", "{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.StateService.Domain", "Services\OpenTTD\OpenTTD.StateService.Domain\OpenTTD.StateService.Domain.csproj", "{78A5AD3A-04CC-4EAD-AF50-DBE10CA24E62}"
 EndProject

@@ -1,7 +1,7 @@
 using MassTransit;
+using OpenTTD.AdminClient.API.HostedServices;
+using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Networking;
-using OpenTTD.AdminClient.HostedServices;
-using OpenTTD.AdminClient.Services;
 using Serilog;
 
 void ConfigureLogging(IServiceProvider sp, LoggerConfiguration loggerCfg, IConfiguration cfg)

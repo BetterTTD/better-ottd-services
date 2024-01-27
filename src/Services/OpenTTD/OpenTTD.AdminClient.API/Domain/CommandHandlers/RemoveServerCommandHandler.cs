@@ -1,10 +1,10 @@
 ﻿using Akka.Util;
-using OpenTTD.AdminClient.Domain.Abstractions;
+using OpenTTD.AdminClient.API.Domain.Abstractions;
+using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Domain.Commands;
 using OpenTTD.AdminClient.Domain.ValueObjects;
-using OpenTTD.AdminClient.Services;
 
-namespace OpenTTD.AdminClient.Domain.CommandHandlers;
+namespace OpenTTD.AdminClient.API.Domain.CommandHandlers;
 
 public sealed class RemoveServerCommandHandler(ICoordinatorService coordinator,
         ILogger<RemoveServerCommandHandler> logger)

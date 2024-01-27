@@ -3,10 +3,10 @@ using Akka.Actor;
 using Akka.DependencyInjection;
 using Akka.Util;
 using OpenTTD.AdminClient.Actors.Coordinator;
+using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Domain.ValueObjects;
-using OpenTTD.AdminClient.Services;
 
-namespace OpenTTD.AdminClient.HostedServices;
+namespace OpenTTD.AdminClient.API.HostedServices;
 
 public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
         IHostApplicationLifetime appLifetime)

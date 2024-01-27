@@ -1,7 +1,7 @@
 ﻿using Akka.Util;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.Services;
+namespace OpenTTD.AdminClient.API.Services;
 
 public interface ICoordinatorService
 {

@@ -1,7 +1,7 @@
 using IntegrationEvents;
 using MassTransit;
 
-namespace OpenTTD.StateService.IntegrationConsumers;
+namespace OpenTTD.StateService.API.IntegrationConsumers;
 
 public class ServerNetworkMessageReceivedConsumer(ILogger<ServerNetworkMessageReceivedConsumer> logger)
     : IConsumer<ServerNetworkMessageReceived>

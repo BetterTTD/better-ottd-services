@@ -22,7 +22,7 @@ namespace OpenTTD.StateService.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("OpenTTD.StateService.DataAccess.Entities.ServerEntity", b =>
+            modelBuilder.Entity("OpenTTD.StateService.API.DataAccess.Entities.ServerEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

@@ -36,6 +36,18 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     networks:
       - tg
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: bttd.rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=sa
+      - RABBITMQ_DEFAULT_PASS=p@ssw0rd
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - tg
         
 networks:
   tg:

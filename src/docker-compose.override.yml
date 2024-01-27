@@ -18,3 +18,8 @@ services:
   postgres:
     ports:
       - "5432:5432"
+  
+  rabbitmq:
+    ports:
+      - "5672:5672"
+      - "15672:15672"

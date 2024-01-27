@@ -59,8 +59,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServerAdmin", "ServerAdmin"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServerServices", "ServerServices", "{8A44341A-CB80-4A64-BFF5-00D52E49FADD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTTD.AdminClient.Contracts", "Services\OpenTTD\OpenTTD.AdminClient.Contracts\OpenTTD.AdminClient.Contracts.csproj", "{ADC388C9-FD0E-4E7C-B990-6A289A69FA26}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,10 +125,6 @@ Global
 		{8C961B92-154E-4E02-9937-F91598852EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C961B92-154E-4E02-9937-F91598852EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C961B92-154E-4E02-9937-F91598852EE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADC388C9-FD0E-4E7C-B990-6A289A69FA26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADC388C9-FD0E-4E7C-B990-6A289A69FA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADC388C9-FD0E-4E7C-B990-6A289A69FA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADC388C9-FD0E-4E7C-B990-6A289A69FA26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,7 +156,6 @@ Global
 		{5785C6A2-17FB-4B93-A5E6-FA8A0F3ED235} = {8A44341A-CB80-4A64-BFF5-00D52E49FADD}
 		{8C961B92-154E-4E02-9937-F91598852EE0} = {8A44341A-CB80-4A64-BFF5-00D52E49FADD}
 		{646D9A39-3110-40AC-8AE9-FD40DC5DD144} = {7600CD3A-B014-47FB-954B-841FB0E8F1BF}
-		{ADC388C9-FD0E-4E7C-B990-6A289A69FA26} = {CFE01489-8CAC-43E0-83C6-AC5B684B7679}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B01EB61-45F2-4DF5-97A2-4101DA40ACF4}

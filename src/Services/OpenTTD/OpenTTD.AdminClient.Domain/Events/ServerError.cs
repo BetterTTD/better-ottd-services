@@ -1,5 +1,6 @@
-﻿using OpenTTD.AdminClient.Domain.ValueObjects;
+﻿using MediatR;
+using OpenTTD.AdminClient.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.Domain.Events;
 
-public sealed record ServerError(ServerId ServerId, Exception Exception, string Message) : BaseEvent;
+public sealed record ServerError(ServerId ServerId, Exception Exception, string Message) : INotification;

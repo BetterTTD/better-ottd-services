@@ -26,6 +26,9 @@
       <Compile Update="ServerContext.Factory.cs">
         <DependentUpon>ServerContext.cs</DependentUpon>
       </Compile>
+      <Compile Update="Entities\ServerEntity.Configuration.cs">
+        <DependentUpon>ServerEntity.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

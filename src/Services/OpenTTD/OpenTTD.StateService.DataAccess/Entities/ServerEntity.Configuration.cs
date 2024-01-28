@@ -1,16 +1,16 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OpenTTD.StateService.DataAccess.Entities;
+using OpenTTD.StateService.DataAccess.Metadata;
 
-namespace OpenTTD.StateService.DataAccess.Configurations;
+namespace OpenTTD.StateService.DataAccess.Entities;
 
 public sealed class ServerEntityConfiguration : IEntityTypeConfiguration<ServerEntity>
 {
     public void Configure(EntityTypeBuilder<ServerEntity> builder)
     {
         builder
-            .ToTable("Server", "dbo")
+            .ToTable(Tables.Server, Schemas.Dbo)
             .HasKey(p => p.Id)
             .HasName("Id");
 

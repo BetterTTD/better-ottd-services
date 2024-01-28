@@ -1,4 +1,4 @@
-namespace OpenTTD.StateService.DataAccess.Entities;
+namespace DataAccess.Abstractions;
 
 public abstract class Entity<TId>
 {

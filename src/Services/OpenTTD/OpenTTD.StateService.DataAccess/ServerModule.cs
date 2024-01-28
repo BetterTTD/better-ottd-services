@@ -1,3 +1,4 @@
+using DataAccess;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTTD.StateService.DataAccess.Seeder;
 
@@ -9,5 +10,6 @@ public static class ServerModule
 #if DEBUG
         .AddScoped<IDbSeeder, ServerDbSeeder>()
 #endif
-        .AddDbContext<ServerContext>();
+        .AddDbContext<ServerContext>()
+        .AddDataAccessModule();
 }

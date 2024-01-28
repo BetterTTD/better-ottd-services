@@ -1,4 +1,5 @@
 using System.Net;
+using DataAccess.Abstractions;
 
 namespace OpenTTD.StateService.DataAccess.Entities;
 

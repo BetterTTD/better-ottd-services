@@ -14,7 +14,7 @@ public static class MigrationManager
 
 #if DEBUG
         var seeder = scope.ServiceProvider.GetRequiredService<IDbSeeder>();
-        await ctx.Database.EnsureDeletedAsync(); 
+        await ctx.Database.EnsureDeletedAsync();
 #endif
         
         await ctx.Database.MigrateAsync();

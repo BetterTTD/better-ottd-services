@@ -8,5 +8,5 @@ public enum ServerUpdateFrequency
     ADMIN_FREQUENCY_MONTHLY   = 0x08, /// The admin gets information about this on a monthly basis.
     ADMIN_FREQUENCY_QUARTERLY = 0x10, /// The admin gets information about this on a quarterly basis.
     ADMIN_FREQUENCY_ANUALLY   = 0x20, /// The admin gets information about this on a yearly basis.
-    ADMIN_FREQUENCY_AUTOMATIC = 0x40, /// The admin gets information about this when it changes.
+    ADMIN_FREQUENCY_AUTOMATIC = 0x40  /// The admin gets information about this when it changes.
 }

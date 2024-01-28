@@ -9,7 +9,7 @@ public interface IGenericRepository<TEntity, in TKey> where TEntity : Entity<TKe
     Task<TEntity?> FindAsync(TKey key);
     Task<TEntity?> FindByAsync(Expression<Func<TEntity, bool>> query);
     Task<TEntity> CreateAsync(TEntity entity);
-    void UpdateAsync(TEntity entity);
-    void DeleteAsync(TEntity entity);
+    void Update(TEntity entity);
+    void Delete(TEntity entity);
     Task SaveAsync();
 }

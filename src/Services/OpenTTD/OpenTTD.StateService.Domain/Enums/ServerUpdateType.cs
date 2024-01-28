@@ -12,5 +12,5 @@ public enum ServerUpdateType
     ADMIN_UPDATE_CMD_NAMES,       /// The admin would like a list of all DoCommand names.
     ADMIN_UPDATE_CMD_LOGGING,     /// The admin would like to have DoCommand information.
     ADMIN_UPDATE_GAMESCRIPT,      /// The admin would like to have gamescript messages.
-    ADMIN_UPDATE_END,             /// Must ALWAYS be on the end of this list!! (period)
+    ADMIN_UPDATE_END              /// Must ALWAYS be on the end of this list!! (period)
 }

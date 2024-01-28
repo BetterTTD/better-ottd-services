@@ -2,8 +2,8 @@ namespace OpenTTD.StateService.Domain.Enums;
 
 public enum ServerState
 {
-    IDLE,
-    CONNECTING,
-    CONNECTED,
-    ERROR
+    IDLE = 0,
+    CONNECTING = 1,
+    CONNECTED = 2,
+    ERROR = 3
 }

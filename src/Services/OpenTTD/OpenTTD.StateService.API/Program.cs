@@ -44,14 +44,14 @@ void ConfigureServices(IServiceCollection services, IConfiguration cfg, IHostEnv
     });
 
     services
-        .AddScoped<INetworkMessageDeserializer, NetworkMessageDeserializer>()
-        .AddServerDb();
-
-    services
         .Configure<ServerDbConnectionString>(x =>
             x.Value = cfg.GetConnectionString(nameof(ServerDbConnectionString)) ??
                       throw new ArgumentNullException(x.Value, "Server DB connection string is null"));
     
+    services
+        .AddScoped<INetworkMessageDeserializer, NetworkMessageDeserializer>()
+        .AddServerDb();
+
     services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 }
 

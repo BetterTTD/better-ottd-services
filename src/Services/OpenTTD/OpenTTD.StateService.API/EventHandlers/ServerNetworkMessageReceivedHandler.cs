@@ -1,9 +1,9 @@
 using IntegrationEvents;
 using MassTransit;
 
-namespace OpenTTD.StateService.API.IntegrationConsumers;
+namespace OpenTTD.StateService.API.EventHandlers;
 
-public class ServerNetworkMessageReceivedConsumer(ILogger<ServerNetworkMessageReceivedConsumer> logger)
+public class ServerNetworkMessageReceivedHandler(ILogger<ServerNetworkMessageReceivedHandler> logger)
     : IConsumer<ServerNetworkMessageReceived>
 {
     public Task Consume(ConsumeContext<ServerNetworkMessageReceived> context)

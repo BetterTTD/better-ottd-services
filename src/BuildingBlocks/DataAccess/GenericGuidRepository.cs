@@ -37,13 +37,13 @@ public sealed class GenericGuidRepository<TEntity, TKey>(DbContext db) : IGeneri
         return entity;
     }
 
-    public void UpdateAsync(TEntity entity)
+    public void Update(TEntity entity)
     {
         _set.Attach(entity);
         db.Entry(entity).State = EntityState.Modified;
     }
 
-    public void DeleteAsync(TEntity entity)
+    public void Delete(TEntity entity)
     {
         _set.Attach(entity);
         _set.Remove(entity);

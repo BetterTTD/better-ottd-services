@@ -1,10 +1,10 @@
 ﻿using Akka.Util;
-using OpenTTD.AdminClient.API.Domain.Abstractions;
+using OpenTTD.AdminClient.API.Abstractions;
 using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Domain.Commands;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.API.Domain.CommandHandlers;
+namespace OpenTTD.AdminClient.API.CommandHandlers;
 
 public sealed class DisconnectServerCommandHandler(ICoordinatorService coordinator,
         ILogger<DisconnectServerCommandHandler> logger)

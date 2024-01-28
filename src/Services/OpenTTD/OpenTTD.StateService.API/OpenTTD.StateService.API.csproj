@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\IntegrationCommands\IntegrationCommands.csproj" />
       <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
       <ProjectReference Include="..\OpenTTD.StateService.DataAccess\OpenTTD.StateService.DataAccess.csproj" />
     </ItemGroup>

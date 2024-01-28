@@ -2,4 +2,4 @@
 
 namespace OpenTTD.AdminClient.Domain.Commands;
 
-public sealed record DisconnectServer(ServerId Id) : ICommand<ServerId>;
+public sealed record CoordinatorDisconnectServer(ServerId Id) : ICommand<ServerId>;

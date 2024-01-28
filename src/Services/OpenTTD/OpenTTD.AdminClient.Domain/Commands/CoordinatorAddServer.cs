@@ -2,4 +2,4 @@
 
 namespace OpenTTD.AdminClient.Domain.Commands;
 
-public sealed record ConnectServer(ServerId Id) : ICommand<ServerId>;
+public sealed record CoordinatorAddServer(ServerId Id, ServerNetwork Network) : ICommand<ServerId>;

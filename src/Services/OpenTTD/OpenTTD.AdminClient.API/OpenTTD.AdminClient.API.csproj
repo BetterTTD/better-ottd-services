@@ -37,4 +37,9 @@
       <ProjectReference Include="..\OpenTTD.AdminClient.Actors\OpenTTD.AdminClient.Actors.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Domain\" />
+      <Folder Include="Integration\CommandHandlers\" />
+    </ItemGroup>
+
 </Project>

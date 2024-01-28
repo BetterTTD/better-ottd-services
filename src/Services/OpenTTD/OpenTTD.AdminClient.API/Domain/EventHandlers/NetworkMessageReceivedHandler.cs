@@ -4,7 +4,7 @@ using MediatR;
 using Newtonsoft.Json;
 using OpenTTD.AdminClient.Domain.Events;
 
-namespace OpenTTD.AdminClient.API.EventHandlers;
+namespace OpenTTD.AdminClient.API.Domain.EventHandlers;
 
 public sealed class NetworkMessageReceivedHandler(
     ILogger<NetworkMessageReceivedHandler> logger,

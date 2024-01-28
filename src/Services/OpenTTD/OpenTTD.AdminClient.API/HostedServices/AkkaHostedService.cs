@@ -80,7 +80,7 @@ public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
                 new ServerNetwork
                 {
                     NetworkAddress = new NetworkAddress(IPAddress.Parse("127.0.0.1"), new ServerPort(3977)),
-                    Name = new ServerName("TG Admin"),
+                    AdminName = new ServerAdminName("TG Admin"),
                     Version = new ServerVersion("1.0"),
                     Password = new ServerPassword("12345")
                 });

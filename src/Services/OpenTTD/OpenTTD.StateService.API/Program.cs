@@ -90,4 +90,5 @@ var app = builder.Build();
 ConfigureApplication(app, builder.Environment);
 ConfigureRoutes(app);
 
+await app.MigrateDatabaseAsync();
 await app.RunAsync();

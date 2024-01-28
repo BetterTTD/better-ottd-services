@@ -16,21 +16,30 @@ public sealed class ServerEntityConfiguration : IEntityTypeConfiguration<ServerE
 
         builder
             .Property(p => p.Name)
-            .HasColumnName("Name");
+            .HasColumnName("Name")
+            .HasMaxLength(100);
+
+        builder
+            .Property(p => p.AdminName)
+            .HasColumnName("AdminName")
+            .HasMaxLength(100);
 
         builder
             .Property(p => p.IpAddress)
             .HasConversion(
                 p => p.ToString(),
                 p => IPAddress.Parse(p))
-            .HasColumnName("IpAddress");
+            .HasColumnName("IpAddress")
+            .HasMaxLength(39);
 
         builder
             .Property(p => p.Port)
-            .HasColumnName("Port");
+            .HasColumnName("Port")
+            .HasColumnType("smallint");
 
         builder
             .Property(p => p.Password)
-            .HasColumnName("Password");
+            .HasColumnName("Password")
+            .HasMaxLength(256);
     }
 }

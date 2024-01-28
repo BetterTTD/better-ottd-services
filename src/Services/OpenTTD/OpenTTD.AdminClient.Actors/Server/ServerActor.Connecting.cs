@@ -88,7 +88,7 @@ public sealed partial class ServerActor
 
             network.Sender.Tell(new SendMessage(new JoinMessage
             {
-                AdminName = credentials.Name.Value,
+                AdminName = credentials.AdminName.Value,
                 AdminVersion = credentials.Version.Value,
                 Password = credentials.Password.Value
             }));

@@ -21,7 +21,7 @@ public sealed class CoordinatorActor : ReceiveActor
         {
             var maybeServerId = servers
                 .Where(s =>
-                    s.Value.Credentials.Name == msg.Network.Name ||
+                    s.Value.Credentials.AdminName == msg.Network.AdminName ||
                     Equals(s.Value.Credentials.NetworkAddress.IpAddress, msg.Network.NetworkAddress.IpAddress) &&
                     s.Value.Credentials.NetworkAddress.Port == msg.Network.NetworkAddress.Port)
                 .Select(x => x.Key)

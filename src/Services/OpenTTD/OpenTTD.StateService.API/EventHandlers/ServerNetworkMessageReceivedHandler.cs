@@ -1,5 +1,5 @@
-using IntegrationEvents;
 using MassTransit;
+using OpenTTD.StateService.Contracts.Events;
 
 namespace OpenTTD.StateService.API.EventHandlers;
 

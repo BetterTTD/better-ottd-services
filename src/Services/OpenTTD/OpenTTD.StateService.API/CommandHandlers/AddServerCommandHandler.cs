@@ -1,8 +1,7 @@
 using System.Net;
 using DataAccess.Abstractions;
-using IntegrationCommands;
-using IntegrationEvents;
 using MassTransit;
+using OpenTTD.StateService.Contracts.Commands;
 using OpenTTD.StateService.DataAccess.Entities;
 
 namespace OpenTTD.StateService.API.CommandHandlers;
@@ -27,6 +26,13 @@ public sealed class AddServerCommandHandler(
         
         await repository.SaveAsync();
 
-        await context.Publish(new ServerAdded(dbo.Id));
+        await context.Send(new AdminClient.Contracts.Commands.AddServer(
+            dbo.Id,
+            dbo.Name,
+            dbo.AdminName,
+            dbo.IpAddress.ToString(), 
+            dbo.Port, 
+            dbo.Password, 
+            "1.0"));
     }
 }

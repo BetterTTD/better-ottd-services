@@ -12,8 +12,4 @@
       <PackageReference Include="StackExchange.Redis" Version="2.7.4" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
-    </ItemGroup>
-
 </Project>

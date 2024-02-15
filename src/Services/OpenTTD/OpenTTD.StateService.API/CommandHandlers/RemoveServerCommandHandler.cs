@@ -1,7 +1,7 @@
 using DataAccess.Abstractions;
-using IntegrationCommands;
-using IntegrationEvents;
 using MassTransit;
+using OpenTTD.StateService.Contracts.Commands;
+using OpenTTD.StateService.Contracts.Events;
 using OpenTTD.StateService.DataAccess.Entities;
 
 namespace OpenTTD.StateService.API.CommandHandlers;

@@ -1,6 +1,6 @@
 using OpenTTD.AdminClient.Networking.Enums;
 
-namespace IntegrationEvents;
+namespace OpenTTD.StateService.Contracts.Events;
 
 public sealed record ServerNetworkMessageReceived(
     Guid ServerId, 

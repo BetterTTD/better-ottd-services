@@ -32,14 +32,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
       <ProjectReference Include="..\..\..\Shared\OpenTTD.AdminClient.Networking\OpenTTD.AdminClient.Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.AdminClient.Actors\OpenTTD.AdminClient.Actors.csproj" />
+      <ProjectReference Include="..\OpenTTD.AdminClient.Contracts\OpenTTD.AdminClient.Contracts.csproj" />
+      <ProjectReference Include="..\OpenTTD.StateService.Contracts\OpenTTD.StateService.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Domain\" />
-      <Folder Include="Integration\CommandHandlers\" />
     </ItemGroup>
 
 </Project>

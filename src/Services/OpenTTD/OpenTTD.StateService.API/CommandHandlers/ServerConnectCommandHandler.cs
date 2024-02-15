@@ -1,5 +1,5 @@
-using IntegrationCommands;
 using MassTransit;
+using OpenTTD.StateService.Contracts.Commands;
 
 namespace OpenTTD.StateService.API.CommandHandlers;
 

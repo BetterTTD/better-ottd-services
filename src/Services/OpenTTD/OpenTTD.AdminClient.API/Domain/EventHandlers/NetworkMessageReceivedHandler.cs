@@ -1,8 +1,8 @@
-﻿using IntegrationEvents;
-using MassTransit;
+﻿using MassTransit;
 using MediatR;
 using Newtonsoft.Json;
 using OpenTTD.AdminClient.Domain.Events;
+using OpenTTD.StateService.Contracts.Events;
 
 namespace OpenTTD.AdminClient.API.Domain.EventHandlers;
 

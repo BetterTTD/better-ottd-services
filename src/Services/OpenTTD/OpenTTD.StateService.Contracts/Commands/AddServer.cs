@@ -1,4 +1,4 @@
-namespace IntegrationCommands;
+namespace OpenTTD.StateService.Contracts.Commands;
 
 public record AddServer(
     string Name,

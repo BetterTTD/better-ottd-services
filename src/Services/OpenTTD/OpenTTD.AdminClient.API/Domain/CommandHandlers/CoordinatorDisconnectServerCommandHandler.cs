@@ -16,7 +16,7 @@ public sealed class CoordinatorDisconnectServerCommandHandler(ICoordinatorServic
             "[CMD:{CmdName}] Data {Notification}", 
             nameof(CoordinatorDisconnectServerCommandHandler), cmd);
 
-        await coordinator.TellServerToDisconnectAsync(cmd.Id, cancellationToken);
+        await coordinator.TellToDisconnectServerAsync(cmd.Id, cancellationToken);
         
         return Result.Success(cmd.Id);
     }

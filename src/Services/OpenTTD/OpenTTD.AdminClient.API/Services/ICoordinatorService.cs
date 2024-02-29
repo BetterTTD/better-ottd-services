@@ -6,7 +6,7 @@ namespace OpenTTD.AdminClient.API.Services;
 public interface ICoordinatorService
 {
     Task<Result<ServerId>> AskToAddServerAsync(ServerId id, ServerNetwork network, CancellationToken cts);
-    Task TellServerToConnectAsync(ServerId id, CancellationToken cts);
-    Task TellServerToDisconnectAsync(ServerId id, CancellationToken cts);
-    Task RemoveServerAsync(ServerId id, CancellationToken cts);
+    Task TellToConnectServerAsync(ServerId id, CancellationToken cts);
+    Task TellToDisconnectServerAsync(ServerId id, CancellationToken cts);
+    Task TellToRemoveServerAsync(ServerId id, CancellationToken cts);
 }

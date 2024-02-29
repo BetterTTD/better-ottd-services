@@ -8,14 +8,15 @@ using OpenTTD.AdminClient.Domain.ValueObjects;
 
 namespace OpenTTD.AdminClient.API.HostedServices;
 
-public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
-        IHostApplicationLifetime appLifetime)
+public sealed class AkkaHostedSystemService(
+    IServiceProvider serviceProvider,
+    IHostApplicationLifetime appLifetime)
     : IHostedService, ICoordinatorService
 {
     private ActorSystem _actorSystem = null!;
     private IActorRef _coordinator = null!;
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         var actorSystemSetup = BootstrapSetup
             .Create()
@@ -27,11 +28,9 @@ public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
         var coordinatorProps = DependencyResolver.For(_actorSystem).Props<CoordinatorActor>();
         _coordinator = _actorSystem.ActorOf(coordinatorProps, "coordinator");
 
-        _actorSystem.WhenTerminated.ContinueWith(_ => appLifetime.StopApplication(), cancellationToken);
+        await _actorSystem.WhenTerminated.ContinueWith(_ => appLifetime.StopApplication(), cancellationToken);
 
-        Test(cancellationToken);
-        
-        return Task.CompletedTask;
+        await Test(cancellationToken);
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
@@ -53,25 +52,22 @@ public sealed class AkkaHostedSystemService(IServiceProvider serviceProvider,
             : Result.Failure<ServerId>(result.Exception);
     }
 
-    public Task TellServerToConnectAsync(ServerId id, CancellationToken cts)
+    public async Task TellToConnectServerAsync(ServerId id, CancellationToken cts)
     {
-        _coordinator.Tell(new ServerConnect(id));
-        return Task.CompletedTask;
+        await Task.Run(() => _coordinator.Tell(new ServerConnect(id)), cts);
     }
 
-    public Task TellServerToDisconnectAsync(ServerId id, CancellationToken cts)
+    public async Task TellToDisconnectServerAsync(ServerId id, CancellationToken cts)
     {
-        _coordinator.Tell(new ServerDisconnect(id));
-        return Task.CompletedTask;
+        await Task.Run(() => _coordinator.Tell(new ServerDisconnect(id)), cts);
     }
 
-    public Task RemoveServerAsync(ServerId id, CancellationToken cts)
+    public async Task TellToRemoveServerAsync(ServerId id, CancellationToken cts)
     {
-        _coordinator.Tell(new ServerRemove(id));
-        return Task.CompletedTask;
+        await Task.Run(() => _coordinator.Tell(new ServerRemove(id)), cts);
     }
     
-    private async void Test(CancellationToken cancellationToken)
+    private async Task Test(CancellationToken cancellationToken)
     {
         try
         {

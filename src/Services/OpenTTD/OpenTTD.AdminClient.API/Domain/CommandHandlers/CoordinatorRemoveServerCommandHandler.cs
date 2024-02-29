@@ -16,7 +16,7 @@ public sealed class CoordinatorRemoveServerCommandHandler(ICoordinatorService co
             "[CMD:{CmdName}] Data {Notification}", 
             nameof(CoordinatorRemoveServerCommandHandler), cmd);
 
-        await coordinator.RemoveServerAsync(cmd.Id, cancellationToken);
+        await coordinator.TellToRemoveServerAsync(cmd.Id, cancellationToken);
         
         return Result.Success(cmd.Id);
     }

@@ -15,7 +15,7 @@ public sealed class CoordinatorCoordinatorConnectServerHandler(ICoordinatorServi
             "[CMD:{CmdName}] Data {Notification}", 
             nameof(CoordinatorCoordinatorConnectServerHandler), cmd);
 
-        await coordinator.TellServerToConnectAsync(cmd.Id, cancellationToken);
+        await coordinator.TellToConnectServerAsync(cmd.Id, cancellationToken);
 
         return Result.Success(cmd.Id);
     }

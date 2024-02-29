@@ -2,7 +2,6 @@
 using MediatR;
 using Newtonsoft.Json;
 using OpenTTD.AdminClient.Domain.Events;
-using OpenTTD.StateService.Contracts.Events;
 
 namespace OpenTTD.AdminClient.API.Domain.EventHandlers;
 
@@ -17,11 +16,13 @@ public sealed class NetworkMessageReceivedHandler(
             "[{Handler}] [ServerId:{ServerId}] Received message: {Message}", 
             nameof(NetworkMessageReceivedHandler), notification.ServerId.Value, notification.Message);
 
+        /*
         var @event = new ServerNetworkMessageReceived(
             notification.ServerId.Value,
             notification.Message.PacketType,
             JsonConvert.SerializeObject(notification.Message));
 
         await bus.Publish(@event, cancellationToken);
+        */
     }
 }

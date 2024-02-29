@@ -35,7 +35,6 @@
       <ProjectReference Include="..\..\..\Shared\OpenTTD.AdminClient.Networking\OpenTTD.AdminClient.Networking.csproj" />
       <ProjectReference Include="..\OpenTTD.AdminClient.Actors\OpenTTD.AdminClient.Actors.csproj" />
       <ProjectReference Include="..\OpenTTD.AdminClient.Contracts\OpenTTD.AdminClient.Contracts.csproj" />
-      <ProjectReference Include="..\OpenTTD.StateService.Contracts\OpenTTD.StateService.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

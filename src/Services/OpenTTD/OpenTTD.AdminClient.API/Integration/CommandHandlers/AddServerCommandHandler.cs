@@ -3,7 +3,6 @@ using MassTransit;
 using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Contracts.Commands;
 using OpenTTD.AdminClient.Domain.ValueObjects;
-using OpenTTD.StateService.Contracts.Events;
 
 namespace OpenTTD.AdminClient.API.Integration.CommandHandlers;
 
@@ -29,6 +28,6 @@ public sealed class AddServerCommandHandler(ICoordinatorService coordinator) : I
             throw new NotImplementedException();
         }
 
-        await context.Publish(new ServerAdded(cmd.ServerId));
+        //await context.Publish(new ServerAdded(cmd.ServerId));
     }
 }

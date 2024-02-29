@@ -13,21 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Server\ServerActor.Idle.cs">
-        <DependentUpon>ServerActor.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Server\ServerActor.Connecting.cs">
-        <DependentUpon>ServerActor.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Server\ServerActor.Connected.cs">
-        <DependentUpon>ServerActor.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Server\ServerActor.Error.cs">
-        <DependentUpon>ServerActor.cs</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\OpenTTD.AdminClient.Domain\OpenTTD.AdminClient.Domain.csproj" />
     </ItemGroup>
 

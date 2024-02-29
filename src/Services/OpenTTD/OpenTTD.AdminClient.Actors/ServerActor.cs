@@ -4,11 +4,16 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Common;
 using MediatR;
+using OpenTTD.AdminClient.Actors.Base;
 using OpenTTD.AdminClient.Domain.Enums;
 using OpenTTD.AdminClient.Domain.Events;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.Actors.Server;
+namespace OpenTTD.AdminClient.Actors;
+
+public sealed record Connect : IActorCommand;
+public sealed record Disconnect : IActorCommand;
+public sealed record Reconnect : IActorCommand;
 
 public sealed record NetworkActors(
     IActorRef Sender, 

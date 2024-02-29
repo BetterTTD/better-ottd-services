@@ -4,10 +4,17 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using MediatR;
-using OpenTTD.AdminClient.Actors.Server;
+using OpenTTD.AdminClient.Actors.Base;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.Actors.Coordinator;
+namespace OpenTTD.AdminClient.Actors;
+
+public sealed record ServerAdd(ServerId Id, ServerNetwork Network) : IActorCommand;
+public sealed record ServerConnect(ServerId ServerId) : IActorCommand;
+public sealed record ServerDisconnect(ServerId ServerId) : IActorCommand;
+public sealed record ServerRemove(ServerId ServerId) : IActorCommand;
+
+public sealed record ServerAdded(ServerId Id) : IActorEvent;
 
 public sealed class CoordinatorActor : ReceiveActor
 {

@@ -1,3 +1,3 @@
 ﻿namespace OpenTTD.AdminClient.Actors.Base;
 
-public interface ICommand;
+public interface IActorEvent;

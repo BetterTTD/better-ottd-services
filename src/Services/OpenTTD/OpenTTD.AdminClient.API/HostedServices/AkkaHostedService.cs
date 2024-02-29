@@ -2,7 +2,7 @@ using System.Net;
 using Akka.Actor;
 using Akka.DependencyInjection;
 using Akka.Util;
-using OpenTTD.AdminClient.Actors.Coordinator;
+using OpenTTD.AdminClient.Actors;
 using OpenTTD.AdminClient.API.Services;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 

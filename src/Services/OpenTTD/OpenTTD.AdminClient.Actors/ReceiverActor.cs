@@ -3,12 +3,17 @@ using Akka.Event;
 using Akka.Logger.Serilog;
 using Akka.Util;
 using MediatR;
+using OpenTTD.AdminClient.Actors.Base;
 using OpenTTD.AdminClient.Domain.Events;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 using OpenTTD.AdminClient.Networking.Common;
 using OpenTTD.AdminClient.Networking.Messages;
 
-namespace OpenTTD.AdminClient.Actors.Receiver;
+namespace OpenTTD.AdminClient.Actors;
+
+public sealed record ReceiveMsg : IActorCommand;
+
+public sealed record ReceivedMsg(Result<IMessage> MsgResult);
 
 public sealed class ReceiverActor : ReceiveActor
 {

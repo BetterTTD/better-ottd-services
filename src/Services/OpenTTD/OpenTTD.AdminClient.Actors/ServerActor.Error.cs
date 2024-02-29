@@ -4,7 +4,7 @@ using Common;
 using OpenTTD.AdminClient.Domain.Events;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.Actors.Server;
+namespace OpenTTD.AdminClient.Actors;
 
 public sealed partial class ServerActor
 {

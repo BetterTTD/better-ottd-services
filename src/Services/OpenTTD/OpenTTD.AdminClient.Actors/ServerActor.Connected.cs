@@ -1,10 +1,9 @@
 using Common;
-using OpenTTD.AdminClient.Actors.Receiver;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 using OpenTTD.AdminClient.Networking.Enums;
 using OpenTTD.AdminClient.Networking.Messages.Inbound;
 
-namespace OpenTTD.AdminClient.Actors.Server;
+namespace OpenTTD.AdminClient.Actors;
 
 public sealed partial class ServerActor
 {

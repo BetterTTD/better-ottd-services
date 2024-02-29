@@ -6,8 +6,6 @@ using Akka.Util;
 using Akka.Util.Internal;
 using Common;
 using MediatR;
-using OpenTTD.AdminClient.Actors.Receiver;
-using OpenTTD.AdminClient.Actors.Sender;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 using OpenTTD.AdminClient.Networking.Enums;
 using OpenTTD.AdminClient.Networking.Messages;
@@ -18,7 +16,7 @@ using OpenTTD.AdminClient.Networking.Messages.Outbound.Join;
 using OpenTTD.AdminClient.Networking.Messages.Outbound.Poll;
 using OpenTTD.AdminClient.Networking.Messages.Outbound.UpdateFrequency;
 
-namespace OpenTTD.AdminClient.Actors.Server;
+namespace OpenTTD.AdminClient.Actors;
 
 public sealed partial class ServerActor
 {

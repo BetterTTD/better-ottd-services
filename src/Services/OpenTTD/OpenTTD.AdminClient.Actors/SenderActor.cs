@@ -2,12 +2,15 @@
 using Akka.Event;
 using Akka.Logger.Serilog;
 using MediatR;
+using OpenTTD.AdminClient.Actors.Base;
 using OpenTTD.AdminClient.Domain.Events;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 using OpenTTD.AdminClient.Networking.Messages;
 using OpenTTD.AdminClient.Networking.Messages.Outbound.Ping;
 
-namespace OpenTTD.AdminClient.Actors.Sender;
+namespace OpenTTD.AdminClient.Actors;
+
+public sealed record SendMessage(IMessage Message) : IActorCommand;
 
 public sealed class SenderActor : ReceiveActor, IWithTimers
 {

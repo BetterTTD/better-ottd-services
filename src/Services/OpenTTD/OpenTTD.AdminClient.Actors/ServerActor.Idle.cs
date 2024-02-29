@@ -1,9 +1,8 @@
 using Akka.Actor;
 using Common;
-using OpenTTD.AdminClient.Actors.Receiver;
 using OpenTTD.AdminClient.Domain.ValueObjects;
 
-namespace OpenTTD.AdminClient.Actors.Server;
+namespace OpenTTD.AdminClient.Actors;
 
 public sealed partial class ServerActor
 {

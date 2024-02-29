@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using OpenTTD.AdminClient.Networking.Common;
 using OpenTTD.AdminClient.Networking.Enums;
 
 namespace OpenTTD.AdminClient.Networking.Messages.Inbound;

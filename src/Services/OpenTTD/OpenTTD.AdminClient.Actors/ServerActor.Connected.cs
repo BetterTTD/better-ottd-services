@@ -14,7 +14,7 @@ public sealed partial class ServerActor
 
     private State<State, Model> ConnectedHandler(Event<Model> @event) => (@event.StateData, @event.FsmEvent) switch
     {
-        (Connected model, ReceivedMsg msg) => F.Run(() =>
+        (Connected model, ReceivedNetworkMessage msg) => F.Run(() =>
         {
             var result = msg.MsgResult;
             if (!result.IsSuccess)

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using OpenTTD.AdminClient.Networking.Common;
 
 namespace OpenTTD.AdminClient.Networking.Messages;
 

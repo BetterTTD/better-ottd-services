@@ -1,7 +1,6 @@
 using System.Diagnostics.Contracts;
 using Newtonsoft.Json;
 using OpenTTD.AdminClient.Networking.Enums;
-using OpenTTD.AdminClient.Networking.Messages;
 using OpenTTD.AdminClient.Networking.Messages.Inbound.ServerChat;
 using OpenTTD.AdminClient.Networking.Messages.Inbound.ServerClientError;
 using OpenTTD.AdminClient.Networking.Messages.Inbound.ServerClientInfo;
@@ -22,7 +21,7 @@ using OpenTTD.AdminClient.Networking.Messages.Outbound.Ping;
 using OpenTTD.AdminClient.Networking.Messages.Outbound.Poll;
 using OpenTTD.AdminClient.Networking.Messages.Outbound.UpdateFrequency;
 
-namespace OpenTTD.AdminClient.Networking;
+namespace OpenTTD.AdminClient.Networking.Messages;
 
 public sealed class NetworkMessageDeserializer : INetworkMessageDeserializer
 {

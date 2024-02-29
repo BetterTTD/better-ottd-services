@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace OpenTTD.AdminClient.Networking.Common;
+namespace OpenTTD.AdminClient.Networking;
 
 public class Packet
 {

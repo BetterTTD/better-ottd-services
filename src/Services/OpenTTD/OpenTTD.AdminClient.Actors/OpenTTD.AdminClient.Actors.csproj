@@ -16,4 +16,19 @@
       <ProjectReference Include="..\OpenTTD.AdminClient.Domain\OpenTTD.AdminClient.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="ServerActor.Connected.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="ServerActor.Connecting.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="ServerActor.Error.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+      <Compile Update="ServerActor.Idle.cs">
+        <DependentUpon>ServerActor.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

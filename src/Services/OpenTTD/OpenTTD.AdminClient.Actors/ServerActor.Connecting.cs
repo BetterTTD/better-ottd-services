@@ -85,7 +85,7 @@ public sealed partial class ServerActor
                 Sender: Context.ActorOf(senderProps),
                 Receiver: Context.ActorOf(receiverProps));
 
-            network.Sender.Tell(new SendMessage(new JoinMessage
+            network.Sender.Tell(new SendNetworkMessage(new JoinMessage
             {
                 AdminName = credentials.AdminName.Value,
                 AdminVersion = credentials.Version.Value,
@@ -100,7 +100,7 @@ public sealed partial class ServerActor
             return GoTo(State.CONNECTING).Using(connectingState);
         }),
 
-        (Connecting model, ReceivedMsg msg) => F.Run(() =>
+        (Connecting model, ReceivedNetworkMessage msg) => F.Run(() =>
         {
             var result = msg.MsgResult;
             if (!result.IsSuccess)
@@ -149,7 +149,7 @@ public sealed partial class ServerActor
                     { UpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC },
                     { UpdateType.ADMIN_UPDATE_COMPANY_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC }
                 }.Select(x => new UpdateFrequencyMessage(x.Key, x.Value)))
-                .Select(x => new SendMessage(x))
+                .Select(x => new SendNetworkMessage(x))
                 .ForEach(x => state.NetworkActors.Sender.Tell(x));
 
             return GoTo(State.CONNECTED).Using(new Connected(state.Id, state.Network, state.NetworkActors));

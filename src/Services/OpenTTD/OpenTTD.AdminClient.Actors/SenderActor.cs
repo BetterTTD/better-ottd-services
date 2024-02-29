@@ -10,7 +10,7 @@ using OpenTTD.AdminClient.Networking.Messages.Outbound.Ping;
 
 namespace OpenTTD.AdminClient.Actors;
 
-public sealed record SendMessage(IMessage Message) : IActorCommand;
+public sealed record SendNetworkMessage(IMessage Message) : IActorCommand;
 
 public sealed class SenderActor : ReceiveActor, IWithTimers
 {
@@ -18,9 +18,9 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
 
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
 
-    public SenderActor(ServerId serverId, Stream stream, IPacketService packetService, IMediator mediator)
+    public SenderActor(ServerId serverId, Stream stream, IPacketService packetService, IPublisher mediator)
     {
-        ReceiveAsync<SendMessage>(async msg =>
+        ReceiveAsync<SendNetworkMessage>(async msg =>
         {
             try
             {
@@ -53,7 +53,7 @@ public sealed class SenderActor : ReceiveActor, IWithTimers
         base.PreStart();
         Timers.StartPeriodicTimer(
             nameof(SenderActor), 
-            new SendMessage(new PingMessage()), 
+            new SendNetworkMessage(new PingMessage()), 
             TimeSpan.FromSeconds(10));
     }
 

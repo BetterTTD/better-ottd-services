@@ -16,7 +16,7 @@ public sealed partial class ServerActor
             return GoTo(State.CONNECTING).Using(new InitialConnecting(id, credentials));
         }),
 
-        (Idle model, ReceivedMsg) => F.Run(() => Stay().Using(model)),
+        (Idle model, ReceivedNetworkMessage) => F.Run(() => Stay().Using(model)),
 
         var ((id, credentials), _) => F.Run(() => GoTo(State.ERROR).Using(new Error(id, credentials)
         {

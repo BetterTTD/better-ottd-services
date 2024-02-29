@@ -6,22 +6,22 @@ using MediatR;
 using OpenTTD.AdminClient.Actors.Base;
 using OpenTTD.AdminClient.Domain.Events;
 using OpenTTD.AdminClient.Domain.ValueObjects;
-using OpenTTD.AdminClient.Networking.Common;
+using OpenTTD.AdminClient.Networking;
 using OpenTTD.AdminClient.Networking.Messages;
 
 namespace OpenTTD.AdminClient.Actors;
 
-public sealed record ReceiveMsg : IActorCommand;
+public sealed record StartReceivingNetworkMessage : IActorCommand;
 
-public sealed record ReceivedMsg(Result<IMessage> MsgResult);
+public sealed record ReceivedNetworkMessage(Result<IMessage> MsgResult);
 
 public sealed class ReceiverActor : ReceiveActor
 {
     private readonly ILoggingAdapter _logger = Context.GetLogger<SerilogLoggingAdapter>();
     
-    public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService, IMediator mediator)
+    public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService, IPublisher mediator)
     {
-        ReceiveAsync<ReceiveMsg>(async _ =>
+        ReceiveAsync<StartReceivingNetworkMessage>(async _ =>
         {
             try
             {
@@ -37,29 +37,29 @@ public sealed class ReceiverActor : ReceiveActor
                     "[{Actor}] [ServerId:{ServerId}] Received a package of type {PacketType}", 
                     nameof(ReceiverActor), serverId.Value, message.PacketType);
 
-                Self.Tell(new ReceiveMsg(), Sender);
+                Self.Tell(new StartReceivingNetworkMessage(), Sender);
 
                 await mediator.Publish(new NetworkMessageReceived(serverId, message));
 
-                Context.Parent.Tell(new ReceivedMsg(Result.Success(message)));
+                Context.Parent.Tell(new ReceivedNetworkMessage(Result.Success(message)));
             }
             catch (OperationCanceledException exn)
             {
                 _logger.Error(exn, 
                     "[{Actor}] [ServerId:{ServerId}] Timeout handled", 
                     nameof(ReceiverActor), serverId.Value);
-                Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
+                Context.Parent.Tell(new ReceivedNetworkMessage(Result.Failure<IMessage>(exn)));
             }
             catch (Exception exn)
             {
                 _logger.Error(exn, 
                     "[{Actor}] [ServerId:{ServerId}] Received an error while receiving a packet", 
                     nameof(ReceiverActor), serverId.Value);
-                Context.Parent.Tell(new ReceivedMsg(Result.Failure<IMessage>(exn)));
+                Context.Parent.Tell(new ReceivedNetworkMessage(Result.Failure<IMessage>(exn)));
             }
         });
         
-        Self.Tell(new ReceiveMsg(), Sender);
+        Self.Tell(new StartReceivingNetworkMessage(), Sender);
     }
 
     private static async Task<Packet> WaitForPacketAsync(Stream stream, CancellationToken token)

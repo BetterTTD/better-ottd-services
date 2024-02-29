@@ -1,8 +1,7 @@
 using System.Diagnostics.Contracts;
 using OpenTTD.AdminClient.Networking.Enums;
-using OpenTTD.AdminClient.Networking.Messages;
 
-namespace OpenTTD.AdminClient.Networking;
+namespace OpenTTD.AdminClient.Networking.Messages;
 
 public interface INetworkMessageDeserializer
 {

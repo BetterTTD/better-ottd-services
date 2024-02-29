@@ -22,6 +22,7 @@ namespace OpenTTD.AdminClient.Actors.Server;
 
 public sealed partial class ServerActor
 {
+    
     private sealed record InitialConnecting(ServerId Id, ServerNetwork Network) : Model(Id, Network);
 
     private sealed record Connecting(
@@ -53,7 +54,7 @@ public sealed partial class ServerActor
                 {
                     return Result.Failure<Unit>(exn);
                 }
-            }).PipeTo(Self, Sender);
+            }).PipeTo(Self, Self);
 
             return Stay();
         }),

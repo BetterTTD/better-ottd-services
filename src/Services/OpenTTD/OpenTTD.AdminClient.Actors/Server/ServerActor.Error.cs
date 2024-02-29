@@ -35,7 +35,7 @@ public sealed partial class ServerActor
             {
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 return new Reconnect();
-            }).PipeTo(Self, Sender);
+            }).PipeTo(Self, Self);
             
             return Stay();
         }),

@@ -4,5 +4,5 @@ public record AddServer(
     string Name,
     string AdminName,
     string IpAddress,
-    uint Port,
+    int Port,
     string Password);

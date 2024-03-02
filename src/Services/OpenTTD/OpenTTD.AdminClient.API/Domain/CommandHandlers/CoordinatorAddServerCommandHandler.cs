@@ -8,7 +8,7 @@ namespace OpenTTD.AdminClient.API.Domain.CommandHandlers;
 
 public sealed class CoordinatorAddServerCommandHandler(ILogger<CoordinatorAddServerCommandHandler> logger, ICoordinatorService coordinator)
     : ICommandHandler<CoordinatorAddServer, ServerId>
-{
+{ 
     public async Task<Result<ServerId>> Handle(CoordinatorAddServer cmd, CancellationToken cancellationToken)
     {
         logger.LogInformation(

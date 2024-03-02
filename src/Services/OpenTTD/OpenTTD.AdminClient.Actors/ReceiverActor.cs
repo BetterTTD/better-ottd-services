@@ -11,7 +11,7 @@ using OpenTTD.AdminClient.Networking.Messages;
 
 namespace OpenTTD.AdminClient.Actors;
 
-public sealed record StartReceivingNetworkMessage : IActorCommand;
+public sealed record ReceiveNetworkMessage : IActorCommand;
 
 public sealed record ReceivedNetworkMessage(Result<IMessage> MsgResult);
 
@@ -21,7 +21,7 @@ public sealed class ReceiverActor : ReceiveActor
     
     public ReceiverActor(ServerId serverId, Stream stream, IPacketService packetService, IPublisher mediator)
     {
-        ReceiveAsync<StartReceivingNetworkMessage>(async _ =>
+        ReceiveAsync<ReceiveNetworkMessage>(async _ =>
         {
             try
             {
@@ -37,7 +37,7 @@ public sealed class ReceiverActor : ReceiveActor
                     "[{Actor}] [ServerId:{ServerId}] Received a package of type {PacketType}", 
                     nameof(ReceiverActor), serverId.Value, message.PacketType);
 
-                Self.Tell(new StartReceivingNetworkMessage(), Sender);
+                Self.Tell(new ReceiveNetworkMessage(), Sender);
 
                 await mediator.Publish(new NetworkMessageReceived(serverId, message));
 
@@ -59,7 +59,7 @@ public sealed class ReceiverActor : ReceiveActor
             }
         });
         
-        Self.Tell(new StartReceivingNetworkMessage(), Sender);
+        Self.Tell(new ReceiveNetworkMessage(), Sender);
     }
 
     private static async Task<Packet> WaitForPacketAsync(Stream stream, CancellationToken token)
